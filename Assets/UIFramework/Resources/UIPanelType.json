@@ -1,0 +1,37 @@
+{
+  "infoList": [
+    {
+      "PanelTypeString": "Message",
+      "Path": "UIPanel/MessagePanel"
+    },
+
+    {
+      "PanelTypeString": "Login",
+      "Path": "UIPanel/LoginPanel"
+    },
+
+    {
+      "PanelTypeString": "Start",
+      "Path": "UIPanel/StartPanel"
+    },
+
+    {
+      "PanelTypeString": "Register",
+      "Path": "UIPanel/RegisterPanel"
+    },
+    {
+      "PanelTypeString": "RoomList",
+      "Path": "UIPanel/RoomListPanel"
+    },
+    {
+      "PanelTypeString": "Room",
+      "Path": "UIPanel/RoomPanel"
+    },
+    {
+      "PanelTypeString": "Game",
+      "Path": "UIPanel/GamePanel"
+    }
+
+  ]
+
+}
