@@ -101,15 +101,6 @@ public class GameFacade : MonoBehaviour
     {
         requestMng.RemoveRequest(actionCode);
     }
-    public void AddAction(ActionCode actionCode, BaseAction Action)
-    {
-        requestMng.AddAction(actionCode, Action);
-    }
-
-    public void RemoveAction(ActionCode actionCode)
-    {
-        requestMng.RemoveAction(actionCode);
-    }
     public void HandleResponse(ActionCode actionCode, string data)
     {
         requestMng.HandleResponse(actionCode, data);

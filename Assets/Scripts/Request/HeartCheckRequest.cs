@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Common;
 using UnityEngine;
 
-public class HeartCheckAction : BaseAction {
+public class HeartCheckAction : BaseRequest {
 
     // Use this for initialization
     public override void Awake()
@@ -12,8 +12,4 @@ public class HeartCheckAction : BaseAction {
         base.Awake();
     }
     
-
-    public override void OnResponse(string data)
-    {
-    }
 }
