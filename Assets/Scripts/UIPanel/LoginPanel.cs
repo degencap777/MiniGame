@@ -53,7 +53,7 @@ public class LoginPanel : BasePanel
     {
         if (returnCode == ReturnCode.Success)
         {
-            uiMng.PushPanelSync(UIPanelType.RoomList);
+            uiMng.PushPanelSync(UIPanelType.ServerList);
         }
         else if (returnCode == ReturnCode.NotFind)
         {

@@ -8,6 +8,7 @@ public class PlayerManager : BaseManager
     public PlayerManager(GameFacade facade) : base(facade) { }
     private UserData userData;
     private Transform rolePositions;
+    private CampType currentCampType;
     public UserData UserData
     {
         get { return userData; }
@@ -16,8 +17,8 @@ public class PlayerManager : BaseManager
 
     public void UpdateResult(int totalCount, int winCount)
     {
-        userData.TotalCount = totalCount;
-        userData.WinCount = winCount;
+        //userData.TotalCount = totalCount;
+        //userData.WinCount = winCount;
     }
     public override void OnInit()
     {
@@ -29,5 +30,8 @@ public class PlayerManager : BaseManager
     {
         base.Update();
     }
-    
+    public void SetCurrentCampType(CampType rt)
+    {
+        currentCampType = rt;
+    }
 }

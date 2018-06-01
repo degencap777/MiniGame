@@ -9,7 +9,10 @@
       "PanelTypeString": "Login",
       "Path": "UIPanel/LoginPanel"
     },
-
+    {
+      "PanelTypeString": "ServerList",
+      "Path": "UIPanel/ServerListPanel"
+    },
     {
       "PanelTypeString": "Start",
       "Path": "UIPanel/StartPanel"

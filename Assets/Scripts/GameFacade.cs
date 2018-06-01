@@ -32,7 +32,7 @@ public class GameFacade : MonoBehaviour
     private RequestManager requestMng;
 
     private ClientManager clientMng;
-
+    private bool isEnterPlaying = false;
     private void Awake()
     {
         if (_instance != null)
@@ -51,6 +51,11 @@ public class GameFacade : MonoBehaviour
     void Update()
     {
         UpdateManager();
+        if (isEnterPlaying)
+        {
+            EnterPlaying();
+            isEnterPlaying = false;
+        }
     }
 
     private void Init()
@@ -134,5 +139,16 @@ public class GameFacade : MonoBehaviour
     {
         return playerMng.UserData;
     }
-    
+    public void SetCurrentCampType(CampType rt)
+    {
+        playerMng.SetCurrentCampType(rt);
+    }
+    public void EnterPlayingSync()
+    {
+        isEnterPlaying = true;
+    }
+    public void EnterPlaying()
+    {
+        //TODO 游戏初始化
+    }
 }
