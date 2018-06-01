@@ -45,8 +45,8 @@ public class UIManager : BaseManager {
     public override void OnInit()
     {
         base.OnInit();
-        //PushPanel(UIPanelType.Message);
-        //PushPanel(UIPanelType.Start);
+        PushPanel(UIPanelType.Message);
+        PushPanel(UIPanelType.Login);
     }
 
     public override void Update()
@@ -124,6 +124,15 @@ public class UIManager : BaseManager {
         this.msgPanel = msgPanel;
     }
     public void ShowMessage(string msg)
+    {
+        if (msgPanel == null)
+        {
+            Debug.Log("无法显示提示信息，MsgPanel为空");
+            return;
+        }
+        msgPanel.ShowMessageAsync(msg);
+    }
+    public void ShowMessageSync(string msg)
     {
         if (msgPanel == null)
         {

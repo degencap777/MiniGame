@@ -9,21 +9,15 @@ public class UserData : MonoBehaviour {
         string[] strs = userData.Split(',');
         this.Id = int.Parse(strs[0]);
         this.Username = strs[1];
-        this.TotalCount = int.Parse(strs[2]);
-        this.WinCount = int.Parse(strs[3]);
     }
-    public UserData(string username, int totalCount, int winCount)
-    {
-        Username = username;
-        TotalCount = totalCount;
-        WinCount = winCount;
-    }
-    public UserData(int id, string username, int totalCount, int winCount)
+    //public UserData(string username)
+    //{
+    //    Username = username;
+    //}
+    public UserData(int id, string username)
     {
         Id = id;
         Username = username;
-        TotalCount = totalCount;
-        WinCount = winCount;
     }
     public int Id { get; set; }
     public string Username { get; private set; }

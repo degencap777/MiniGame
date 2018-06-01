@@ -7,7 +7,7 @@ public class MessagePanel : BasePanel
 {
     private Text text;
     private float showTime = 1;
-    private string message = "";
+    private string message = null;
     void Update()
     {
         if (message != null)
