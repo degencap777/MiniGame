@@ -24,6 +24,7 @@ public class QuitRoomRequest : BaseRequest
     {
         base.OnResponse(data);
         ReturnCode returnCode = (ReturnCode)int.Parse(data);
+        Debug.Log(returnCode);
         if (returnCode == ReturnCode.Success)
         {
             roomPanel.OnExitResponse();

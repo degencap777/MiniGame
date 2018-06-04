@@ -21,6 +21,7 @@ public class RoomItem : MonoBehaviour
     void Awake()
     {
         joinButton = transform.Find("JoinButton").GetComponent<Button>();
+        username = transform.Find("name").GetComponent<Text>();
         joinButton.onClick.AddListener(OnJoinClick);
     }
     
@@ -28,12 +29,15 @@ public class RoomItem : MonoBehaviour
     {
         this.id = room.RoomOwner.Id;
         this.username.text = room.RoomOwner.Username;
+        if(room.RoomOwner.Username == null)
+            Debug.Log(1);
         this.panel = panel;
         this.room = room;
         this.clientNum = room.ClientNum;
     }
     private void OnJoinClick()
     {
+        Debug.Log("RoomId:"+id);
         panel.OnJoinClick(id);
     }
 

@@ -42,6 +42,7 @@ public class UIManager : BaseManager {
     private Stack<BasePanel> panelStack = new Stack<BasePanel>();
     private MessagePanel msgPanel;
     private UIPanelType panelTypeToPush = UIPanelType.None;
+    private UIPanelType currentPanelType = UIPanelType.None;
     public override void OnInit()
     {
         base.OnInit();
@@ -69,6 +70,7 @@ public class UIManager : BaseManager {
         BasePanel panel = GetPanel(panelType);
         panel.OnResume();
         panelStack.Push(panel);
+        currentPanelType = panelType;
         return panel;
     }
     public void PushPanelSync(UIPanelType panelType)
@@ -140,5 +142,10 @@ public class UIManager : BaseManager {
             return;
         }
         msgPanel.ShowMessageAsync(msg);
+    }
+
+    public UIPanelType GetCurrentPanelType()
+    {
+        return currentPanelType;
     }
 }

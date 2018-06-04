@@ -7,7 +7,7 @@ public class PlayerManager : BaseManager
 {
     public PlayerManager(GameFacade facade) : base(facade) { }
     private UserData userData;
-    private Transform rolePositions;
+    private Transform rolePosition;
     private CampType currentCampType;
     public UserData UserData
     {
@@ -23,7 +23,6 @@ public class PlayerManager : BaseManager
     public override void OnInit()
     {
         base.OnInit();
-        //rolePositions = GameObject.Find("RolePositions").transform;
     }
 
     public override void Update()
@@ -33,5 +32,15 @@ public class PlayerManager : BaseManager
     public void SetCurrentCampType(CampType rt)
     {
         currentCampType = rt;
+    }
+
+    public Transform GetRolePosition()
+    {
+        return rolePosition;
+    }
+
+    public void EnterPlaying()
+    {
+        //TODO 进入游戏场景后
     }
 }

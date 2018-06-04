@@ -11,5 +11,6 @@ public enum UIPanelType {
     ServerList,
     RoomList,
     Room,
+    LoadGame,
     Game
 }

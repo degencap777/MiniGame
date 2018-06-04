@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Common;
 using DG.Tweening;
@@ -19,6 +20,11 @@ public class RoomPanel : BasePanel
     private Transform FishPanel;
     private Transform startButton;
     private Transform exitButton;
+    private Transform sendButton;
+    private Text inputText;
+
+    private GameObject OtherPlayerChatMsgItem;
+    private GameObject LocalPlayerChatMsgItem;
 
 
     private UserData roomOwner = null;
@@ -28,9 +34,29 @@ public class RoomPanel : BasePanel
 
     private QuitRoomRequest quitRoomRequest;
     private StartGameRequest startGameRequest;
+    private RoomChatRequest roomChatRequest;
+
     private bool isPopPanel = false;
     private bool isRoomUpdate = false;
+    private bool isAddMsg = false;
 
+    private struct Msg
+    {
+        public Msg(string Data)
+        {
+            string[] strs = Data.Split(',');
+            this.Message = strs[2];
+            this.PlayerName = strs[1];
+            this.IsLocalMsg = strs[0] == "1";
+        }
+
+        public string PlayerName;
+        public string Message;
+        public bool IsLocalMsg;
+    }
+    private Msg msg = new Msg();
+
+    public Transform content;
     // Use this for initialization
     private void Awake()
     {
@@ -46,13 +72,25 @@ public class RoomPanel : BasePanel
 
         startButton = transform.Find("StartButton");
         exitButton = transform.Find("ExitButton");
+        sendButton = transform.Find("ChatDialog/InputPanel/SendButton");
+        inputText = transform.Find("ChatDialog/InputPanel/InputField/Text").GetComponent<Text>();
 
         startButton.GetComponent<Button>().onClick.AddListener(OnStartClick);
         exitButton.GetComponent<Button>().onClick.AddListener(OnExitClick);
+        sendButton.GetComponent<Button>().onClick.AddListener(OnSendClick);
 
+
+        OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/OtherPlayerChatMsgItem");
+        LocalPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/LocalPlayerChatMsgItem");
 
         quitRoomRequest = GetComponent<QuitRoomRequest>();
         startGameRequest = GetComponent<StartGameRequest>();
+        roomChatRequest = GetComponent<RoomChatRequest>();
+    }
+
+    void Start()
+    {
+        SetLocalPlayerSync();
     }
 
     void Update()
@@ -65,6 +103,12 @@ public class RoomPanel : BasePanel
         if (isRoomUpdate)
         {
             //TODO 更新房间信息
+            isRoomUpdate = false;
+        }
+        if (isAddMsg)
+        {
+            AddMsgItem();
+            isAddMsg = false;
         }
     }
     public void SetLocalPlayerSync()
@@ -76,6 +120,19 @@ public class RoomPanel : BasePanel
         this.playerList = udList;
         isRoomUpdate = true;
 
+    }
+    public void AddMsgItem()
+    {
+        GameObject MsgItem = Instantiate(msg.IsLocalMsg?LocalPlayerChatMsgItem:OtherPlayerChatMsgItem);
+        MsgItem.transform.SetParent(content);
+        MsgItem.transform.Find("PlayerNameText").GetComponent<Text>().text = msg.PlayerName;
+        MsgItem.transform.Find("ChatMsgBg/ChatMsgText").GetComponent<Text>().text = msg.Message;
+    }
+
+    public void AddMsgItemSync(string msgData)
+    {
+        msg = new Msg(msgData);
+        isAddMsg = true;
     }
     //public void SetLocalPlayerRes(string username, string totalCount, string winCount)
     //{
@@ -105,6 +162,13 @@ public class RoomPanel : BasePanel
         quitRoomRequest.SendRequest();
     }
 
+    private void OnSendClick()
+    {
+        string msgName = localPlayer.Username;
+        string msg = inputText.text;
+        roomChatRequest.SendRequest(msgName+","+msg);
+    }
+
     public void OnExitResponse()
     {
         isPopPanel = true;
@@ -112,14 +176,17 @@ public class RoomPanel : BasePanel
 
     public void OnStartResponse(ReturnCode returnCode)
     {
-        if (returnCode == ReturnCode.Fail)
+        if (returnCode == ReturnCode.NotFind)
         {
             uiMng.ShowMessage("您不是房主，无法开始游戏！");
         }
+        //else if (returnCode == ReturnCode.Fail)
+        //{
+        //    uiMng.ShowMessage("人数不够，无法开始游戏! ");
+        //}
         else
         {
-            uiMng.PushPanelSync(UIPanelType.Game);
-            facade.EnterPlayingSync();
+            uiMng.PushPanelSync(UIPanelType.LoadGame);
         }
     }
     public override void OnEnter()
@@ -147,21 +214,11 @@ public class RoomPanel : BasePanel
     }
     private void EnterAnim()
     {
-        //MonkeyPanel.localPosition = new Vector3(-1000, 51, 0);
-        //MonkeyPanel.DOLocalMoveX(-148.7f, 0.4f);
-        //FishPanel.localPosition = new Vector3(1000, 51, 0);
-        //FishPanel.DOLocalMoveX(142.2f, 0.4f);
-        startButton.localScale = Vector3.zero;
-        startButton.DOScale(1, 0.4f);
-        exitButton.localScale = Vector3.zero;
-        exitButton.DOScale(1, 0.4f);
+        
     }
 
     private void ExitAnim()
     {
-        //MonkeyPanel.DOLocalMoveX(-1000, 0.4f);
-        //FishPanel.DOLocalMoveX(1000, 0.4f);
-        startButton.DOScale(0, 0.4f);
-        exitButton.DOScale(0, 0.4f).OnComplete(() => gameObject.SetActive(false));
+        gameObject.SetActive(false);
     }
 }

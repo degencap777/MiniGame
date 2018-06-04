@@ -53,6 +53,7 @@ public class ClientManager : BaseManager
 
     private void OnProcessDataCallBack(ActionCode actionCode, string data)
     {
+        Debug.Log(actionCode);
         facade.HandleResponse(actionCode, data);
     }
     public void SendRequest(RequestCode requestCode, ActionCode actionCode, string data)

@@ -11,7 +11,7 @@ public class RoomListPanel : BasePanel
     private Transform roomListTrans;
     private VerticalLayoutGroup roomLayout;
     private GameObject roomItemPrefab;
-    private List<Room> roomList;
+    private List<Room> roomList=null;
     private List<UserData> udList;
     private ListRoomRequest listRoomRequest;
     private CreateRoomRequest createRoomRequest;
@@ -25,7 +25,7 @@ public class RoomListPanel : BasePanel
         //battleRes = transform.Find("BattleRes").GetComponent<Transform>();
         roomListTrans = transform.Find("RoomList").GetComponent<Transform>();
         roomLayout = roomListTrans.Find("ScrollPanel/Layout").GetComponent<VerticalLayoutGroup>();
-        roomItemPrefab = Resources.Load<GameObject>("UIPanel/RoomItem");
+        roomItemPrefab = Resources.Load<GameObject>("UIItem/RoomItem");
         transform.Find("RoomList/CloseButton").GetComponent<Button>().onClick.AddListener(OnCloseClick);
         transform.Find("RoomList/CreateRoomButton").GetComponent<Button>().onClick.AddListener(OnCreateRoomClick);
         transform.Find("RoomList/RefreshRoomButton").GetComponent<Button>().onClick.AddListener(OnRefreshRoomClick);
@@ -76,16 +76,6 @@ public class RoomListPanel : BasePanel
     {
         listRoomRequest.SendRequest();
     }
-    private void EnterAnim()
-    {
-        roomListTrans.localPosition = new Vector3(1000, 0, 0);
-        roomListTrans.DOLocalMoveX(92, 0.2f);
-    }
-
-    private void HideAnim()
-    {
-        roomListTrans.DOLocalMove(new Vector3(1000, 0, 0), 0.2f).OnComplete(() => gameObject.SetActive(false));
-    }
 
     public override void OnResume()
     {
@@ -104,6 +94,16 @@ public class RoomListPanel : BasePanel
     {
         base.OnExit();
         HideAnim();
+    }
+    private void EnterAnim()
+    {
+        
+    }
+
+    private void HideAnim()
+    {
+        gameObject.SetActive(false);
+        //roomListTrans.DOLocalMove(new Vector3(1000, 0, 0), 0.2f).OnComplete(() => gameObject.SetActive(false));
     }
 
     //private void SetBattleRes()

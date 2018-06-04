@@ -32,6 +32,7 @@ public class JoinRoomRequest : BaseRequest
             foreach (var udStr in udStrArray)
             {
                 UserData ud = new UserData(udStr);
+                Debug.Log(ud.Username);
                 udList.Add(ud);
             }
             CampType CampType = (CampType)int.Parse(strs2[1]);

@@ -16,14 +16,14 @@ public class CameraManager : BaseManager
     {
         base.OnInit();
         cameraGO = Camera.main.gameObject;
-        cameraAnim = cameraGO.GetComponent<Animator>();
-        followTarget = cameraGO.GetComponent<FollowTarget>();
+        //cameraAnim = cameraGO.GetComponent<Animator>();
+        //followTarget = cameraGO.GetComponent<FollowTarget>();
     }
 
 
     public void FollowRole()
     {
-        //followTarget.target = facade.GetCurrentRoleObject().transform;
+        followTarget.target = facade.GetRolePosition();
         cameraAnim.enabled = false;
         Quaternion targetQuaternion = Quaternion.LookRotation(followTarget.target.position - cameraGO.transform.position);
         cameraGO.transform.DORotateQuaternion(targetQuaternion, 1f).OnComplete(delegate ()
@@ -42,5 +42,10 @@ public class CameraManager : BaseManager
         {
             cameraAnim.enabled = true;
         });
+    }
+
+    public void UpdateCamera()
+    {
+        cameraGO = Camera.main.gameObject;
     }
 }

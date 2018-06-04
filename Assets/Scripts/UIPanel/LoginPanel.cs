@@ -92,16 +92,17 @@ public class LoginPanel : BasePanel
 
     private void EnterAnim()
     {
-        transform.localScale = Vector3.zero;
-        transform.DOScale(1, 0.2f);
-        transform.localPosition = new Vector3(1000, 0, 0);
-        transform.DOLocalMove(Vector3.zero, 0.2f);
+        //transform.localScale = Vector3.zero;
+        //transform.DOScale(1, 0.2f);
+        //transform.localPosition = new Vector3(1000, 0, 0);
+        //transform.DOLocalMove(Vector3.zero, 0.2f);
     }
 
     private void HideAnim()
     {
+        gameObject.SetActive(false);
+        //transform.DOScale(0, 0.2f);
+        //transform.DOLocalMove(new Vector3(1000, 0, 0), 0.2f).OnComplete(() => gameObject.SetActive(false));
 
-        transform.DOScale(0, 0.2f);
-        transform.DOLocalMove(new Vector3(1000, 0, 0), 0.2f).OnComplete(() => gameObject.SetActive(false));
     }
 }

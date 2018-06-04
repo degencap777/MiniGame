@@ -23,7 +23,7 @@ public class ListRoomRequest : BaseRequest
     {
         base.OnResponse(data);
         List<Room> roomList = new List<Room>();
-        List<UserData> udList=new List<UserData>();
+        //List<UserData> udList=new List<UserData>();
         if (data != "0")
         {
             string[] roomArray = data.Split('|');

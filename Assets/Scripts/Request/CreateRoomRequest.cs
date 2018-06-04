@@ -13,7 +13,6 @@ public class CreateRoomRequest : BaseRequest
         actionCode = ActionCode.CreateRoom;
         base.Awake();
     }
-
     public void SetPanel(BasePanel panel)
     {
         roomPanel = panel as RoomPanel;

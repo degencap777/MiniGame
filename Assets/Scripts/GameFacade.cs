@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Common;
@@ -32,14 +33,21 @@ public class GameFacade : MonoBehaviour
     private RequestManager requestMng;
 
     private ClientManager clientMng;
-    private bool isEnterPlaying = false;
+    
+    private bool isSceneUpdate = false;
+    private int CurrentSceneIndex = 0;
+
     private void Awake()
     {
-        if (_instance != null)
+        if (_instance == null)
         {
-            Destroy(this.gameObject); return;
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
-        _instance = this;
+        else
+        {
+            Destroy(this.gameObject); 
+        }
     }
     // Use this for initialization
     void Start()
@@ -51,10 +59,10 @@ public class GameFacade : MonoBehaviour
     void Update()
     {
         UpdateManager();
-        if (isEnterPlaying)
+        if (isSceneUpdate)
         {
             EnterPlaying();
-            isEnterPlaying = false;
+            isSceneUpdate = false;
         }
     }
 
@@ -116,6 +124,11 @@ public class GameFacade : MonoBehaviour
         uiMng.ShowMessage(msg);
     }
 
+    public UIPanelType GetCurrentPanelType()
+    {
+        return uiMng.GetCurrentPanelType();
+    }
+
     public void SendRequest(RequestCode requestCode, ActionCode actionCode, string data)
     {
         clientMng.SendRequest(requestCode, actionCode, data);
@@ -143,12 +156,25 @@ public class GameFacade : MonoBehaviour
     {
         playerMng.SetCurrentCampType(rt);
     }
-    public void EnterPlayingSync()
+
+    public Transform GetRolePosition()
     {
-        isEnterPlaying = true;
+        return playerMng.GetRolePosition();
+    }
+
+    public void UpdateSceneSync()
+    {
+        isSceneUpdate = true;
     }
     public void EnterPlaying()
     {
+        if (CurrentSceneIndex != 1) return;
+        cameraMng.UpdateCamera();
         //TODO 游戏初始化
+    }
+
+    public void StartPlaying()
+    {
+        throw new NotImplementedException();
     }
 }

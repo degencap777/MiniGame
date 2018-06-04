@@ -31,6 +31,10 @@
       "Path": "UIPanel/RoomPanel"
     },
     {
+      "PanelTypeString": "LoadGame",
+      "Path": "UIPanel/LoadGamePanel"
+    },
+    {
       "PanelTypeString": "Game",
       "Path": "UIPanel/GamePanel"
     }

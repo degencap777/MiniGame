@@ -19,6 +19,7 @@ public class UserData  {
         Id = id;
         Username = username;
     }
-    public int Id { get; set; }
+    public int Id { get; private set; }
     public string Username { get; private set; }
+    public int ServerId { get; set; } 
 }
