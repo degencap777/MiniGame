@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class RoomPanel : BasePanel
 {
+
     private Text localPlayerUsername;
     private Text localPlayerTotalCount;
     private Text localPlayerWinCount;
@@ -21,24 +22,29 @@ public class RoomPanel : BasePanel
     private Transform startButton;
     private Transform exitButton;
     private Transform sendButton;
-    private Text inputText;
+    private InputField inputField;
 
     private GameObject OtherPlayerChatMsgItem;
     private GameObject LocalPlayerChatMsgItem;
-
+    private GameObject ChangeSeatItem;
 
     private UserData roomOwner = null;
     private UserData localPlayer = null;
-    private List<UserData> playerList=new List<UserData>();
+    public List<UserData> playerList=new List<UserData>();
     private Room room;
+    private SeatItem[] FishSeats;
+    private SeatItem[] MonkeySeats;
 
     private QuitRoomRequest quitRoomRequest;
     private StartGameRequest startGameRequest;
     private RoomChatRequest roomChatRequest;
+    private ChangeSeatRequest changeSeatRequest;
 
+    //异步控制
     private bool isPopPanel = false;
     private bool isRoomUpdate = false;
     private bool isAddMsg = false;
+    private int confirmId = -1;
 
     private struct Msg
     {
@@ -55,14 +61,14 @@ public class RoomPanel : BasePanel
         public bool IsLocalMsg;
     }
     private Msg msg = new Msg();
-
+    
     public Transform content;
     // Use this for initialization
     private void Awake()
     {
         //MonkeyPanel = transform.Find("MonkeyPanel");
         //FishPanel = transform.Find("FishPanel");
-
+        
         //localPlayerUsername = MonkeyPanel.Find("Username").GetComponent<Text>();
         //localPlayerTotalCount = MonkeyPanel.Find("TotalCount").GetComponent<Text>();
         //localPlayerWinCount = MonkeyPanel.Find("WinCount").GetComponent<Text>();
@@ -70,10 +76,13 @@ public class RoomPanel : BasePanel
         //enemyPlayerTotalCount = FishPanel.Find("TotalCount").GetComponent<Text>();
         //enemyPlayerWinCount = FishPanel.Find("WinCount").GetComponent<Text>();
 
+        FishSeats=new SeatItem[facade.FISH_NUM];
+        MonkeySeats=new SeatItem[facade.MONKEY_NUM];
+
         startButton = transform.Find("StartButton");
         exitButton = transform.Find("ExitButton");
-        sendButton = transform.Find("ChatDialog/InputPanel/SendButton");
-        inputText = transform.Find("ChatDialog/InputPanel/InputField/Text").GetComponent<Text>();
+        sendButton = transform.Find("InputPanel/SendButton");
+        inputField= transform.Find("InputPanel/InputField").GetComponent<InputField>();
 
         startButton.GetComponent<Button>().onClick.AddListener(OnStartClick);
         exitButton.GetComponent<Button>().onClick.AddListener(OnExitClick);
@@ -82,17 +91,30 @@ public class RoomPanel : BasePanel
 
         OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/OtherPlayerChatMsgItem");
         LocalPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/LocalPlayerChatMsgItem");
+        ChangeSeatItem = Resources.Load<GameObject>("UIItem/ChangeSeatItem");
+        
 
         quitRoomRequest = GetComponent<QuitRoomRequest>();
         startGameRequest = GetComponent<StartGameRequest>();
         roomChatRequest = GetComponent<RoomChatRequest>();
+        changeSeatRequest = GetComponent<ChangeSeatRequest>();
+
+        FishSeats = transform.Find("FishPlayerPanel").GetComponentsInChildren<SeatItem>();
+        MonkeySeats = transform.Find("MonkeyPlayerPanel").GetComponentsInChildren<SeatItem>();
+        for (int i = 0; i <facade.FISH_NUM ; i++)
+        {
+            FishSeats[i].index = i;
+        }
+        for (int i = 0; i < facade.MONKEY_NUM; i++)
+        {
+            MonkeySeats[i].index = i+facade.FISH_NUM;
+        }
     }
 
     void Start()
     {
-        SetLocalPlayerSync();
+        localPlayer = facade.GetUserData();
     }
-
     void Update()
     {
         if (isPopPanel)
@@ -103,6 +125,7 @@ public class RoomPanel : BasePanel
         if (isRoomUpdate)
         {
             //TODO 更新房间信息
+            SetAllPlayer();
             isRoomUpdate = false;
         }
         if (isAddMsg)
@@ -110,16 +133,77 @@ public class RoomPanel : BasePanel
             AddMsgItem();
             isAddMsg = false;
         }
+        if (confirmId != -1)
+        {
+            AskForConfirm(confirmId);
+            confirmId = -1;
+        }
     }
-    public void SetLocalPlayerSync()
+
+    #region Find_Function
+    public int FindIdByName(string name)
     {
-        localPlayer = facade.GetUserData();
+        foreach (var userData in playerList)
+        {
+            if (userData.Username == name)
+                return userData.Id;
+        }
+        return -1;
+    }
+
+    public SeatItem FindSeatById(int id)
+    {
+        foreach (var seat in FishSeats)
+        {
+            if (seat.id == id)
+            {
+                return seat;
+            }
+        }
+        foreach (var seat in MonkeySeats)
+        {
+            if (seat.id == id)
+                return seat;
+        }
+        Debug.Log("找不到id:" + id + "对应的seat");
+        return null;
+    }
+    #endregion
+
+
+    public void SetRoomOwnerSync(UserData ud)
+    {
+        localPlayer = ud;
+        FishSeats[ud.SeatIndex].SetSeatItem(localPlayer.Id);
     }
     public void SetAllPlayerSync(List<UserData> udList)
     {
         this.playerList = udList;
         isRoomUpdate = true;
+    }
 
+    public void SetAllPlayer()
+    {
+        foreach (var seat in FishSeats)
+        {
+                seat.Clear();
+        }
+        foreach (var seat in MonkeySeats)
+        {
+                seat.Clear();
+        }
+        foreach (var ud in playerList)
+        {
+            switch (ud.CampType)
+            {
+                case CampType.Fish:
+                    FishSeats[ud.SeatIndex].SetSeatItem(ud.Id);
+                    break;
+                case CampType.Monkey:
+                    MonkeySeats[ud.SeatIndex - facade.FISH_NUM].SetSeatItem(ud.Id);
+                    break;
+            }
+        }
     }
     public void AddMsgItem()
     {
@@ -165,12 +249,21 @@ public class RoomPanel : BasePanel
     private void OnSendClick()
     {
         string msgName = localPlayer.Username;
-        string msg = inputText.text;
+        string msg = inputField.text;
         roomChatRequest.SendRequest(msgName+","+msg);
+        inputField.text = "";
     }
 
     public void OnExitResponse()
     {
+        foreach (var seat in FishSeats)
+        {
+            seat.ClearAsync();
+        }
+        foreach (var seat in MonkeySeats)
+        {
+            seat.ClearAsync();
+        }
         isPopPanel = true;
     }
 
@@ -189,6 +282,69 @@ public class RoomPanel : BasePanel
             uiMng.PushPanelSync(UIPanelType.LoadGame);
         }
     }
+
+    public void OnChangeSeatConfirmClick(string data)
+    {
+        changeSeatRequest.SendRequest(data);
+    }
+    public void OnChangeSeatButtonClick(int id,int index)
+    {
+        changeSeatRequest.SendRequest(id+","+index);
+    }
+    public void OnChangeSeatResponse(int id1,int id2)
+    {
+        SwapSeat(FindSeatById(id1),FindSeatById(id2));
+    }
+
+
+    public void JoinSeat(int id,int index)
+    {
+        SeatItem seat;
+        SeatItem currentSeat = FindSeatById(id);
+        if (index < facade.FISH_NUM)
+        {
+            seat = FishSeats[index];
+        }
+        else
+        {
+            seat = MonkeySeats[index];
+        }
+        SwapSeat(currentSeat,seat);
+        seat.isChangeText = true;
+        currentSeat.ClearAsync();
+    }
+
+    private void SwapSeat(SeatItem seat1,SeatItem seat2)
+    {
+        int id = seat1.id;
+        Color sprite = seat1.color;
+        seat1.id = seat2.id;
+        seat1.color = seat2.color;
+        seat2.id = id;
+        seat2.color = sprite;
+    }
+
+    public void AskForConfirmAsync(int id)
+    {
+        confirmId = id;
+    }
+    public void AskForConfirm(int id)
+    {
+        string name="";
+        foreach (var userData in playerList)
+        {
+            if (userData.Id == id)
+                name = userData.Username;
+        }
+        if (name == "")
+            return;
+        GameObject ConfirmButton = Instantiate(ChangeSeatItem);
+        
+        ConfirmButton.transform.SetParent(content);
+        ConfirmButton.transform.Find("PlayerNameText").GetComponent<Text>().text = name;
+    }
+
+    
     public override void OnEnter()
     {
         base.OnEnter();
@@ -204,21 +360,18 @@ public class RoomPanel : BasePanel
     public override void OnPause()
     {
         base.OnPause();
-        ExitAnim();
+        gameObject.SetActive(false);
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        ExitAnim();
+        uiMng.DestroyPanel(UIPanelType.Room);
     }
     private void EnterAnim()
     {
         
     }
-
-    private void ExitAnim()
-    {
-        gameObject.SetActive(false);
-    }
+    
+    
 }

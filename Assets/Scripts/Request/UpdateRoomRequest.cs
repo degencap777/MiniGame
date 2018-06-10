@@ -18,7 +18,7 @@ public class UpdateRoomRequest : BaseRequest
     public override void OnResponse(string data)
     {
         base.OnResponse(data);
-        Debug.Log("房主更新房间");
+        Debug.Log("UpdateDATA: "+data);
         List<UserData> udList=new List<UserData>();
         string[] udStrArray = data.Split('|');
         foreach (var udStr in udStrArray)

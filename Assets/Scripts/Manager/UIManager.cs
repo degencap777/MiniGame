@@ -148,4 +148,10 @@ public class UIManager : BaseManager {
     {
         return currentPanelType;
     }
+
+    public void DestroyPanel(UIPanelType uiPanelType)
+    {
+        UnityEngine.Object.DestroyImmediate(panelDict[uiPanelType].transform.gameObject);
+        panelDict.Remove(uiPanelType);
+    }
 }

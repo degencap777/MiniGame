@@ -2206,12 +2206,12 @@ MonoBehaviour:
   enableSimulation: 1
   twistKey: 308
   swipeKey: 306
-  showGuiInspector: 0
-  showSelectInspector: 0
+  showGuiInspector: 1
+  showSelectInspector: 1
   showGestureInspector: 1
   showTwoFingerInspector: 0
-  showSecondFingerInspector: 0
-  secondFingerTexture: {fileID: 0}
+  showSecondFingerInspector: 1
+  secondFingerTexture: {fileID: 2800000, guid: d3686533aff0e2b4bac7a2a7faf73f7a, type: 3}
 --- !u!4 &961017069
 Transform:
   m_ObjectHideFlags: 0

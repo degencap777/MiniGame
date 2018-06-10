@@ -21,22 +21,18 @@ public class JoinRoomRequest : BaseRequest
 
     public override void OnResponse(string data)
     {
-        base.OnResponse(data);
+        base.OnResponse(data);//"returnCode,CampType-id,username,seatindex|id,username,seatindex"
         string[] strs = data.Split('-');
-        string[] strs2 = strs[0].Split(',');
-        ReturnCode returnCode = (ReturnCode)int.Parse(strs2[0]);
+        ReturnCode returnCode = (ReturnCode)int.Parse(strs[0]);
         List<UserData> udList=new List<UserData>();
         if (returnCode == ReturnCode.Success)
         {
             string[] udStrArray = strs[1].Split('|');
             foreach (var udStr in udStrArray)
             {
-                UserData ud = new UserData(udStr);
-                Debug.Log(ud.Username);
-                udList.Add(ud);
+                UserData ud = new UserData(udStr); 
+                udList.Add(ud); 
             }
-            CampType CampType = (CampType)int.Parse(strs2[1]);
-            facade.SetCurrentCampType(CampType);
         }
         roomListPanel.OnJoinResponse(returnCode,udList);
     }

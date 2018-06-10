@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Common;
 using UnityEngine;
@@ -41,6 +42,13 @@ public class RequestManager : BaseManager
     
     public void HandleResponse(ActionCode actionCode, string data)
     {
+        if (actionCode == ActionCode.ChangeSeat)
+        {
+            foreach (var r in requestDict)
+            {
+                Debug.Log(Enum.GetName(typeof(ActionCode),r.Key));
+            }
+        }
         BaseRequest request = requestDict.TryGet(actionCode);
         if (request == null)
         {

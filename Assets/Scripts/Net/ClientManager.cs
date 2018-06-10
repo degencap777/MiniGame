@@ -60,6 +60,7 @@ public class ClientManager : BaseManager
     {
         byte[] bytes = Message.PackData(requestCode, actionCode, data);
         clientSocket.Send(bytes);
+        Debug.Log(actionCode+" send");
     }
     public override void OnDestroy()
     {

@@ -8,7 +8,6 @@ public class CreateRoomRequest : BaseRequest
     private RoomPanel roomPanel;
     public override void Awake()
     {
-        roomPanel = GetComponent<RoomPanel>();
         requestCode = RequestCode.Room;
         actionCode = ActionCode.CreateRoom;
         base.Awake();
@@ -25,13 +24,13 @@ public class CreateRoomRequest : BaseRequest
     public override void OnResponse(string data)
     {
         base.OnResponse(data);
-        string[] strs = data.Split(',');
+        Debug.Log("CreateRoomDATA: "+data);
+        string[] strs = data.Split('-');
         ReturnCode returnCode = (ReturnCode)int.Parse(strs[0]);
-        CampType CampType = (CampType)int.Parse(strs[1]);
-        facade.SetCurrentCampType(CampType);
+        UserData ud=new UserData(strs[1]);
         if (returnCode == ReturnCode.Success)
         {
-            roomPanel.SetLocalPlayerSync();
+            roomPanel.SetRoomOwnerSync(ud);
         }
     }
 }

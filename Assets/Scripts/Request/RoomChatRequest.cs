@@ -23,7 +23,6 @@ public class RoomChatRequest : BaseRequest
     public override void OnResponse(string data)
     {
         base.OnResponse(data);
-
         roomPanel.AddMsgItemSync(data);
     }
 }

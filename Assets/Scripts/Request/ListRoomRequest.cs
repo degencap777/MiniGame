@@ -30,7 +30,7 @@ public class ListRoomRequest : BaseRequest
             foreach (string roomInfo in roomArray)
             {
                 string[] strs = roomInfo.Split('-');
-                roomList.Add(new Room(new UserData(strs[0]),int.Parse(strs[1]) ));
+                roomList.Add(new Room(new UserData(strs[0]),int.Parse(strs[1])));
             }
         }
         roomListPanel.LoadRoomItemSync(roomList);

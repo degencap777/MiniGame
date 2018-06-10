@@ -22,6 +22,7 @@ public class GameFacade : MonoBehaviour
         }
     }
 
+
     private UIManager uiMng;
 
     private AudioManager audioMng;
@@ -33,9 +34,16 @@ public class GameFacade : MonoBehaviour
     private RequestManager requestMng;
 
     private ClientManager clientMng;
-    
+
+    private ResourceManager resourceManager;
+
+    public int FISH_NUM = 8;
+    public int MONKEY_NUM = 3;
+    public int PLAYER_NUM = 11;
+
     private bool isSceneUpdate = false;
     private int CurrentSceneIndex = 0;
+
 
     private void Awake()
     {
@@ -74,12 +82,14 @@ public class GameFacade : MonoBehaviour
         requestMng = new RequestManager(this);
         cameraMng = new CameraManager(this);
         clientMng = new ClientManager(this);
+        resourceManager=new ResourceManager(this);
         clientMng.OnInit();
         uiMng.OnInit();
         audioMng.OnInit();
         playerMng.OnInit();
         requestMng.OnInit();
         cameraMng.OnInit();
+        resourceManager.OnInit();
     }
 
     private void DestroyManager()
@@ -90,6 +100,7 @@ public class GameFacade : MonoBehaviour
         playerMng.OnDestroy();
         requestMng.OnDestroy();
         cameraMng.OnDestroy();
+        resourceManager.OnDestroy();
     }
 
     private void UpdateManager()
@@ -100,6 +111,7 @@ public class GameFacade : MonoBehaviour
         playerMng.Update();
         requestMng.Update();
         cameraMng.Update();
+        resourceManager.Update();
     }
     void OnDestroy()
     {

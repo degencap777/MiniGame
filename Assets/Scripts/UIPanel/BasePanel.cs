@@ -5,7 +5,7 @@ using UnityEngine;
 public class BasePanel : MonoBehaviour
 {
     protected UIManager uiMng;
-    protected GameFacade facade;
+    protected GameFacade facade = GameFacade.Instance;
 
 
     public UIManager UIMng

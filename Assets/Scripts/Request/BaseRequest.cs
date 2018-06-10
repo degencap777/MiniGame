@@ -36,6 +36,7 @@ public class BaseRequest : MonoBehaviour
 
     public virtual void OnDestroy()
     {
+        Debug.Log("Destroy:"+actionCode+" "+gameObject.name);
         if (facade != null)
             facade.RemoveRequest(actionCode);
     }

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 126179e0fb909cb4a91fe9232d5654a8
+timeCreated: 1528568587
+licenseType: Pro
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - roomPanel: {fileID: 114647634375306524, guid: b3e601f045ca9b042b16b9ef475a3c1d,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

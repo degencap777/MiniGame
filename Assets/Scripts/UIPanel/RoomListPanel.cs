@@ -54,7 +54,6 @@ public class RoomListPanel : BasePanel
     public override void OnEnter()
     {
         base.OnEnter();
-        listRoomRequest.SendRequest();
         EnterAnim();
     }
 
@@ -154,7 +153,9 @@ public class RoomListPanel : BasePanel
                 uiMng.ShowMessageSync("房间已满无法加入");
                 break;
             case ReturnCode.Success:
+
                 this.udList = udList;
+                //udList不为空，异步加载房间
                 break;
         }
     }
