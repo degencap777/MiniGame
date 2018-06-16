@@ -1,0 +1,78 @@
+﻿//2018.6.13
+//copyright by hjk
+
+
+//--------------------------------
+//改变以下宏来控制精度：
+
+//角度步长，越大越不精确
+#define diffTheta 0.007
+
+//距离步长，越大越不精确
+#define diffDistance 1
+
+//--------------------------------
+
+
+
+
+
+
+#define PI_ 0.196349375
+
+#pragma kernel Main
+
+float scale;
+float resolution;
+RWStructuredBuffer<float4> viewProviders;
+RWTexture2D<float4> _OcclusionMap;
+RWTexture2D<float4> _FogMap;
+
+[numthreads(32,32,1)]
+void Main(uint3 id : SV_DispatchThreadID)
+{
+	float2 uv = (viewProviders[id.x].xy + float2(1,1))/2;
+	float range = viewProviders[id.x].w * scale * resolution;
+	int intRange = floor(range)+1;
+	float range2 = range * range;
+
+	int2 pos = int2(uv*resolution);
+
+	int y = id.y;
+	for (float i = y * PI_; i < (y+1) * PI_; i += diffTheta) {
+		float c,s;
+		sincos(i,s,c);
+		float2 dir = float2(c,s)*diffDistance;
+		float2 offset = float2(0,0);
+		int noOcc = 1;
+		int mul = 1.0/diffDistance;
+		for (int j = 0; j < intRange * mul; j++) {
+			int2 workPoint = floor(offset) + pos;
+			if (_OcclusionMap[workPoint].r) {
+				noOcc = 0;
+			}
+			if (noOcc == 0 && _OcclusionMap[workPoint].r == 0) {
+				continue;
+			}
+			_OcclusionMap[workPoint] += float4(0,1,0,0);
+			_FogMap[workPoint] += float4(1,0,0,0);
+			offset += dir;
+		}
+	}
+}
+
+
+
+
+#pragma kernel ProduceFinalMap
+
+[numthreads(8,8,1)]
+void ProduceFinalMap(uint3 id : SV_DispatchThreadID) {
+	float l1 = _FogMap[id.xy].r;
+	float l2 = _FogMap[id.xy].g;
+	float l3 = _FogMap[id.xy].b;
+	float l4 =  _FogMap[id.xy].a;
+
+	float a = l1 * 0.1 + l2 * 0.9;
+	_FogMap[id.xy] = float4(0,a,a,l4+l1);
+}

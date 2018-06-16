@@ -7,28 +7,23 @@ using UnityEngine.UI;
 public class ServerListPanel : BasePanel
 {
     public GameObject GridContent;
-    private Dictionary<string,Transform> servers = new Dictionary<string, Transform>();
+    //private Dictionary<int,server> servers = new Dictionary<int, server>();
     private int serverId;
-    private ServerListRequest serverRequest;
+    private ServerListRequest serverListRequest;
     void Awake()
     {
-        serverRequest = GetComponent<ServerListRequest>();
+        serverListRequest = GetComponent<ServerListRequest>();
         for (int i = 0; i < GridContent.transform.childCount; i++)
         {
-            Transform server = GridContent.transform.GetChild(i);
-            string name = server.GetChild(0).GetComponent<Text>().text;
-            servers.Add(name,server);
+            ServerItem server = GridContent.transform.GetChild(i).GetComponent<ServerItem>();
+            server.ServerId = i;
         }
     }
 
-    void Start()
-    {
-    }
-
-    public void OnServerClick()
+    public void OnServerClick(int serverId)
     {
         PlayClickSound();
-        serverRequest.SendRequest(serverId);
+        serverListRequest.SendRequest(serverId);
         uiMng.PushPanelSync(UIPanelType.RoomList);
     }
 

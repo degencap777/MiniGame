@@ -37,12 +37,14 @@ public class GameFacade : MonoBehaviour
 
     private ResourceManager resourceManager;
 
-    public int FISH_NUM = 8;
-    public int MONKEY_NUM = 3;
-    public int PLAYER_NUM = 11;
+    public const int FISH_NUM = 8;
+    public const int MONKEY_NUM = 3;
+    public const int PLAYER_NUM = 11;
+    public const int ROLE_NUM = 4;
+    public const int MAX_ROLE_NUM_IN_SCENE = 100;
+    public const int MAX_ROLE_NUM_OF_PLAYER = 10;
 
     private bool isSceneUpdate = false;
-    private int CurrentSceneIndex = 0;
 
 
     private void Awake()
@@ -69,8 +71,8 @@ public class GameFacade : MonoBehaviour
         UpdateManager();
         if (isSceneUpdate)
         {
-            EnterPlaying();
             isSceneUpdate = false;
+            EnterPlaying();
         }
     }
 
@@ -141,6 +143,10 @@ public class GameFacade : MonoBehaviour
         return uiMng.GetCurrentPanelType();
     }
 
+    public BasePanel GetCurrentPanel()
+    {
+        return uiMng.GetCurrentPanel();
+    }
     public void SendRequest(RequestCode requestCode, ActionCode actionCode, string data)
     {
         clientMng.SendRequest(requestCode, actionCode, data);
@@ -164,29 +170,39 @@ public class GameFacade : MonoBehaviour
     {
         return playerMng.UserData;
     }
-    public void SetCurrentCampType(CampType rt)
+
+    public Transform GetCurrentCamTarget()
     {
-        playerMng.SetCurrentCampType(rt);
+        return playerMng.GetCurrentCamTarget();
     }
 
-    public Transform GetRolePosition()
-    {
-        return playerMng.GetRolePosition();
-    }
-
-    public void UpdateSceneSync()
+    public void UpdateSceneAsync()
     {
         isSceneUpdate = true;
     }
     public void EnterPlaying()
     {
-        if (CurrentSceneIndex != 1) return;
         cameraMng.UpdateCamera();
-        //TODO 游戏初始化
+        playerMng.EnterPlaying();
+        //TODO 进入游戏场景后初始化资源
     }
 
-    public void StartPlaying()
+    /// <summary>
+    /// 计时器结束，玩家可以开始操作
+    /// </summary>
+    public void StartPlaying(CampType campType)
     {
-        throw new NotImplementedException();
+        playerMng.SpawnRoles(campType);
     }
+
+    public void FollowCurrentTarget()
+    {
+        cameraMng.FollowCurrentTarget();
+    }
+
+    public void InitPlayerData(UserData ud, List<UserData> userDatas)
+    {
+        playerMng.InitPlayerData(ud,userDatas);
+    }
+    
 }

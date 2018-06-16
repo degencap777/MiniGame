@@ -60,6 +60,10 @@ public class UIManager : BaseManager {
         }
     }
 
+    public BasePanel GetCurrentPanel()
+    {
+        return panelStack.Count > 0 ? panelStack.Peek() : null;
+    }
     public BasePanel PushPanel(UIPanelType panelType)
     {
         if (panelStack.Count > 0)

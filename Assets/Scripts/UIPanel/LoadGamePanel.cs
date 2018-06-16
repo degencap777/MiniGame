@@ -56,7 +56,13 @@ public class LoadGamePanel : BasePanel
                 yield return new WaitForEndOfFrame();
             }
         }
-
+        toProgress = 90;
+        while (displayProgress < toProgress)
+        {
+            ++displayProgress;
+            SetLoadingPercentage(displayProgress);
+            yield return new WaitForEndOfFrame();
+        }
         while (true)
         {
             toProgress = 90 + dataLoadPercentage;
@@ -73,6 +79,7 @@ public class LoadGamePanel : BasePanel
         StartGame();
     }
 
+    //此回调表示加载完毕
     public void OnLoadGameResponse()
     {
         dataLoadPercentage = 10;
@@ -80,8 +87,8 @@ public class LoadGamePanel : BasePanel
 
     private void StartGame()
     {
-        facade.UpdateSceneSync();
         uiMng.PushPanelSync(UIPanelType.Game);
+        facade.UpdateSceneAsync();
     }
     public override void OnEnter()
     {

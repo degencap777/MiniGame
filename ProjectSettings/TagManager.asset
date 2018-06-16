@@ -7,6 +7,10 @@ TagManager:
   - soldier
   - Terrain
   - Fow
+  - visualManager
+  - needTest
+  - Fish
+  - Monkey
   layers:
   - Default
   - TransparentFX
@@ -16,7 +20,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - mapsystem
   - 
   - 
   - 

@@ -24,7 +24,6 @@ public class CreateRoomRequest : BaseRequest
     public override void OnResponse(string data)
     {
         base.OnResponse(data);
-        Debug.Log("CreateRoomDATA: "+data);
         string[] strs = data.Split('-');
         ReturnCode returnCode = (ReturnCode)int.Parse(strs[0]);
         UserData ud=new UserData(strs[1]);

@@ -12,6 +12,8 @@ public class CameraManager : BaseManager
     private FollowTarget followTarget;
     private Vector3 originelPosition;
     private Vector3 originelRotation;
+    private Transform target;
+    
     public override void OnInit()
     {
         base.OnInit();
@@ -19,11 +21,10 @@ public class CameraManager : BaseManager
         //cameraAnim = cameraGO.GetComponent<Animator>();
         //followTarget = cameraGO.GetComponent<FollowTarget>();
     }
-
-
-    public void FollowRole()
+    
+    public void FollowCurrentTarget()
     {
-        followTarget.target = facade.GetRolePosition();
+        followTarget.target = facade.GetCurrentCamTarget();
         cameraAnim.enabled = false;
         Quaternion targetQuaternion = Quaternion.LookRotation(followTarget.target.position - cameraGO.transform.position);
         cameraGO.transform.DORotateQuaternion(targetQuaternion, 1f).OnComplete(delegate ()

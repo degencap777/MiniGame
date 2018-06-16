@@ -8,15 +8,6 @@ using UnityEngine.UI;
 
 public class RoomPanel : BasePanel
 {
-
-    private Text localPlayerUsername;
-    private Text localPlayerTotalCount;
-    private Text localPlayerWinCount;
-
-    private Text enemyPlayerUsername;
-    private Text enemyPlayerTotalCount;
-    private Text enemyPlayerWinCount;
-
     private Transform MonkeyPanel;
     private Transform FishPanel;
     private Transform startButton;
@@ -76,8 +67,8 @@ public class RoomPanel : BasePanel
         //enemyPlayerTotalCount = FishPanel.Find("TotalCount").GetComponent<Text>();
         //enemyPlayerWinCount = FishPanel.Find("WinCount").GetComponent<Text>();
 
-        FishSeats=new SeatItem[facade.FISH_NUM];
-        MonkeySeats=new SeatItem[facade.MONKEY_NUM];
+        FishSeats=new SeatItem[GameFacade.FISH_NUM];
+        MonkeySeats=new SeatItem[GameFacade.MONKEY_NUM];
 
         startButton = transform.Find("StartButton");
         exitButton = transform.Find("ExitButton");
@@ -101,13 +92,13 @@ public class RoomPanel : BasePanel
 
         FishSeats = transform.Find("FishPlayerPanel").GetComponentsInChildren<SeatItem>();
         MonkeySeats = transform.Find("MonkeyPlayerPanel").GetComponentsInChildren<SeatItem>();
-        for (int i = 0; i <facade.FISH_NUM ; i++)
+        for (int i = 0; i < GameFacade.FISH_NUM ; i++)
         {
             FishSeats[i].index = i;
         }
-        for (int i = 0; i < facade.MONKEY_NUM; i++)
+        for (int i = 0; i < GameFacade.MONKEY_NUM; i++)
         {
-            MonkeySeats[i].index = i+facade.FISH_NUM;
+            MonkeySeats[i].index = i+ GameFacade.FISH_NUM;
         }
     }
 
@@ -200,7 +191,7 @@ public class RoomPanel : BasePanel
                     FishSeats[ud.SeatIndex].SetSeatItem(ud.Id);
                     break;
                 case CampType.Monkey:
-                    MonkeySeats[ud.SeatIndex - facade.FISH_NUM].SetSeatItem(ud.Id);
+                    MonkeySeats[ud.SeatIndex - GameFacade.FISH_NUM].SetSeatItem(ud.Id);
                     break;
             }
         }
@@ -301,7 +292,7 @@ public class RoomPanel : BasePanel
     {
         SeatItem seat;
         SeatItem currentSeat = FindSeatById(id);
-        if (index < facade.FISH_NUM)
+        if (index < GameFacade.FISH_NUM)
         {
             seat = FishSeats[index];
         }

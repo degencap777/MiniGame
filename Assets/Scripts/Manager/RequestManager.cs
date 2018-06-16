@@ -52,6 +52,7 @@ public class RequestManager : BaseManager
         BaseRequest request = requestDict.TryGet(actionCode);
         if (request == null)
         {
+            Debug.Log(facade.GetCurrentPanelType());
             Debug.LogWarning("无法得到ActionCode[" + actionCode + "]对应的Request和Action类");
             return;
         }

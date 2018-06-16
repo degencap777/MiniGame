@@ -10,12 +10,15 @@ public class SkillItem : MonoBehaviour
     private float timer = 0;
     private Image filledImage;
     private bool isStartTime = false;
+
+    private Button button;
 	// Use this for initialization
 	void Start ()
 	{
 	    filledImage = transform.Find("FilledImage").GetComponent<Image>();
-	    transform.GetComponent<Button>().onClick.AddListener(OnClick);
-	}
+	    button = transform.GetComponent<Button>();
+        button.onClick.AddListener(OnClick);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -28,6 +31,7 @@ public class SkillItem : MonoBehaviour
 	            filledImage.fillAmount = 0;
 	            timer = 0;
 	            isStartTime = false;
+	            button.interactable = true;
 	        }
 	    }
 	}
@@ -35,5 +39,6 @@ public class SkillItem : MonoBehaviour
     private void OnClick()
     {
         isStartTime = true;
+        button.interactable = false;
     }
 }

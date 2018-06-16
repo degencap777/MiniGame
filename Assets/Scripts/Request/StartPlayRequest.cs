@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Common;
 using UnityEngine;
@@ -6,9 +7,11 @@ using UnityEngine;
 public class StartPlayRequest : BaseRequest
 {
     private bool isStartPlaying = false;
-    
+    private GamePanel gamePanel;
+    private CampType campType;
     public override void Awake()
     {
+        gamePanel = GetComponent<GamePanel>();
         requestCode = RequestCode.Game;
         actionCode = ActionCode.StartPlay;
         base.Awake();
@@ -18,13 +21,16 @@ public class StartPlayRequest : BaseRequest
     {
         if (isStartPlaying)
         {
-            facade.StartPlaying();
             isStartPlaying = false;
+            facade.StartPlaying(campType);
         }
     }
     public override void OnResponse(string data)
     {
         base.OnResponse(data);
+        //Debug.Log(Enum.GetName(typeof(UIPanelType), facade.GetCurrentPanelType()));
+        campType = (CampType) int.Parse(data);
         isStartPlaying = true;
     }
+    
 }
