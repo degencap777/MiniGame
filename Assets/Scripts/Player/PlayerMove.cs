@@ -9,6 +9,8 @@ public class PlayerMove : MonoBehaviour
     public float rotateSpeed = 3f;
     private ETCJoystick JoyStick;
     private Vector3 moveDirection = Vector3.zero;
+    private Vector3 currentVelocity = Vector3.zero;
+    private float smoothingTime = 0.1f;
     public float margin = 2f;
     private PlayerManager playerManager;
     private Rigidbody rb;
@@ -41,7 +43,7 @@ public class PlayerMove : MonoBehaviour
     private void Move()
     {
         transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * rotateSpeed);
-        transform.Translate(moveDirection * Time.deltaTime * speed, Space.World);
+        transform.Translate(moveDirection*Time.fixedDeltaTime * speed,Space.World);
     }
 
     public void MoveAsync(Vector3 moveDir)

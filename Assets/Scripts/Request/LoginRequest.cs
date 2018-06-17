@@ -32,7 +32,6 @@ public class LoginRequest : BaseRequest
             int id = int.Parse(strs[1]);
             string username = strs[2];
             UserData userData = new UserData(id,username);
-            facade.SetUserData(userData);
         }
     }
 }

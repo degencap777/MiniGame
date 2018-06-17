@@ -23,6 +23,7 @@ public class AudioManager : BaseManager
     {
         base.OnInit();
         GameObject audioSourceGO = new GameObject("AudioSource(GameObject)");
+        audioSourceGO.transform.parent = facade.transform;
         bgAudioSource = audioSourceGO.AddComponent<AudioSource>();
         normalAudioSource = audioSourceGO.AddComponent<AudioSource>();
 

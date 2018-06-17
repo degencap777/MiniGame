@@ -18,21 +18,20 @@ public class CameraManager : BaseManager
     {
         base.OnInit();
         cameraGO = Camera.main.gameObject;
-        //cameraAnim = cameraGO.GetComponent<Animator>();
-        //followTarget = cameraGO.GetComponent<FollowTarget>();
+        cameraAnim = cameraGO.GetComponent<Animator>();
+        followTarget = cameraGO.GetComponent<FollowTarget>();
     }
-    
+
+    public void FollowTartget(Transform target)
+    {
+        this.target = target;
+        FollowCurrentTarget();
+    }
     public void FollowCurrentTarget()
     {
-        followTarget.target = facade.GetCurrentCamTarget();
+        followTarget.target = target;
+        followTarget.isFollowPlayer = true;
         cameraAnim.enabled = false;
-        Quaternion targetQuaternion = Quaternion.LookRotation(followTarget.target.position - cameraGO.transform.position);
-        cameraGO.transform.DORotateQuaternion(targetQuaternion, 1f).OnComplete(delegate ()
-        {
-            followTarget.enabled = true;
-        });
-        originelPosition = cameraGO.transform.position;
-        originelRotation = cameraGO.transform.eulerAngles;
     }
 
     public void WalkThroughScene()
@@ -45,8 +44,13 @@ public class CameraManager : BaseManager
         });
     }
 
-    public void UpdateCamera()
+    //public void EnterPlaying()
+    //{
+    //    cameraGO= Camera.main.gameObject;
+    //}
+
+    public void SetTarget(Transform target)
     {
-        cameraGO = Camera.main.gameObject;
+        this.target = target;
     }
 }

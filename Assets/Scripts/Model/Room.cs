@@ -12,4 +12,5 @@ public class Room
     public UserData RoomOwner { get; set; }
     public List<UserData> UdList{ get; set; }
     public int ClientNum { get; set; }
+    
 }

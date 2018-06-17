@@ -1,0 +1,32 @@
+﻿[
+  {
+    "id": 0,
+    "campType": "Fish",
+    "name": "Fish0",
+    "roleType": "Hero",
+    "description": "初级鲲",
+    "path": "Prefabs/Roles/Heros/",
+    "hp": 10,
+    "mp": 0,
+    "moveSpeed": 2,
+    "turnSpeed": 3,
+    "isSkyVision": "false",
+
+    "attackDamage": 200,
+    "seatIndex": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+  },
+  {
+    "id": 0,
+    "campType": "Fish",
+    "name": "Bird0",
+    "roleType": "Pet",
+    "description": "召唤物",
+    "path": "Prefabs/Roles/Pets/",
+    "hp": 10,
+    "mp": 0,
+    "moveSpeed": 2,
+    "turnSpeed": 3,
+    "isSkyVision": "true"
+  }
+
+]

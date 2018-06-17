@@ -11,27 +11,33 @@ public class PlayerManager : BaseManager
 
     private int _idCount = 0;
     private int IdCount { get { return  _idCount++; } }
-    private UserData userData;
-    private Transform rolePositions;
-    private Dictionary<int,RoleData> roleDataDict=new Dictionary<int, RoleData>();//seat对应RoleData,只存初始的英雄，不包括其他单位
 
-    private GameObject currentRoleGameObject;//当前操作的英雄对象
+    private List<RoleData> _roleDataList;
+    public List<RoleData> RoleDataList { get
+        {
+            return _roleDataList ?? (_roleDataList = facade.GetRoleDataList());
+        } }
+
+    private GameObject _currentRoleGameObject;
+    public GameObject currentRoleGameObject { get { return _currentRoleGameObject; } set
+        {
+            _currentRoleGameObject = value;
+            facade.CamFollowTarget(_currentRoleGameObject.transform);
+        } }
+
+    private List<Player> playerList=new List<Player>();
+    private Player _localPlayer;
+    private Player localPlayer { get { return _localPlayer ?? (_localPlayer = GetLocalPlayer()); } }
+
 
     //场景中每一个英雄对象都对应一个独一无二Id
-    private Dictionary<int, GameObject> localRoleGameObjects =new Dictionary<int, GameObject>();
-    private Dictionary<int, GameObject> remoteRoleGameObjects =new Dictionary<int, GameObject>();//int对应id
-
-    private List<UserData> userDatas=new List<UserData>();
+    private Dictionary<int, GameObject> roleGameObjects =new Dictionary<int, GameObject>();
+    
 
     private MoveRequest moveRequest;
 
     //private ShootRequest shootRequest;
-    // AttackRequest attackRequest;
-    public UserData UserData
-    {
-        get { return userData; }
-        set { userData = value; }
-    }
+    //private AttackRequest attackRequest;
 
     public override void OnInit()
     {
@@ -42,36 +48,44 @@ public class PlayerManager : BaseManager
     {
         base.Update();
     }
-
+    
     public void EnterPlaying()
     {
         //TODO 进入游戏场景后
-        rolePositions = GameObject.Find("RolePositions").transform;
-        InitRoleDataDict();
+        SetPlayerSpawnPosition();
         CreateSyncRequest();
-    }
-    private void InitRoleDataDict()
-    {
-        foreach (var ud in userDatas)
-        {
-            roleDataDict.Add(ud.SeatIndex, new RoleData(rolePositions, ud.SeatIndex));
-        }
     }
 
     public void InitPlayerData(UserData ud,List<UserData> userDatas)
     {
-        userData = ud;
-        this.userDatas = userDatas;
+        foreach (var userData in userDatas)
+        {
+            Player player = new Player(userData, userData.SeatIndex);
+            if (ud.Id == userData.Id)
+            {
+                player.IsLocal = true;
+            }
+            playerList.Add(player);
+        }
     }
-    
+
+    private void SetPlayerSpawnPosition()
+    {
+        Transform spawnPositions = GameObject.Find("RolePositions").transform;
+        foreach (var player in playerList)
+        {
+            player.SpawnPosition = spawnPositions.Find("Position" + player.SeatIndex).transform.position;
+        }
+    }
+
     public void SpawnRoles(CampType campType)
     {
-        foreach (UserData ud in userDatas)
+        foreach (Player player in playerList)
         {
-            if (ud.CampType != campType) continue;
-            RoleData rd = roleDataDict[ud.SeatIndex];
+            if (player.CampType != campType) continue;
+            HeroData rd = GetHeroDataBySeatIndex(player.SeatIndex);
             GameObject go = null;
-            go = Object.Instantiate(rd.RolePrefab, rd.SpawnPosition, Quaternion.identity);
+            go = Object.Instantiate(rd.RolePrefab, player.SpawnPosition, Quaternion.identity);
             switch (campType)
             {
                 case CampType.Fish:
@@ -81,16 +95,14 @@ public class PlayerManager : BaseManager
                     go.tag = "Monkey";
                     break;
             }
-            
-            if (rd.SeatIndex == userData.SeatIndex)
+            int instanceId = IdCount;
+            roleGameObjects.Add(instanceId, go);
+            player.RoleInstanceIdList.Add(instanceId);
+            player.currentRoleInstanceId = instanceId;
+            if (player.IsLocal)
             {
                 currentRoleGameObject = go;
-                localRoleGameObjects.Add(IdCount,go);
                 AddControlScript();
-            }
-            else
-            {
-                remoteRoleGameObjects.Add(IdCount, go);
             }
         }
     }
@@ -106,23 +118,28 @@ public class PlayerManager : BaseManager
 
     #region Get_Function
     
-    public RoleData GetRoleData(int roleIndex)
+    private HeroData GetHeroDataBySeatIndex(int seatIndex)
     {
-        return roleDataDict[roleIndex];
+        foreach (var roleData in RoleDataList)
+        {
+            if(roleData.RoleType==RoleType.Hero)
+                if (((HeroData)roleData).seatIndex.Contains(seatIndex))
+                    return (HeroData)roleData;
+        }
+        return null;
     }
     public Transform GetCurrentCamTarget()
     {
         return currentRoleGameObject.transform;
     }
 
-    private UserData GetUserById(int UserId)
+    private Player GetLocalPlayer()
     {
-        foreach (var ud in userDatas)
+        foreach (var player in playerList)
         {
-            if (ud.Id == UserId)
-                return ud;
+            if (player.IsLocal)
+                return player;
         }
-        Debug.Log("找不到UserId");
         return null;
     }
 
@@ -147,28 +164,26 @@ public class PlayerManager : BaseManager
 
     public void Move()
     {
-        if (localRoleGameObjects == null|| localRoleGameObjects.Count == 0)
+        if (localPlayer == null|| localPlayer.RoleInstanceIdList.Count == 0)
             return;
         StringBuilder sb = new StringBuilder();
         int count = 0;
-        foreach (var go in localRoleGameObjects)
+        foreach (var id in localPlayer.RoleInstanceIdList)
         {
+            GameObject go = roleGameObjects[id];
             count++;
-            sb.Append(go.Key + "|" + UnityTools.PackVector3(go.Value.transform.position) + "|" +
-                      UnityTools.PackVector3(go.Value.transform.eulerAngles));
-            if (count < localRoleGameObjects.Count)
+            sb.Append(id + "|" + UnityTools.PackVector3(go.transform.position) + "|" +
+                      UnityTools.PackVector3(go.transform.eulerAngles));
+            if (count < localPlayer.RoleInstanceIdList.Count)
                 sb.Append(":");
-            //moveRequest.SendRequest(go.Value.transform.position.x, go.Value.transform.position.y, go.Value.transform.position.z,
-            //    go.Value.transform.eulerAngles.x, go.Value.transform.eulerAngles.y, go.Value.transform.eulerAngles.z);
         }
         moveRequest.SendRequest(sb.ToString());
     }
 
     public void MoveSync(int goId, Vector3 pos, Vector3 rot)
     {
-        remoteRoleGameObjects[goId].transform.position = pos;
-        remoteRoleGameObjects[goId].transform.eulerAngles = rot;
-        Debug.Log("EndMove");
+        roleGameObjects[goId].transform.position = pos;
+        roleGameObjects[goId].transform.eulerAngles = rot;
     }
     
 }

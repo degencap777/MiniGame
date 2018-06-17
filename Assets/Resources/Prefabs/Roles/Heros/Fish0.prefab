@@ -199,7 +199,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CampType: 1
-  IsLocal: 0
   RoleIndex: 0
 --- !u!135 &135819613145094640
 SphereCollider:

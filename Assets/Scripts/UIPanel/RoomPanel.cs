@@ -104,7 +104,7 @@ public class RoomPanel : BasePanel
 
     void Start()
     {
-        localPlayer = facade.GetUserData();
+        
     }
     void Update()
     {

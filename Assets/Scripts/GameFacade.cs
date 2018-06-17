@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Common;
+using HedgehogTeam.EasyTouch;
 using UnityEngine;
 
 public class GameFacade : MonoBehaviour
@@ -74,6 +75,10 @@ public class GameFacade : MonoBehaviour
             isSceneUpdate = false;
             EnterPlaying();
         }
+        if (EasyTouch.current != null)
+        {
+            Debug.Log(EasyTouch.current.type);
+        }
     }
 
     private void Init()
@@ -119,6 +124,18 @@ public class GameFacade : MonoBehaviour
     {
         DestroyManager();
     }
+
+    #region ResourceGet
+    public List<RoleData> GetRoleDataList()
+    {
+        return resourceManager.RoleDataList;
+    }
+    public List<HeroData> GetHeroDataList()
+    {
+        return resourceManager.HeroDataList;
+    }
+
+    #endregion
     public void AddRequest(ActionCode actionCode, BaseRequest Request)
     {
         requestMng.AddRequest(actionCode, Request);
@@ -160,16 +177,7 @@ public class GameFacade : MonoBehaviour
     {
         audioMng.PlayNormalSound(soundName);
     }
-
-    public void SetUserData(UserData ud)
-    {
-        playerMng.UserData = ud;
-    }
-
-    public UserData GetUserData()
-    {
-        return playerMng.UserData;
-    }
+    
 
     public Transform GetCurrentCamTarget()
     {
@@ -182,7 +190,6 @@ public class GameFacade : MonoBehaviour
     }
     public void EnterPlaying()
     {
-        cameraMng.UpdateCamera();
         playerMng.EnterPlaying();
         //TODO 进入游戏场景后初始化资源
     }
@@ -199,7 +206,14 @@ public class GameFacade : MonoBehaviour
     {
         cameraMng.FollowCurrentTarget();
     }
-
+    public void CamFollowTarget(Transform target)
+    {
+        cameraMng.FollowTartget(target);
+    }
+    public void SetCamTarget(Transform target)
+    {
+        cameraMng.SetTarget(target);
+    }
     public void InitPlayerData(UserData ud, List<UserData> userDatas)
     {
         playerMng.InitPlayerData(ud,userDatas);
