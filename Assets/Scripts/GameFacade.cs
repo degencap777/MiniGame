@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Common;
 using HedgehogTeam.EasyTouch;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameFacade : MonoBehaviour
 {
@@ -217,6 +218,11 @@ public class GameFacade : MonoBehaviour
     public void InitPlayerData(UserData ud, List<UserData> userDatas)
     {
         playerMng.InitPlayerData(ud,userDatas);
+    }
+
+    public void UseSkill(string skillName,string axis=null)
+    {
+        playerMng.UseSkill(skillName,axis);
     }
     
 }

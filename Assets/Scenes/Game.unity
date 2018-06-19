@@ -470,6 +470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  smoothingTime: 0.3
   isFollowPlayer: 0
 --- !u!95 &727693101
 Animator:

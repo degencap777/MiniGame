@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UnityEngine;
 using System.Collections;
 using DG.Tweening;
@@ -9,19 +10,22 @@ public class PlayerMove : MonoBehaviour
     public float rotateSpeed = 3f;
     private ETCJoystick JoyStick;
     private Vector3 moveDirection = Vector3.zero;
-    private Vector3 currentVelocity = Vector3.zero;
     private float smoothingTime = 0.1f;
     public float margin = 2f;
     private PlayerManager playerManager;
     private Rigidbody rb;
-    private bool isMove = false;
+    private PlayerInfo playerInfo;
     private Animator anim;
+    public bool IsLocal = false;
+    private PlayerSkill playerSkill;
 
     // Use this for initialization
     void Start()
     {
         rb = transform.GetComponent<Rigidbody>();
         JoyStick= ((GamePanel)GameFacade.Instance.GetCurrentPanel()).Joystick;
+        playerSkill = GetComponent<PlayerSkill>();
+        playerInfo = GetComponent<PlayerInfo>();
     }
 
     // Update is called once per frame
@@ -34,8 +38,13 @@ public class PlayerMove : MonoBehaviour
             float v = JoyStick.axisX.axisValue;
             if (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f)
             {
+                playerInfo.CurrentState = PlayerInfo.State.Move;
                 moveDirection = new Vector3(v, 0, h);
                 Move();
+            }
+            else if (playerInfo.CurrentState == PlayerInfo.State.Move)
+            {
+                playerInfo.CurrentState = PlayerInfo.State.Idle;
             }
         }
     }
@@ -45,12 +54,7 @@ public class PlayerMove : MonoBehaviour
         transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * rotateSpeed);
         transform.Translate(moveDirection*Time.fixedDeltaTime * speed,Space.World);
     }
-
-    public void MoveAsync(Vector3 moveDir)
-    {
-        moveDirection = moveDir;
-        isMove = true;
-    }
+    
     // 通过射线检测主角是否落在地面或者物体上  
     bool IsGrounded()
     {

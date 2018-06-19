@@ -8,25 +8,17 @@ public class RequestManager : BaseManager
 {
 
     Dictionary<ActionCode, BaseRequest> requestDict = new Dictionary<ActionCode, BaseRequest>();
-    private float heartCheckTime = 0;
     public RequestManager(GameFacade facade) : base(facade){ }
 
     public override void OnInit()
     {
         base.OnInit();
         facade.gameObject.AddComponent<HeartCheckRequest>();
-        facade.gameObject.AddComponent<test>();
     }
 
     public override void Update()
     {
         base.Update();
-        heartCheckTime += Time.deltaTime;
-        if (heartCheckTime >= 2)
-        {
-            requestDict.TryGet(ActionCode.None).SendRequest();
-            heartCheckTime = 0;
-        }
     }
 
     public void AddRequest(ActionCode actionCode, BaseRequest baseRequest)
@@ -42,13 +34,6 @@ public class RequestManager : BaseManager
     
     public void HandleResponse(ActionCode actionCode, string data)
     {
-        if (actionCode == ActionCode.ChangeSeat)
-        {
-            foreach (var r in requestDict)
-            {
-                Debug.Log(Enum.GetName(typeof(ActionCode),r.Key));
-            }
-        }
         BaseRequest request = requestDict.TryGet(actionCode);
         if (request == null)
         {

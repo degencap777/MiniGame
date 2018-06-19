@@ -9,4 +9,11 @@ public class PlayerInfo : MonoBehaviour
     [Range(0, 11)]
     public int RoleIndex = -1;
 
+    public State CurrentState = State.Idle;
+    public enum State
+    {
+        Idle,
+        Move,
+        UsingSkill,
+    }
 }

@@ -22,5 +22,12 @@ namespace Assets.Scripts.Tools
         {
             return vector3.x + "," + vector3.y + "," + vector3.z;
         }
+        public static Vector2 ParseVector2(string str)
+        {
+            string[] strs = str.Split(',');
+            float x = float.Parse(strs[0]);
+            float y = float.Parse(strs[1]);
+            return new Vector2(x, y);
+        }
     }
 }

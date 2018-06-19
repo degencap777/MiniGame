@@ -18,11 +18,11 @@ public class PlayerManager : BaseManager
             return _roleDataList ?? (_roleDataList = facade.GetRoleDataList());
         } }
 
-    private GameObject _currentRoleGameObject;
-    public GameObject currentRoleGameObject { get { return _currentRoleGameObject; } set
+    private GameObject _currentCamGameObject;
+    private GameObject currentCamGameObject { get { return _currentCamGameObject; } set
         {
-            _currentRoleGameObject = value;
-            facade.CamFollowTarget(_currentRoleGameObject.transform);
+            _currentCamGameObject = value;
+            facade.CamFollowTarget(_currentCamGameObject.transform);
         } }
 
     private List<Player> playerList=new List<Player>();
@@ -35,6 +35,8 @@ public class PlayerManager : BaseManager
     
 
     private MoveRequest moveRequest;
+    private UseSkillRequest useSkillRequest;
+    private SkillManager skillManager;
 
     //private ShootRequest shootRequest;
     //private AttackRequest attackRequest;
@@ -42,6 +44,7 @@ public class PlayerManager : BaseManager
     public override void OnInit()
     {
         base.OnInit();
+        skillManager = GameObject.FindGameObjectWithTag("SkillManager").GetComponent<SkillManager>();
     }
 
     public override void Update()
@@ -99,21 +102,14 @@ public class PlayerManager : BaseManager
             roleGameObjects.Add(instanceId, go);
             player.RoleInstanceIdList.Add(instanceId);
             player.currentRoleInstanceId = instanceId;
+            
             if (player.IsLocal)
             {
-                currentRoleGameObject = go;
-                AddControlScript();
+                go.AddComponent<PlayerMove>().SetPlayerMng(this).IsLocal = true;
+                currentCamGameObject = go;
             }
+            go.AddComponent<PlayerSkill>().SetPlayerMng(this);
         }
-    }
-    public void AddControlScript()
-    {
-        currentRoleGameObject.AddComponent<PlayerMove>().SetPlayerMng(this);
-        //int roleIndex = currentRoleGameObject.GetComponent<PlayerInfo>().Index;
-        //PlayerAttack playerAttack = currentRoleGameObject.AddComponent<PlayerAttack>();
-        //RoleData rd = GetRoleData(ct);
-        //playerAttack.arrowPrefab = rd.ArrowPrefab;
-        // playerAttack.SetPlayerMng(this);
     }
 
     #region Get_Function
@@ -130,7 +126,7 @@ public class PlayerManager : BaseManager
     }
     public Transform GetCurrentCamTarget()
     {
-        return currentRoleGameObject.transform;
+        return currentCamGameObject.transform;
     }
 
     private Player GetLocalPlayer()
@@ -143,6 +139,10 @@ public class PlayerManager : BaseManager
         return null;
     }
 
+    private int GetCurrentGoId()
+    {
+        return localPlayer.currentRoleInstanceId;
+    }
     #endregion
 
     public void UpdateResult(int totalCount, int winCount)
@@ -156,6 +156,8 @@ public class PlayerManager : BaseManager
         GameObject playerSyncRequest = new GameObject("PlayerSyncRequest");
         moveRequest = playerSyncRequest.AddComponent<MoveRequest>();
         moveRequest.PlayerManager = this;
+        useSkillRequest = playerSyncRequest.AddComponent<UseSkillRequest>();
+        useSkillRequest.PlayerManager = this;
         //shootRequest = playerSyncRequest.AddComponent<ShootRequest>();
         //shootRequest.PlayerMng = this;
         //attackRequest = playerSyncRequest.AddComponent<AttackRequest>();
@@ -171,19 +173,42 @@ public class PlayerManager : BaseManager
         foreach (var id in localPlayer.RoleInstanceIdList)
         {
             GameObject go = roleGameObjects[id];
+            if (go.GetComponent<PlayerInfo>().CurrentState != PlayerInfo.State.Move)continue;
             count++;
             sb.Append(id + "|" + UnityTools.PackVector3(go.transform.position) + "|" +
-                      UnityTools.PackVector3(go.transform.eulerAngles));
-            if (count < localPlayer.RoleInstanceIdList.Count)
-                sb.Append(":");
+                      UnityTools.PackVector3(go.transform.eulerAngles)+":");
         }
+        if (count == 0) return;
+        sb.Remove(sb.Length - 1, 1);
         moveRequest.SendRequest(sb.ToString());
     }
 
     public void MoveSync(int goId, Vector3 pos, Vector3 rot)
     {
+        GameObject go = roleGameObjects[goId];
+        PlayerInfo playerInfo = go.GetComponent<PlayerInfo>();
+        if (playerInfo != null)
+            playerInfo.CurrentState= PlayerInfo.State.Move;
         roleGameObjects[goId].transform.position = pos;
         roleGameObjects[goId].transform.eulerAngles = rot;
     }
+
     
+    public void UseSkill(string skillName,string axis=null)
+    {
+        useSkillRequest.SendRequest(GetCurrentGoId(),skillName,axis);
+    }
+
+    public void UseSkillSync(int instanceId,string skillName,string axis=null)
+    {
+        GameObject go = roleGameObjects[instanceId];
+        Skill skill = skillManager.GetInstanceOfSkillWithString(skillName, go);
+        facade.ShowMessage("1");
+        if (skill == null)
+        {
+            Debug.Log("技能不存在");
+            return;
+        }
+        go.GetComponent<PlayerSkill>().StartUseSkill(skill,axis);
+    }
 }

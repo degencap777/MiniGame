@@ -17,13 +17,6 @@ public class MoveRequest : BaseRequest
     private Animator remotePlayerAnim;
     private bool isSyncRemotePlayer = false;
     private int syncId;
-
-    
-
-    public PlayerManager PlayerManager;
-    //private Dictionary<int ,Transform> remotePlayerTransforms=new Dictionary<int, Transform>();
-    //private Dictionary<int, Animator>  remotePlayerAnims=new Dictionary<int, Animator>();
-    //private Dictionary<int, int> syncRoleIndexs=new Dictionary<int, int>();
     class syncData
     {
         public int goId;
@@ -36,12 +29,10 @@ public class MoveRequest : BaseRequest
             this.pos = pos;
             this.rot = rot;
         }
-        //public List< int> goId;
-        //public List<Vector3> pos;
-        //public List<Vector3> rot;
     }
+
+    public PlayerManager PlayerManager;
     private syncData[] syncDatas = new syncData[GameFacade.MAX_ROLE_NUM_IN_SCENE];
-    //private List<syncData> syncDatas=new List<syncData>();
     public override void Awake()
     {
         requestCode = RequestCode.Game;
@@ -57,12 +48,6 @@ public class MoveRequest : BaseRequest
 
     void FixedUpdate()
     {
-        //if (isSyncRemotePlayer)
-        //{
-        //    isSyncRemotePlayer = false;
-        //    PlayerManager.MoveSync(syncDatas);
-        //    Clear();
-        //}
         if (syncDatas.Length != 0)
         {
             for (int i = 0; i < syncDatas.Length; i++)
@@ -90,21 +75,7 @@ public class MoveRequest : BaseRequest
         for (int i = 0; i < str.Length; i++)
         {
             string[] strs = str[i].Split('|');
-            syncDatas[int.Parse(strs[0])]=(new syncData(int.Parse(strs[0]), UnityTools.ParseVector3(strs[1]), UnityTools.ParseVector3(strs[2])));
-            //goIdList.Enqueue(int.Parse(strs[0]));
-            //Debug.Log("MoveResponseInFor1");
-            //pos.Enqueue(UnityTools.ParseVector3(strs[1]));
-            //Debug.Log("MoveResponseInFor2");
-            //rot.Enqueue(UnityTools.ParseVector3(strs[2]));
-            //Debug.Log("MoveResponseInFor3");
+            syncDatas[int.Parse(strs[0])] = (new syncData(int.Parse(strs[0]), UnityTools.ParseVector3(strs[1]), UnityTools.ParseVector3(strs[2])));
         }
-        //isSyncRemotePlayer = true;
-    }
-
-    private void Clear()
-    {
-        //goIdList.Clear();
-        //pos.Clear();
-        //rot.Clear();
     }
 }

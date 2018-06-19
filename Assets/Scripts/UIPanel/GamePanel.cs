@@ -30,4 +30,9 @@ public class GamePanel : BasePanel
     {
         throw new NotImplementedException();
     }
+
+    public void UseSkill(string skillName,string axis=null)
+    {
+        facade.UseSkill(skillName,axis);
+    }
 }

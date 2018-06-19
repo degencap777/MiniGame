@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using System;
 
 [System.Serializable]
 public class ETCJoystick : ETCBase,IPointerEnterHandler,IDragHandler, IBeginDragHandler, IPointerDownHandler, IPointerUpHandler {
@@ -18,8 +19,15 @@ public class ETCJoystick : ETCBase,IPointerEnterHandler,IDragHandler, IBeginDrag
 	#region Unity Events
 	[System.Serializable] public class OnMoveStartHandler : UnityEvent{}
 	[System.Serializable] public class OnMoveSpeedHandler : UnityEvent<Vector2> { }
-	[System.Serializable] public class OnMoveHandler : UnityEvent<Vector2> { }
-	[System.Serializable] public class OnMoveEndHandler : UnityEvent{ }
+    [System.Serializable]
+    public class OnMoveHandler : UnityEvent<Vector2>
+    {
+        internal void AddListener(object v)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    [System.Serializable] public class OnMoveEndHandler : UnityEvent{ }
 
 	[System.Serializable] public class OnTouchStartHandler : UnityEvent{}
 	[System.Serializable] public class OnTouchUpHandler : UnityEvent{ }
