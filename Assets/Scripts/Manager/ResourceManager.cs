@@ -45,7 +45,6 @@ public class ResourceManager : BaseManager {
         _roleDataList = new List<RoleData>();
         TextAsset itemText = Resources.Load<TextAsset>("Json/RoleData");
         JsonData itemsData = JsonMapper.ToObject(itemText.text);
-
         RoleData roleData = null;
         foreach (JsonData itemData in itemsData)
         {
@@ -81,6 +80,22 @@ public class ResourceManager : BaseManager {
                     }
                     break;
                 case CampType.Monkey:
+                    switch (roleType)
+                    {
+                        case RoleType.Hero:
+                            JsonData seatIndexs = itemData["seatIndex"];
+                            List<int> seatIndexList = new List<int>();
+                            foreach (JsonData seatIndex in seatIndexs)
+                            {
+                                seatIndexList.Add((int)seatIndex);
+                            }
+                            int attackDamage = (int)itemData["attackDamage"];
+                            roleData = new HeroData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision, seatIndexList, attackDamage);
+                            break;
+                        case RoleType.Pet:
+                            roleData = new PetData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision);
+                            break;
+                    }
                     break;
                 case CampType.Middle:
                     break;

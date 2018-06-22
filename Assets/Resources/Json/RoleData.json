@@ -16,7 +16,23 @@
     "seatIndex": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
   },
   {
-    "id": 0,
+    "id": 1,
+    "campType": "Monkey",
+    "name": "Monkey1",
+    "roleType": "Hero",
+    "description": "熊",
+    "path": "Prefabs/Roles/Heros/",
+    "hp": 200,
+    "mp": 0,
+    "moveSpeed": 3,
+    "turnSpeed": 4,
+    "isSkyVision": "false",
+
+    "attackDamage": 50,
+    "seatIndex": [ 8,9,10 ]
+  },
+  {
+    "id": 2,
     "campType": "Fish",
     "name": "Bird0",
     "roleType": "Pet",

@@ -120,13 +120,37 @@ public class PlayerManager : BaseManager
             }
             go.AddComponent<PlayerSkill>().SetPlayerMng(this);
             go.AddComponent<PlayerItem>().SetPlayerMng(this);
+            InitPlayerInfo(rd, go);
         }
     }
 
     #region Get_Function
-    
+
+    private void InitPlayerInfo(RoleData roleData, GameObject go)
+    {
+        PlayerInfo pi = go.GetComponent<PlayerInfo>();
+        switch (roleData.RoleType)
+        {
+            case RoleType.Hero:
+            {
+                HeroData rd = roleData as HeroData;
+                pi.Init(rd.Id, rd.CampType, rd.Name, rd.RoleType, rd.Description, rd.Hp, rd.Mp, rd.MoveSpeed,
+                    rd.TurnSpeed, rd.IsSkyVision, rd.attackDamage);
+            }
+                break;
+            case RoleType.Pet:
+            {
+                PetData rd = (PetData) roleData;
+                pi.Init(rd.Id, rd.CampType, rd.Name, rd.RoleType, rd.Description, rd.Hp, rd.Mp, rd.MoveSpeed,
+                    rd.TurnSpeed, rd.IsSkyVision);
+            }
+                break;
+
+        }
+    }
     private HeroData GetHeroDataBySeatIndex(int seatIndex)
     {
+        Debug.Log(seatIndex);
         foreach (var roleData in RoleDataList)
         {
             if(roleData.RoleType==RoleType.Hero)
@@ -171,10 +195,6 @@ public class PlayerManager : BaseManager
         useSkillRequest.PlayerManager = this;
         useItemRequest = playerSyncRequest.AddComponent<UseItemRequest>();
         useItemRequest.PlayerManager = this;
-        //shootRequest = playerSyncRequest.AddComponent<ShootRequest>();
-        //shootRequest.PlayerMng = this;
-        //attackRequest = playerSyncRequest.AddComponent<AttackRequest>();
-        //attackRequest.PlayerManager = this;
     }
 
     private void CreateBattleManager()
