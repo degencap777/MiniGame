@@ -185,6 +185,15 @@ public class GameFacade : MonoBehaviour
         return playerMng.GetCurrentCamTarget();
     }
 
+    public void SetUserData(UserData ud)
+    {
+        playerMng.UserData = ud;
+    }
+
+    public UserData GetUserData()
+    {
+        return playerMng.UserData;
+    }
     public void UpdateSceneAsync()
     {
         isSceneUpdate = true;
@@ -224,5 +233,24 @@ public class GameFacade : MonoBehaviour
     {
         playerMng.UseSkill(skillName,axis);
     }
-    
+    public void UseItem(string itemName, string point = null)
+    {
+        playerMng.UseItem(itemName, point);
+    }
+
+    public void UseItemSync(bool isUse)
+    {
+        Debug.Log(uiMng.GetCurrentPanel().GetType().Name);
+        if (uiMng.GetCurrentPanel().GetType().Name == "GamePanel")
+        {
+            ((GamePanel)uiMng.GetCurrentPanel()).UseItemSync(isUse);
+        }
+    }
+    public void UseSkillSync(float coldTime)
+    {
+        if (uiMng.GetCurrentPanel().GetType().Name == "GamePanel")
+        {
+            ((GamePanel)uiMng.GetCurrentPanel()).UseSkillSync(coldTime);
+        }
+    }
 }

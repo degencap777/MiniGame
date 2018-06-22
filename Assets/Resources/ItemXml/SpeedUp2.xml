@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="SpeedUp2" Name="加速" parameterCount="4">
+  <parameters During="5" CD="3" Capacity="3" Trigger="1" />
+</Root>

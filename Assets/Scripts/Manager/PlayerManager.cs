@@ -9,6 +9,9 @@ public class PlayerManager : BaseManager
 {
     public PlayerManager(GameFacade facade) : base(facade) { }
 
+    //UIPanel使用
+    public UserData UserData;
+
     private int _idCount = 0;
     private int IdCount { get { return  _idCount++; } }
 
@@ -27,7 +30,7 @@ public class PlayerManager : BaseManager
 
     private List<Player> playerList=new List<Player>();
     private Player _localPlayer;
-    private Player localPlayer { get { return _localPlayer ?? (_localPlayer = GetLocalPlayer()); } }
+    private Player LocalPlayer { get { return _localPlayer ?? (_localPlayer = GetLocalPlayer()); } }
 
 
     //场景中每一个英雄对象都对应一个独一无二Id
@@ -36,7 +39,10 @@ public class PlayerManager : BaseManager
 
     private MoveRequest moveRequest;
     private UseSkillRequest useSkillRequest;
+    private UseItemRequest useItemRequest;
+
     private SkillManager skillManager;
+    private ItemManager itemManager;
 
     //private ShootRequest shootRequest;
     //private AttackRequest attackRequest;
@@ -45,6 +51,7 @@ public class PlayerManager : BaseManager
     {
         base.OnInit();
         skillManager = GameObject.FindGameObjectWithTag("SkillManager").GetComponent<SkillManager>();
+        itemManager = GameObject.FindGameObjectWithTag("ItemManager").GetComponent<ItemManager>();
     }
 
     public override void Update()
@@ -57,6 +64,7 @@ public class PlayerManager : BaseManager
         //TODO 进入游戏场景后
         SetPlayerSpawnPosition();
         CreateSyncRequest();
+        CreateBattleManager();
     }
 
     public void InitPlayerData(UserData ud,List<UserData> userDatas)
@@ -107,8 +115,11 @@ public class PlayerManager : BaseManager
             {
                 go.AddComponent<PlayerMove>().SetPlayerMng(this).IsLocal = true;
                 currentCamGameObject = go;
+                if(facade.GetCurrentPanel().GetType().Name=="GamePanel")
+                    ((GamePanel)facade.GetCurrentPanel()).SetPlayer(go);
             }
             go.AddComponent<PlayerSkill>().SetPlayerMng(this);
+            go.AddComponent<PlayerItem>().SetPlayerMng(this);
         }
     }
 
@@ -141,7 +152,7 @@ public class PlayerManager : BaseManager
 
     private int GetCurrentGoId()
     {
-        return localPlayer.currentRoleInstanceId;
+        return LocalPlayer.currentRoleInstanceId;
     }
     #endregion
 
@@ -158,19 +169,25 @@ public class PlayerManager : BaseManager
         moveRequest.PlayerManager = this;
         useSkillRequest = playerSyncRequest.AddComponent<UseSkillRequest>();
         useSkillRequest.PlayerManager = this;
+        useItemRequest = playerSyncRequest.AddComponent<UseItemRequest>();
+        useItemRequest.PlayerManager = this;
         //shootRequest = playerSyncRequest.AddComponent<ShootRequest>();
         //shootRequest.PlayerMng = this;
         //attackRequest = playerSyncRequest.AddComponent<AttackRequest>();
         //attackRequest.PlayerManager = this;
     }
 
+    private void CreateBattleManager()
+    {
+        GameObject battleManager=new GameObject("BattleManager");
+    }
     public void Move()
     {
-        if (localPlayer == null|| localPlayer.RoleInstanceIdList.Count == 0)
+        if (LocalPlayer == null|| LocalPlayer.RoleInstanceIdList.Count == 0)
             return;
         StringBuilder sb = new StringBuilder();
         int count = 0;
-        foreach (var id in localPlayer.RoleInstanceIdList)
+        foreach (var id in LocalPlayer.RoleInstanceIdList)
         {
             GameObject go = roleGameObjects[id];
             if (go.GetComponent<PlayerInfo>().CurrentState != PlayerInfo.State.Move)continue;
@@ -203,12 +220,29 @@ public class PlayerManager : BaseManager
     {
         GameObject go = roleGameObjects[instanceId];
         Skill skill = skillManager.GetInstanceOfSkillWithString(skillName, go);
-        facade.ShowMessage("1");
         if (skill == null)
         {
             Debug.Log("技能不存在");
             return;
         }
         go.GetComponent<PlayerSkill>().StartUseSkill(skill,axis);
+    }
+
+    public void UseItem(string itemName, string point = null)
+    {
+        useItemRequest.SendRequest(LocalPlayer.UserData.Id,GetCurrentGoId(), itemName, point);
+    }
+
+    public void UseItemSync(int id,int instanceId, string itemName, string point = null)
+    {
+        GameObject go = roleGameObjects[instanceId];
+        bool isLocal = id == LocalPlayer.UserData.Id;
+        Item item = itemManager.GetInstanceOfItemWithString(itemName, go);
+        if (item == null)
+        {
+            Debug.Log("道具不存在");
+            return;
+        }
+        go.GetComponent<PlayerItem>().StartUseItem(isLocal, item, point);
     }
 }

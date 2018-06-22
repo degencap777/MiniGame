@@ -43,6 +43,12 @@ public class SkillJoystickItem : MonoBehaviour {
         }
     }
 
+    public void UseSkillSync(float coldTime)
+    {
+        if (coldTime == 0) return;
+        this.coldTime = coldTime;
+        isStartTimer = true;
+    }
     private void OnMove(Vector2 move)
     {
         axis = move;

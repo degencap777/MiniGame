@@ -16,7 +16,6 @@ public class RoomListPanel : BasePanel
     private ListRoomRequest listRoomRequest;
     private CreateRoomRequest createRoomRequest;
     private JoinRoomRequest joinRoomRequest;
-    private Text Username;
     void Awake()
     {
         joinRoomRequest = GetComponent<JoinRoomRequest>();
@@ -43,14 +42,11 @@ public class RoomListPanel : BasePanel
         {
             RoomPanel panel = uiMng.PushPanel(UIPanelType.Room) as RoomPanel;
             panel.SetAllPlayerSync(udList);
+            panel.SetLocalPlayerSync(facade.GetUserData());
             udList = null;
         }
     }
-
-    public string GetUsername()
-    {
-        return Username.text;
-    }
+    
     public override void OnEnter()
     {
         base.OnEnter();

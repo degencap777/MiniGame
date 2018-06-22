@@ -6,8 +6,8 @@ using DG.Tweening;
 
 public class PlayerMove : MonoBehaviour
 {
-    public float speed = 2.0f;
-    public float rotateSpeed = 3f;
+    public float Speed {get { return playerInfo.MoveSpeed; }}
+    public float RotateSpeed { get { return playerInfo.TurnSpeed; } }
     private ETCJoystick JoyStick;
     private Vector3 moveDirection = Vector3.zero;
     private float smoothingTime = 0.1f;
@@ -51,8 +51,8 @@ public class PlayerMove : MonoBehaviour
     
     private void Move()
     {
-        transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * rotateSpeed);
-        transform.Translate(moveDirection*Time.fixedDeltaTime * speed,Space.World);
+        transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * RotateSpeed);
+        transform.Translate(moveDirection*Time.fixedDeltaTime * Speed,Space.World);
     }
     
     // 通过射线检测主角是否落在地面或者物体上  

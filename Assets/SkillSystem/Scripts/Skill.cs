@@ -8,7 +8,7 @@ public abstract class Skill
 
     public delegate int SkillDelegate();
 
-    public Vector3 direction=Vector3.zero;
+    public Vector3 Direction=Vector3.zero;
     public string resourcesName_;
     private GameObject resources_ = null;
     public GameObject resources

@@ -173,6 +173,10 @@ public class RoomPanel : BasePanel
         isRoomUpdate = true;
     }
 
+    public void SetLocalPlayerSync(UserData localPlayer)
+    {
+        this.localPlayer = localPlayer;
+    }
     public void SetAllPlayer()
     {
         foreach (var seat in FishSeats)

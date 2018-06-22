@@ -10,10 +10,10 @@ public class PlayerSkill : MonoBehaviour
     private CharactorSkills charactorSkills;
     private PlayerManager playerManager;
     private Rigidbody rb;
-    public float rotateSpeed = 3f;
+    public float RotateSpeed { get { return playerInfo.TurnSpeed; } }
     private Vector3 direction=Vector3.zero;
     private PlayerInfo playerInfo;
-
+    private float joystickColdTime = 0;
     private Skill currentSkill = null;
 	// Use this for initialization
 	void Start ()
@@ -39,24 +39,38 @@ public class PlayerSkill : MonoBehaviour
 	    {
 	        currentSkill = null;
 	        direction = Vector3.zero;
+	        joystickColdTime = 0;
+
 	    }
 	}
 
-    private void UseSkill()
+    private void UseSkill(Skill skill=null)
     {
-        charactorSkills.Skills[currentSkill.GetType().Name].direction = direction;
-        charactorSkills.UseSkill(currentSkill.GetType().Name);
+        if (joystickColdTime != 0)
+            GameFacade.Instance.UseSkillSync(joystickColdTime);
+        if (skill == null)
+        {
+            charactorSkills.Skills[currentSkill.GetType().Name].Direction = direction;
+            charactorSkills.UseSkill(currentSkill.GetType().Name);
+        }
+        else
+        {
+            charactorSkills.Skills[skill.GetType().Name].Direction = direction;
+            charactorSkills.UseSkill(skill.GetType().Name);
+        }
     }
     public void StartUseSkill(Skill skill,string axis=null)
     {
-        playerInfo.CurrentState = PlayerInfo.State.UsingSkill;
         if (axis != null)
         {
+            joystickColdTime = skill.parameters.TryGet("CD");
+            playerInfo.CurrentState = PlayerInfo.State.UsingSkill;
             Vector2 v2 = UnityTools.ParseVector2(axis);
             direction=new Vector3(v2.x,0,v2.y);
         }
         else
         {
+            UseSkill(skill);
             direction=Vector3.zero;
         }
         currentSkill = skill;
@@ -79,6 +93,6 @@ public class PlayerSkill : MonoBehaviour
     }
     private void TurnToUseSkill()
     {
-        transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(direction, transform.up), Time.fixedDeltaTime * rotateSpeed);
+        transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(direction, transform.up), Time.fixedDeltaTime * RotateSpeed);
     }
 }

@@ -11,6 +11,8 @@ TagManager:
   - needTest
   - Fish
   - Monkey
+  - SkillManager
+  - ItemManager
   layers:
   - Default
   - TransparentFX
@@ -30,7 +32,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Grid
   - 
   - 
   - 

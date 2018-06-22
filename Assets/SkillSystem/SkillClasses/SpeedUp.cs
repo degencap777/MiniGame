@@ -15,7 +15,7 @@ public class SpeedUp : Skill
     //这个方法会在技能发动时调用
     protected override bool SkillStart()
     {
-        Vector3 dir=new Vector3(direction.x*2,0, direction.z*2);
+        Vector3 dir=new Vector3(Direction.x*2,0, Direction.z*2);
         Debug.Log(dir);
         go = resources;
         go.transform.position = owner.transform.position+dir;
