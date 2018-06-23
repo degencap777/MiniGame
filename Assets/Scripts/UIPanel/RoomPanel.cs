@@ -30,6 +30,7 @@ public class RoomPanel : BasePanel
     private StartGameRequest startGameRequest;
     private RoomChatRequest roomChatRequest;
     private ChangeSeatRequest changeSeatRequest;
+    private UpdateRoomRequest updateRoomRequest;
 
     //异步控制
     private bool isPopPanel = false;
@@ -89,6 +90,7 @@ public class RoomPanel : BasePanel
         startGameRequest = GetComponent<StartGameRequest>();
         roomChatRequest = GetComponent<RoomChatRequest>();
         changeSeatRequest = GetComponent<ChangeSeatRequest>();
+        updateRoomRequest = GetComponent<UpdateRoomRequest>();
 
         FishSeats = transform.Find("FishPlayerPanel").GetComponentsInChildren<SeatItem>();
         MonkeySeats = transform.Find("MonkeyPlayerPanel").GetComponentsInChildren<SeatItem>();
@@ -272,6 +274,10 @@ public class RoomPanel : BasePanel
         //{
         //    uiMng.ShowMessage("人数不够，无法开始游戏! ");
         //}
+        else if (returnCode == ReturnCode.Fail)
+        {
+            uiMng.ShowMessage("还有人在游戏中");
+        }
         else
         {
             uiMng.PushPanelSync(UIPanelType.LoadGame);
@@ -350,6 +356,7 @@ public class RoomPanel : BasePanel
     {
         base.OnResume();
         EnterAnim();
+        updateRoomRequest.SendRequest();
     }
 
     public override void OnPause()

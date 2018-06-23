@@ -28,7 +28,7 @@ public class PlayerManager : BaseManager
             facade.CamFollowTarget(_currentCamGameObject.transform);
         } }
 
-    private List<Player> playerList=new List<Player>();
+    private readonly List<Player> playerList=new List<Player>();
     private Player _localPlayer;
     private Player LocalPlayer { get { return _localPlayer ?? (_localPlayer = GetLocalPlayer()); } }
 
@@ -69,6 +69,7 @@ public class PlayerManager : BaseManager
 
     public void InitPlayerData(UserData ud,List<UserData> userDatas)
     {
+        playerList.Clear();
         foreach (var userData in userDatas)
         {
             Player player = new Player(userData, userData.SeatIndex);
@@ -97,6 +98,8 @@ public class PlayerManager : BaseManager
             HeroData rd = GetHeroDataBySeatIndex(player.SeatIndex);
             GameObject go = null;
             go = Object.Instantiate(rd.RolePrefab, player.SpawnPosition, Quaternion.identity);
+            player.Reference=new GameObject("Player"+player.UserData.Id);
+            player .Reference.transform.SetPositionAndRotation(new Vector3(0,0,0),Quaternion.identity );
             switch (campType)
             {
                 case CampType.Fish:
@@ -120,13 +123,13 @@ public class PlayerManager : BaseManager
             }
             go.AddComponent<PlayerSkill>().SetPlayerMng(this);
             go.AddComponent<PlayerItem>().SetPlayerMng(this);
-            InitPlayerInfo(rd, go);
+            InitPlayerInfo(rd, go,player);
         }
     }
 
     #region Get_Function
 
-    private void InitPlayerInfo(RoleData roleData, GameObject go)
+    private void InitPlayerInfo(RoleData roleData, GameObject go,Player player)
     {
         PlayerInfo pi = go.GetComponent<PlayerInfo>();
         switch (roleData.RoleType)
@@ -135,14 +138,14 @@ public class PlayerManager : BaseManager
             {
                 HeroData rd = roleData as HeroData;
                 pi.Init(rd.Id, rd.CampType, rd.Name, rd.RoleType, rd.Description, rd.Hp, rd.Mp, rd.MoveSpeed,
-                    rd.TurnSpeed, rd.IsSkyVision, rd.attackDamage);
+                    rd.TurnSpeed, rd.IsSkyVision, player,rd.attackDamage);
             }
                 break;
             case RoleType.Pet:
             {
                 PetData rd = (PetData) roleData;
                 pi.Init(rd.Id, rd.CampType, rd.Name, rd.RoleType, rd.Description, rd.Hp, rd.Mp, rd.MoveSpeed,
-                    rd.TurnSpeed, rd.IsSkyVision);
+                    rd.TurnSpeed, rd.IsSkyVision, player);
             }
                 break;
 
@@ -150,7 +153,6 @@ public class PlayerManager : BaseManager
     }
     private HeroData GetHeroDataBySeatIndex(int seatIndex)
     {
-        Debug.Log(seatIndex);
         foreach (var roleData in RoleDataList)
         {
             if(roleData.RoleType==RoleType.Hero)
@@ -264,5 +266,13 @@ public class PlayerManager : BaseManager
             return;
         }
         go.GetComponent<PlayerItem>().StartUseItem(isLocal, item, point);
+    }
+
+    public void GameOver()
+    {
+        _idCount = 0;
+        _localPlayer = null;
+        playerList.Clear();
+        roleGameObjects.Clear();
     }
 }

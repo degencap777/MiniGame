@@ -53,4 +53,9 @@ public class CameraManager : BaseManager
     {
         this.target = target;
     }
+
+    public void GameOver()
+    {
+        followTarget.isFollowPlayer = false;
+    }
 }

@@ -16,20 +16,28 @@ public class SeatItem : MonoBehaviour
     private Image image;
     public Color color;
     private Color defaultColor;
+    private Text readyText;
 
     private Text text;
+
+    private string readyString = null;
 	// Use this for initialization
 	void Awake()
 	{
 	    roomPanel = transform.parent.parent.GetComponent<RoomPanel>();
         transform.Find("ChangeSeatButton").GetComponent<Button>().onClick.AddListener(OnChangeSeatButtonClick);
 	    text = transform.Find("ChangeSeatButton/Text").GetComponent<Text>();
+	    readyText = transform.Find("ReadyText").GetComponent<Text>();
 
         image = transform.Find("Image").GetComponent<Image>();
-	    defaultColor = image.color;
-        color= image.color;
     }
 
+    void Start()
+    {
+        defaultColor = image.color;
+        color = image.color;
+        readyText.text = "";
+    }
     void Update()
     {
         if (isChangeText)
@@ -42,6 +50,11 @@ public class SeatItem : MonoBehaviour
         {
             Clear();
             isClear = false;
+        }
+        if (readyString != null)
+        {
+            readyText.text = readyString;
+            readyString = null;
         }
     }
     public void SetSeatItem(int id)
@@ -65,5 +78,10 @@ public class SeatItem : MonoBehaviour
         id = -1;
         image.color = defaultColor;
         text.text = "加入";
+    }
+
+    public void SetReadyText(string text)
+    {
+        readyString = text;
     }
 }

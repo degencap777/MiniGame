@@ -15,6 +15,15 @@ public class MessagePanel : BasePanel
             ShowMessage(message);
             message = null;
         }
+        SetUiIndex();
+    }
+
+    private void SetUiIndex()
+    {
+        int count = transform.parent.childCount;
+            //参数为物体在当前所在的子物体列表中的顺序
+            //count-1指把child物体在当前子物体列表的顺序设置为最后一个，0为第一个
+        transform.SetSiblingIndex(count - 1);
     }
     public override void OnEnter()
     {

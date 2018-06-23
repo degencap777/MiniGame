@@ -121,10 +121,6 @@ public class GameFacade : MonoBehaviour
         cameraMng.Update();
         resourceManager.Update();
     }
-    void OnDestroy()
-    {
-        DestroyManager();
-    }
 
     #region ResourceGet
     public List<RoleData> GetRoleDataList()
@@ -252,5 +248,12 @@ public class GameFacade : MonoBehaviour
         {
             ((GamePanel)uiMng.GetCurrentPanel()).UseSkillSync(coldTime);
         }
+    }
+
+    public void GameOver()
+    {
+        playerMng.GameOver();
+        cameraMng.GameOver();
+        
     }
 }

@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
-    [Range(0, 11)]
-    public int RoleIndex = -1;
+    
     
     public State CurrentState = State.Idle;
-
-    public int Id { get; set; }
+    public Player Player;
+    public int RoleId { get; set; }
     public CampType CampType { get; set; }
     public string Name { get; set; }
     public RoleType RoleType { get; set; }
@@ -31,10 +30,10 @@ public class PlayerInfo : MonoBehaviour
     }
 
     public void Init(int id, CampType campType, string name, RoleType roleType, string description, int hp, int mp, int moveSpeed,
-        int turnSpeed, bool isSkyVision, int attackDamage=0)
+        int turnSpeed, bool isSkyVision, Player player, int attackDamage=0)
     {
-        this.AttackDamage = attackDamage;
-        Id = id;
+        AttackDamage = attackDamage;
+        RoleId = id;
         CampType = campType;
         Name = name;
         RoleType = roleType;
@@ -44,5 +43,6 @@ public class PlayerInfo : MonoBehaviour
         MoveSpeed = moveSpeed;
         TurnSpeed = turnSpeed;
         IsSkyVision = isSkyVision;
+        Player = player;
     }
 }

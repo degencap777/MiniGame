@@ -19,6 +19,11 @@ public class UpdateRoomRequest : BaseRequest
     {
         base.OnResponse(data);
         Debug.Log("UpdateDATA: "+data);
+        if (data == "null")
+        {
+            roomPanel.OnExitResponse();
+            return;
+        }
         List<UserData> udList=new List<UserData>();
         string[] udStrArray = data.Split('|');
         foreach (var udStr in udStrArray)

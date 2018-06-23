@@ -17,6 +17,7 @@ public class SpeedUp2 : Item
     {
         go = resources;
         go.AddComponent<DestroyForTime>().time = parameters.TryGet("CD");
+        go.transform.parent = owner.GetComponent<PlayerInfo>().Player.Reference.transform;
         go.SetActive(true);
         go.transform.position = Position;
         return true;
@@ -25,7 +26,7 @@ public class SpeedUp2 : Item
     //这个方法会在道具进行过程中不断调用，当返回false表示道具已经完成所有动作
     protected override bool ItemAction()
     {
-        if (timeSinceItemStart < parameters["During"])
+        if (timeSinceItemStart < parameters.TryGet("During"))
         {
 
             return false;

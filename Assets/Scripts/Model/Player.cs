@@ -12,6 +12,7 @@ public class Player {
     public CampType CampType { get; private set; }
     public Vector3 SpawnPosition { get; set; }
     public int currentRoleInstanceId { get; set; }
+    public GameObject Reference;
 
     public Player(UserData userData, int seatIndex)
     {

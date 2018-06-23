@@ -16,8 +16,8 @@ public class SpeedUp : Skill
     protected override bool SkillStart()
     {
         Vector3 dir=new Vector3(Direction.x*2,0, Direction.z*2);
-        Debug.Log(dir);
         go = resources;
+        go.transform.parent = owner.GetComponent<PlayerInfo>().Player.Reference.transform;
         go.transform.position = owner.transform.position+dir;
         go.AddComponent<DestroyForTime>().time = 2;
         return true;
@@ -26,7 +26,7 @@ public class SpeedUp : Skill
     //这个方法会在技能进行过程中不断调用，当返回false表示技能已经完成所有动作
     protected override bool SkillAction()
     {
-        if (timeSinceSkillStart < parameters["During"])
+        if (timeSinceSkillStart < parameters.TryGet("During"))
         {
             return false;
         }
