@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Common;
 using UnityEngine;
 
 public class SpeedUp : Skill
@@ -11,6 +12,7 @@ public class SpeedUp : Skill
     //resources               资源预置体
 
     GameObject go;
+    float time = 0;
 
     //这个方法会在技能发动时调用
     protected override bool SkillStart()
@@ -18,8 +20,9 @@ public class SpeedUp : Skill
         Vector3 dir=new Vector3(Direction.x*2,0, Direction.z*2);
         go = resources;
         go.transform.parent = owner.GetComponent<PlayerInfo>().Player.Reference.transform;
-        go.transform.position = owner.transform.position+dir;
-        go.AddComponent<DestroyForTime>().time = 2;
+        go.transform.position = dir + new Vector3(owner.transform.position.x, 0, owner.transform.position.z);
+        go.AddComponent<DestroyForTime>().time = parameters.TryGet("During");
+        Damage();
         return true;
     }
 
@@ -28,6 +31,12 @@ public class SpeedUp : Skill
     {
         if (timeSinceSkillStart < parameters.TryGet("During"))
         {
+            time += Time.deltaTime;
+            if (time > 1)
+            {
+                time = 0;
+                Damage();
+            }
             return false;
         }
         return true;
@@ -43,5 +52,23 @@ public class SpeedUp : Skill
     public override string GetDescription()
     {
         return "skill " + name + " has no specific description.";
+    }
+
+    private void Damage()
+    {
+        if (go == null) return;
+
+        Collider[] colliders = Physics.OverlapSphere(go.transform.position, 3);
+        foreach (var collider in colliders)
+        {
+            if (collider.tag == "Player")
+            {
+                PlayerInfo pi = collider.GetComponent<PlayerInfo>();
+                if (owner != null && pi.CampType != owner.GetComponent<PlayerInfo>().CampType)
+                {
+                    pi.Damage(3);
+                }
+            }
+        }
     }
 }

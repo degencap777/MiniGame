@@ -9,11 +9,13 @@ public class VisualProvider : MonoBehaviour
     public ushort id = 0;
 
     [Range(0, 500)]
-    public float visualRange = 10;
+    public float visualRange = 3;
 
     public bool showRangeInEidtor = true;
 
     public bool active = true;
+
+    public bool noOcclusion = false;
 
     private VisualManager visualManager;
     void Start()

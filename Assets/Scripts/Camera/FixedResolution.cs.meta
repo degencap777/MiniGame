@@ -1,15 +1,7 @@
 fileFormatVersion: 2
-guid: f3be6197e56a23b40a90baf2a24d646a
-labels:
-- float
-- rotate
-- bob
-- powerup
-- colectable
-- floatate
-- perflexive
-timeCreated: 18446744011573954816
+guid: 6b6548a3b573b02418ddf84b95882e73
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences: []
   executionOrder: 0

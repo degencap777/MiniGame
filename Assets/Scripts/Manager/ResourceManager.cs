@@ -15,12 +15,24 @@ public class ResourceManager : BaseManager {
     private List<HeroData> _heroDataList;
     public List<HeroData> HeroDataList { get { return isHeroDataLoaded ? _heroDataList : null; } }
 
+    public Dictionary<string, GameObject> EffectDict
+    {
+        get
+        {
+            return _effectDict;
+        }
+    }
+
+    private Dictionary<string ,GameObject> _effectDict;
+
     public bool IsRoleDataLoaded = false;
     private bool isHeroDataLoaded = false;
+    public bool IsEffectDataLoaded = false;
     public override void OnInit()
     {
         base.OnInit();
         ParseRoleDataJson();
+        ParseEffectJson();
     }
     
     public override void Update()
@@ -105,5 +117,20 @@ public class ResourceManager : BaseManager {
         }
         IsRoleDataLoaded = true;
     }
-    
+
+    void ParseEffectJson()
+    {
+        _effectDict = new Dictionary<string, GameObject>();
+        TextAsset itemText = Resources.Load<TextAsset>("Json/EffectData");
+        JsonData itemsData = JsonMapper.ToObject(itemText.text);
+        RoleData roleData = null;
+        foreach (JsonData itemData in itemsData)
+        {
+            string name = itemData["name"].ToString();
+            string path = itemData["path"].ToString();
+            GameObject prefab = Resources.Load<GameObject>(path + name);
+            _effectDict.Add(name,prefab);
+        }
+        IsEffectDataLoaded = true;
+    }
 }

@@ -28,7 +28,6 @@ public class StartPlayRequest : BaseRequest
     public override void OnResponse(string data)
     {
         base.OnResponse(data);
-        Debug.Log(data);
         //Debug.Log(Enum.GetName(typeof(UIPanelType), facade.GetCurrentPanelType()));
         campType = (CampType) int.Parse(data);
         isStartPlaying = true;

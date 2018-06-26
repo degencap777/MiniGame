@@ -11,8 +11,10 @@ public class Player {
     public bool IsLocal { get; set; }
     public CampType CampType { get; private set; }
     public Vector3 SpawnPosition { get; set; }
-    public int currentRoleInstanceId { get; set; }
+    public int CurrentRoleInstanceId { get; set; }
     public GameObject Reference;
+    public Vector3 DeadPostion { get; set; }
+    public GameObject Dead { get; set; }
 
     public Player(UserData userData, int seatIndex)
     {

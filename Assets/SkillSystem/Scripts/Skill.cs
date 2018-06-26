@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Skill
 {
     public SkillManager sm;
+    public PlayerManager PlayerManager { get { return sm.PlayerManager; } }
 
     public delegate int SkillDelegate();
 

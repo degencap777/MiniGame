@@ -65,6 +65,7 @@ public class GameFacade : MonoBehaviour
     void Start()
     {
         Init();
+        //gameObject.AddComponent<Test>();
     }
 
     // Update is called once per frame
@@ -79,6 +80,10 @@ public class GameFacade : MonoBehaviour
         if (EasyTouch.current != null)
         {
             Debug.Log(EasyTouch.current.type);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            DebugConsole.Clear();
         }
     }
 
@@ -130,6 +135,11 @@ public class GameFacade : MonoBehaviour
     public List<HeroData> GetHeroDataList()
     {
         return resourceManager.HeroDataList;
+    }
+
+    public Dictionary<string, GameObject> GetEffectDict()
+    {
+        return resourceManager.EffectDict;
     }
 
     #endregion
@@ -250,6 +260,10 @@ public class GameFacade : MonoBehaviour
         }
     }
 
+    public Player GetLocalPlayer()
+    {
+        return playerMng.LocalPlayer;
+    }
     public void GameOver()
     {
         playerMng.GameOver();

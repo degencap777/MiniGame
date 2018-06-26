@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using DG.Tweening;
 
 public class PlayerMove : MonoBehaviour
@@ -18,6 +19,11 @@ public class PlayerMove : MonoBehaviour
     private Animator anim;
     public bool IsLocal = false;
     private PlayerSkill playerSkill;
+    private bool isDeadLimit = false;
+
+    //Dead
+    Vector3 deadPosition=Vector3.zero;
+    private float radius = 0;
 
     // Use this for initialization
     void Start()
@@ -47,6 +53,13 @@ public class PlayerMove : MonoBehaviour
                 playerInfo.CurrentState = PlayerInfo.State.Idle;
             }
         }
+        if (isDeadLimit)
+        {
+            if (Vector3.Distance(transform.position, deadPosition) >= radius)
+            {
+                transform.position = deadPosition;
+            }
+        }
     }
     
     private void Move()
@@ -64,6 +77,14 @@ public class PlayerMove : MonoBehaviour
     public PlayerMove SetPlayerMng(PlayerManager playerMng)
     {
         this.playerManager = playerMng;
+        return this;
+    }
+
+    public PlayerMove AddLimit(Vector3 deadPosition,float radius)
+    {
+        this.deadPosition = deadPosition;
+        this.radius = radius;
+        isDeadLimit = true;
         return this;
     }
 }

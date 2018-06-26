@@ -53,13 +53,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newSkillName: "\u52A0\u901F"
   newSkillClassName: NewSkill
-  resources: {fileID: 1157229359355338, guid: f47f7ebc1aa6aff4d8b7a070fbf79463, type: 2}
+  resources: {fileID: 1410349962421396, guid: f47f7ebc1aa6aff4d8b7a070fbf79463, type: 2}
   parameterCount: 1
   parameterName:
   - During
   - CD
   - Rate
+  - Distance
   parameterValue:
-  - 5
-  - 40
+  - 3
+  - 3
   - 0.3
+  - 1

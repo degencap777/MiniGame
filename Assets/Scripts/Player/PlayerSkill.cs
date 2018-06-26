@@ -46,7 +46,7 @@ public class PlayerSkill : MonoBehaviour
 
     private void UseSkill(Skill skill=null)
     {
-        if (joystickColdTime != 0)
+        if (joystickColdTime != 0&&playerInfo.Player.IsLocal)
             GameFacade.Instance.UseSkillSync(joystickColdTime);
         if (skill == null)
         {

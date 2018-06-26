@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Common;
 using HedgehogTeam.EasyTouch;
 using UnityEngine;
@@ -15,7 +16,6 @@ public class GamePanel : BasePanel
     private StartPlayRequest startPlayRequest;
     private QuitBattleRequest quitBattleRequest;
     private Knapsack knapsack;
-    private SkillJoystickItem skillJoystickItem;
     private Text timer;
     private bool isShowTimer = false;
     private string time = null;
@@ -30,6 +30,14 @@ public class GamePanel : BasePanel
 
     private float gameOverTimer = 0;
     private Button closeButton;
+
+    private SkillJoystickItem skillJoystickItem;
+    private SkillItem skillItem;
+
+    public CampType CampType = CampType.Middle;
+
+    private int deadCount = 0;
+    
     
     void Awake()
     {
@@ -39,7 +47,10 @@ public class GamePanel : BasePanel
         gameOverRequest = GetComponent<GameOverRequest>();
         quitBattleRequest = GetComponent<QuitBattleRequest>();
         knapsack = transform.Find("KnapsackPanel").GetComponent<Knapsack>();
+
         skillJoystickItem = transform.Find("SkillJoystickItem").GetComponent<SkillJoystickItem>();
+        skillItem = transform.Find("SkillItem").GetComponent<SkillItem>();
+
         timer = transform.Find("TimerPanel/Time").GetComponent<Text>();
         gameOverText = transform.Find("GameOverPanel/GameOver").GetComponent<Text>();
         closeButton=transform.Find("GameOverPanel/CloseButton").GetComponent<Button>();
@@ -64,32 +75,14 @@ public class GamePanel : BasePanel
 	    }
 	    if (returnCode!=ReturnCode.NotFind)
 	    {
-	        gameOverTimer += Time.deltaTime;
-	        if (gameOverTimer < 2)
-	        {
-	            gameOverText.text = "GameOver";
-	            gameOverText.color = gameOver;
-	        }
-            else if (gameOverTimer < 4)
-	        {
-                switch (returnCode)
-                {
-                    case ReturnCode.Win:
-                        gameOverText.color = win;
-                        break;
-                    default:
-                        gameOverText.color = lose;
-                        break;
-                }
-
-                gameOverText.text = returnCode.ToString();
-	        }
-	        else
-	        {
-	            closeButton.gameObject.SetActive(true);
-	        }
+	        GameOver();
 	    }
-	}
+        if (deadCount == 2)
+        {
+            gameOverRequest.SendRequest();
+            deadCount = 0;
+        }
+    }
 
     internal void ShowTimerSync(int time)
     {
@@ -99,6 +92,35 @@ public class GamePanel : BasePanel
         isShowTimer = true;
     }
 
+    private void GameOver()
+    {
+        facade.GameOver();
+        gameOverTimer += Time.deltaTime;
+        gameOverText.transform.parent.GetComponent<Image>().raycastTarget = true;
+        if (gameOverTimer < 2)
+        {
+            gameOverText.text = "GameOver";
+            gameOverText.color = gameOver;
+        }
+        else if (gameOverTimer < 4)
+        {
+            switch (returnCode)
+            {
+                case ReturnCode.Win:
+                    gameOverText.color = win;
+                    break;
+                case ReturnCode.Lose:
+                    gameOverText.color = lose;
+                    break;
+            }
+
+            gameOverText.text = returnCode.ToString();
+        }
+        else
+        {
+            closeButton.gameObject.SetActive(true);
+        }
+    }
     public void GameOverAsync(ReturnCode returnCode,Result result=null)
     {
         this.returnCode = returnCode;
@@ -112,8 +134,8 @@ public class GamePanel : BasePanel
         uiMng.PopPanel();
         uiMng.DestroyPanel(UIPanelType.Game);
         uiMng.DestroyPanel(UIPanelType.LoadGame);
-        facade.GameOver();
         SceneManager.LoadScene("Main");
+        facade.GameOver();
     }
     public void UseSkill(string skillName,string axis=null)
     {
@@ -137,8 +159,37 @@ public class GamePanel : BasePanel
     public void SetPlayer(GameObject player)
     {
         knapsack.Player = player;
+        if(player!=null)
+            knapsack.gameObject.SetActive(true);
     }
 
+    public void Die(Player player)
+    {
+        if (player.IsLocal)
+        {
+            skillJoystickItem.gameObject.SetActive(false);
+            skillItem.gameObject.SetActive(false);
+            SetPlayer(null);
+        }
+        if (player.CampType == CampType.Fish)
+        {
+            deadCount++;
+        }
+    }
+
+    public void Revive(Player player,GameObject go)
+    {
+        if (player.IsLocal)
+        {
+            skillJoystickItem.gameObject.SetActive(true);
+            skillItem.gameObject.SetActive(true);
+            SetPlayer(go);
+        }
+        if (player.CampType == CampType.Fish)
+        {
+            deadCount--;
+        }
+    }
     public override void OnExit()
     {
         base.OnExit();

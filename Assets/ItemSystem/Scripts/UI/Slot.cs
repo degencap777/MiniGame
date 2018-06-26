@@ -125,6 +125,16 @@ public class Slot : MonoBehaviour
         knapsack.OnSlotClick(this);
     }
 
+    public void Clear()
+    {
+        Amount = 0;
+        Item = null;
+        Button.interactable = false;
+        coldTime = 0;
+        pickedImage.SetActive(false);
+        amountText.text = "";
+        Hide();
+    }
 
     public void UseItem(int amount = 1)
     {

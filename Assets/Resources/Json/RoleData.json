@@ -18,7 +18,7 @@
   {
     "id": 1,
     "campType": "Monkey",
-    "name": "Monkey1",
+    "name": "Monkey0",
     "roleType": "Hero",
     "description": "熊",
     "path": "Prefabs/Roles/Heros/",
@@ -29,7 +29,7 @@
     "isSkyVision": "false",
 
     "attackDamage": 50,
-    "seatIndex": [ 8,9,10 ]
+    "seatIndex": [ 8, 9, 10 ]
   },
   {
     "id": 2,
@@ -43,6 +43,32 @@
     "moveSpeed": 2,
     "turnSpeed": 3,
     "isSkyVision": "true"
+  },
+  {
+    "id": 3,
+    "campType": "Fish",
+    "name": "Dead0",
+    "roleType": "Pet",
+    "description": "死鱼",
+    "path": "Prefabs/Roles/Pets/",
+    "hp": 10,
+    "mp": 0,
+    "moveSpeed": 1,
+    "turnSpeed": 2,
+    "isSkyVision": "false"
+  },
+  {
+    "id": 4,
+    "campType": "Monkey",
+    "name": "MonkeyPet0",
+    "roleType": "Pet",
+    "description": "猴子派来的救兵",
+    "path": "Prefabs/Roles/Pets/",
+    "hp": 50,
+    "mp": 0,
+    "moveSpeed": 4,
+    "turnSpeed": 2,
+    "isSkyVision": "false"
   }
 
 ]

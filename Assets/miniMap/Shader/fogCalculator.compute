@@ -34,6 +34,7 @@ void Main(uint3 id : SV_DispatchThreadID)
 	float2 uv = (viewProviders[id.x].xy + float2(1,1))/2;
 	float range = viewProviders[id.x].w * scale * resolution;
 	int intRange = floor(range)+1;
+	float hasOcclusion = viewProviders[id.x].z;
 	float range2 = range * range;
 
 	int2 pos = int2(uv*resolution);
@@ -48,7 +49,7 @@ void Main(uint3 id : SV_DispatchThreadID)
 		int mul = 1.0/diffDistance;
 		for (int j = 0; j < intRange * mul; j++) {
 			int2 workPoint = floor(offset) + pos;
-			if (_OcclusionMap[workPoint].r) {
+			if (_OcclusionMap[workPoint].r && hasOcclusion) {
 				noOcc = 0;
 			}
 			if (noOcc == 0 && _OcclusionMap[workPoint].r == 0) {

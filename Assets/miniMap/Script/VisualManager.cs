@@ -96,6 +96,7 @@ public class VisualManager : MonoBehaviour {
                 {
                     if (pos.x > 1.2 || pos.y > 1.2 || pos.x < -1.2 || pos.y < -1.2)
                         continue;
+                    pos.z = vp.noOcclusion ? 0 : 1;
                     vPList.Add(pos);
                 }
             }

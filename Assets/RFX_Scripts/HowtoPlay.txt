@@ -1,7 +1,0 @@
-
-Tip.
-
-LeftMouseClick : Next Particle
-
-RightMouseClick : Replay Particle
-

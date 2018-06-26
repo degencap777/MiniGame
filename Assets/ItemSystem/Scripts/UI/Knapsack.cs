@@ -35,6 +35,15 @@ public class Knapsack : Inventory
 
     void Update()
     {
+        if (Player == null)
+        {
+            foreach (Slot slot in slotlList)
+            {
+                slot.Clear();
+            }
+            gameObject.SetActive(false);
+            return;
+        }
         Gesture current = EasyTouch.current;
         if (copy != null)
         {

@@ -9,9 +9,9 @@ public class VisualTest : MonoBehaviour {
 
     public float testRadius = 20f;
 
-    public bool autoTest = false;
+    public bool autoTest = true;
 
-    public bool autoHideWhenOutOfVisual = false;
+    public bool autoHideWhenOutOfVisual = true;
 
     public bool showTestRadiusInEditor = true;
     public bool showTestRayInEditor = true;
@@ -19,7 +19,6 @@ public class VisualTest : MonoBehaviour {
     private MeshRenderer mr;
 
     void Start() {
-        gameObject.tag = "needTest";
         mr = GetComponent<MeshRenderer>();
     }
 

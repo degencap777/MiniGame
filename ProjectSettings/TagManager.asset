@@ -8,11 +8,11 @@ TagManager:
   - Terrain
   - Fow
   - visualManager
-  - needTest
   - Fish
   - Monkey
   - SkillManager
   - ItemManager
+  - RemovableCube
   layers:
   - Default
   - TransparentFX

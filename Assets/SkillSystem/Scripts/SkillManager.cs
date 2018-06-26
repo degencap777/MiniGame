@@ -10,7 +10,7 @@ using System.Text;
 public class SkillManager : MonoBehaviour {
 
     protected Dictionary<string, Skill> loadedSkills = new Dictionary<string, Skill>();
-
+    public PlayerManager PlayerManager;
 
 
     // 该方法通过技能类返回对应技能实例
@@ -51,8 +51,7 @@ public class SkillManager : MonoBehaviour {
 
         Debug.Log("SkillManager: " + user.ToString()+" uses skill " + skillClassName);
     }
-
-
+    
 
 
 
