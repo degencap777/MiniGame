@@ -185,12 +185,12 @@ public class GameFacade : MonoBehaviour
         audioMng.PlayNormalSound(soundName);
     }
     
+    
 
-    public Transform GetCurrentCamTarget()
+    public GameObject GetCurrentOpTarget()
     {
-        return playerMng.GetCurrentCamTarget();
+        return playerMng.GetCurrentOpTarget();
     }
-
     public void SetUserData(UserData ud)
     {
         playerMng.UserData = ud;
@@ -218,17 +218,13 @@ public class GameFacade : MonoBehaviour
         playerMng.SpawnRoles(campType);
     }
 
-    public void FollowCurrentTarget()
+    public void SetCurrentRole(GameObject go)
     {
-        cameraMng.FollowCurrentTarget();
+        playerMng.SetCurrentRole(go);
     }
-    public void CamFollowTarget(Transform target)
+    public void SetCurrentRole(int instanceid)
     {
-        cameraMng.FollowTartget(target);
-    }
-    public void SetCamTarget(Transform target)
-    {
-        cameraMng.SetTarget(target);
+        playerMng.SetCurrentRole(instanceid);
     }
     public void InitPlayerData(UserData ud, List<UserData> userDatas)
     {

@@ -13,8 +13,8 @@ public class HeroData:RoleData
     public int attackDamage { get; set; }
 
     public HeroData(int id, CampType campType, string name, RoleType roleType, string description, string path, int hp, int mp, int moveSpeed, 
-        int turnSpeed, bool isSkyVision, List<int> seatIndex, int attackDamage) :base( id,  campType,  name,  roleType,  description, path,
-            hp, mp, moveSpeed, turnSpeed, isSkyVision)
+        int turnSpeed, bool isSkyVision, List<int> seatIndex, int attackDamage,string imagePath) :base( id,  campType,  name,  roleType,  description, path,
+            hp, mp, moveSpeed, turnSpeed, isSkyVision,imagePath)
     {
         this.seatIndex = seatIndex;
         this.attackDamage = attackDamage;

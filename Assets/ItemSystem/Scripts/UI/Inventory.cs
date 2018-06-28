@@ -45,6 +45,10 @@ public class Inventory : MonoBehaviour
 	    //_pickedItem.Hide();
     }
 
+    public virtual void Update()
+    {
+        if (canvasGroup.alpha == 0) return;
+    }
     public void ShowToolTip(string content)
     {
         if (_isPickedItem) return;

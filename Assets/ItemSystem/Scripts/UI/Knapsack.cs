@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Knapsack : Inventory
 {
 
-    public GameObject Player;
+    public GameObject Role { get { return gamePanel.Role; } }
     private Transform copy;
     private float rotSpeed = 30;
     private GameObject _menu;
@@ -18,6 +18,7 @@ public class Knapsack : Inventory
     private LayerMask mask = 1 << 18;
     private ItemManager itemManager;
     private GamePanel gamePanel;
+
     
     public override void Start()
     {
@@ -33,17 +34,12 @@ public class Knapsack : Inventory
         HideMenu();
     }
 
-    void Update()
+    
+
+    public override void Update()
     {
-        if (Player == null)
-        {
-            foreach (Slot slot in slotlList)
-            {
-                slot.Clear();
-            }
-            gameObject.SetActive(false);
+        if (Role == null)
             return;
-        }
         Gesture current = EasyTouch.current;
         if (copy != null)
         {
@@ -61,6 +57,14 @@ public class Knapsack : Inventory
                     //UseItem();
                 }
             }
+        }
+    }
+
+    public void Clear()
+    {
+        foreach (Slot slot in slotlList)
+        {
+            slot.Clear();
         }
     }
     //Slot来调用
@@ -90,12 +94,12 @@ public class Knapsack : Inventory
         else
         {
             PickedImage.SetActive(true);
-            if (Player != null)
+            if (Role != null)
             {
                 GameObject resource = Instantiate(pickedItem.Prefab);
                 copy = resource.transform.Find("PickedItem");
-                copy.parent = Player.transform;
-                copy.position = Player.transform.position + new Vector3(0, 1, 0);
+                copy.parent = Role.transform;
+                copy.position = Role.transform.position + new Vector3(0, 1, 0);
                 copy.localScale = new Vector3(0.4f, 0.4f, 0.4f);
                 copy.gameObject.SetActive(true);
                 Destroy(resource);

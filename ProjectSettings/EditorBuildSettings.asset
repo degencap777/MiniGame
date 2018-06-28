@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: ddb7b383ff27c5345bd054eeb8b7f07f
+  - enabled: 0
+    path: Assets/miniMap/Example.unity
+    guid: 7bc28a18f365d044897f0faeba6f5e9a
   m_configObjects: {}

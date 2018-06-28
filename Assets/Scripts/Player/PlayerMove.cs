@@ -17,7 +17,6 @@ public class PlayerMove : MonoBehaviour
     private Rigidbody rb;
     private PlayerInfo playerInfo;
     private Animator anim;
-    public bool IsLocal = false;
     private PlayerSkill playerSkill;
     private bool isDeadLimit = false;
 
@@ -38,7 +37,7 @@ public class PlayerMove : MonoBehaviour
     void FixedUpdate()
     {
         //if (anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded") == false) return;
-        if (IsGrounded())
+        if (IsGrounded()&&playerInfo.Player.CurrentRoleInstanceId==playerInfo.InstanceId)
         {
             float h = JoyStick.axisY.axisValue;
             float v = JoyStick.axisX.axisValue;
@@ -53,6 +52,8 @@ public class PlayerMove : MonoBehaviour
                 playerInfo.CurrentState = PlayerInfo.State.Idle;
             }
         }
+        //TODO 动态寻路
+
         if (isDeadLimit)
         {
             if (Vector3.Distance(transform.position, deadPosition) >= radius)

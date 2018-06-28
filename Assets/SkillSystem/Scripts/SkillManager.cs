@@ -149,5 +149,33 @@ public class SkillManager : MonoBehaviour {
     }
     
 
-    static string classTemplate = "using System.Collections;\nusing System.Collections.Generic;\nusing UnityEngine;\n\npublic class _NewSkillClassName_ : Skill\n{\n    //timeSinceSkillStart     技能从发动以来经过的时间\n    //owner                   技能发动者\n    //name                    技能名(不是类名，是游戏中想要展示的名字)\n    //parameters              可调技能参数的字典\n//resources               资源预置体\n\n\n\n    //这个方法会在技能发动时调用,返回值为false则发动失败，不会调用后续方法\n    protected override void SkillStart()\n    {\n\n    }\n\n    //这个方法会在技能进行过程中不断调用，当返回true表示技能已经完成所有动作\n    protected override bool SkillDidAction()\n    {\n        return false;\n    }\n\n    //这个方法会在技能结束时调用\n    protected override void SkillDidEnd()\n    {\n\n    }\n    //您可以通过该方法提供一个技能的详细描述，您可以通过在文字中嵌入属性字典中的值来避免反复修改代码。\n    public override string GetDescription()\n    {\n        return \"skill \" + name + \" has no specific description.\";\n    }\n}";
+    static string classTemplate = "using System.Collections;\n" +
+                                  "using System.Collections.Generic;\n" +
+                                  "using UnityEngine;\n\n" +
+                                  "public class _NewSkillClassName_ : Skill\n" +
+                                  "{\n" +
+                                  "    //timeSinceSkillStart     技能从发动以来经过的时间\n" +
+                                  "    //owner                   技能发动者\n" +
+                                  "    //name                    技能名(不是类名，是游戏中想要展示的名字)\n" +
+                                  "    //parameters              可调技能参数的字典\n" +
+                                  "//resources               资源预置体\n\n\n\n" +
+                                  "    //这个方法会在技能发动时调用,返回值为false则发动失败，不会调用后续方法\n" +
+                                  "    protected override bool SkillStart()\n" +
+                                  "    {\n\n" +
+                                  "         return true;"+
+                                  "    }\n\n" +
+                                  "    //这个方法会在技能进行过程中不断调用，当返回true表示技能已经完成所有动作\n" +
+                                  "    protected override bool SkillAction()\n" +
+                                  "    {\n" +
+                                  "        return false;\n" +
+                                  "    }\n\n" +
+                                  "    //这个方法会在技能结束时调用\n" +
+                                  "    protected override void SkillEnd()\n" +
+                                  "    {\n\n" +
+                                  "    }\n" +
+                                  "    //您可以通过该方法提供一个技能的详细描述，您可以通过在文字中嵌入属性字典中的值来避免反复修改代码。\n" +
+                                  "    public override string GetDescription()\n" +
+                                  "    {\n" +
+                                  "        return \"skill \" + name + \" has no specific description.\";\n" +
+                                  "    }\n}";
 }

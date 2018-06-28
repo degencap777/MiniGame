@@ -12,8 +12,31 @@ public class CameraManager : BaseManager
     private FollowTarget followTarget;
     private Vector3 originelPosition;
     private Vector3 originelRotation;
-    private Transform target;
-    
+
+    private Transform _target;
+
+    public Transform Target
+    {
+        get
+        {
+            if (_target == null)
+            {
+                if (facade.GetCurrentOpTarget() != null)
+                {
+                    _target = facade.GetCurrentOpTarget().transform;
+                    FollowCurrentTarget();
+                }
+            }
+            else if (_target != facade.GetCurrentOpTarget())
+            {
+                _target = facade.GetCurrentOpTarget() == null ? null : facade.GetCurrentOpTarget().transform;
+                FollowCurrentTarget();
+            }
+            return _target;
+        }
+    }
+
+
     public override void OnInit()
     {
         base.OnInit();
@@ -22,15 +45,21 @@ public class CameraManager : BaseManager
         followTarget = cameraGO.GetComponent<FollowTarget>();
     }
 
-    public void FollowTartget(Transform target)
+    public override void Update()
     {
-        this.target = target;
-        FollowCurrentTarget();
+        base.Update();
+        if (Target == null)
+        {
+            StopFollowTarget();
+        }
     }
     public void FollowCurrentTarget()
     {
-        followTarget.target = target;
-        followTarget.isFollowPlayer = true;
+        followTarget.target = _target;
+        if (_target == null)
+            StopFollowTarget();
+        else
+            followTarget.isFollowPlayer = true;
         cameraAnim.enabled = false;
     }
 
@@ -48,12 +77,13 @@ public class CameraManager : BaseManager
     //{
     //    cameraGO= Camera.main.gameObject;
     //}
-
-    public void SetTarget(Transform target)
+    /// <summary>
+    /// 应该用不到
+    /// </summary>
+    public void StopFollowTarget()
     {
-        this.target = target;
+        followTarget.isFollowPlayer = false;
     }
-
     public void GameOver()
     {
         followTarget.isFollowPlayer = false;

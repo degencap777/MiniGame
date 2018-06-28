@@ -25,9 +25,6 @@ GameObject:
   - component: {fileID: 54701476472114144}
   - component: {fileID: 114016223454475806}
   - component: {fileID: 95929257377614780}
-  - component: {fileID: 114239451282775802}
-  - component: {fileID: 114334041777524350}
-  - component: {fileID: 114901350371122616}
   m_Layer: 0
   m_Name: MonkeyPet0
   m_TagString: Player
@@ -209,46 +206,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentState: 0
---- !u!114 &114239451282775802
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1057721903175890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 797a06422e9059849a0f06fb173cdac9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  initSkills:
-  - SpeedUp
---- !u!114 &114334041777524350
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1057721903175890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3decc9ad0af600042b6d5cf8369c0869, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  initItems:
-  - SpeedUp2
---- !u!114 &114901350371122616
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1057721903175890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef8c85e2a104f3418d7808bdfc9cf9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Slot1: {fileID: 0}
-  Slot2: {fileID: 0}
-  ItemManager: {fileID: 0}
+  RoleId: 0
+  CampType: 0
+  Name: 
+  RoleType: 0
+  Description: 
+  Hp: 0
+  CurrentHp: 0
+  Mp: 0
+  CurrentMp: 0
+  MoveSpeed: 0
+  TurnSpeed: 0
+  IsSkyVision: 0
+  AttackDamage: 0
+  InstanceId: 0
 --- !u!135 &135819613145094640
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using Common;
 using HedgehogTeam.EasyTouch;
@@ -15,6 +16,8 @@ public class GamePanel : BasePanel
     private GameOverRequest gameOverRequest;
     private StartPlayRequest startPlayRequest;
     private QuitBattleRequest quitBattleRequest;
+
+    public Dictionary<string, GameObject> EffectDict { get; private set; }
     private Knapsack knapsack;
     private Text timer;
     private bool isShowTimer = false;
@@ -33,12 +36,40 @@ public class GamePanel : BasePanel
 
     private SkillJoystickItem skillJoystickItem;
     private SkillItem skillItem;
+    private Transform roleSelectPanel;
 
-    public CampType CampType = CampType.Middle;
-
+    public CampType CampType { get; private set; }
+    private GameObject _role;
+    public GameObject Role
+    {
+        get
+        {
+            if (_role == null)
+            {
+                _role = facade.GetCurrentOpTarget();
+                if(_role!=null)
+                    SetPlayer(_role);
+            }
+            else if(_role != facade.GetCurrentOpTarget())
+            {
+                Debug.Log("GamePanel改变Role");
+                _role = facade.GetCurrentOpTarget();
+                SetPlayer(_role);
+            }
+            return _role;
+        }
+    }
+    
     private int deadCount = 0;
-    
-    
+
+    private Dictionary<int,GameObject> headDict=new Dictionary<int, GameObject>();
+
+    public GamePanel()
+    {
+        CampType = CampType.Middle;
+    }
+
+
     void Awake()
     {
         Joystick = transform.Find("Joystick").GetComponent<ETCJoystick>();
@@ -50,11 +81,14 @@ public class GamePanel : BasePanel
 
         skillJoystickItem = transform.Find("SkillJoystickItem").GetComponent<SkillJoystickItem>();
         skillItem = transform.Find("SkillItem").GetComponent<SkillItem>();
+        roleSelectPanel = transform.Find("RoleSelectPanel");
 
         timer = transform.Find("TimerPanel/Time").GetComponent<Text>();
         gameOverText = transform.Find("GameOverPanel/GameOver").GetComponent<Text>();
         closeButton=transform.Find("GameOverPanel/CloseButton").GetComponent<Button>();
         closeButton.onClick.AddListener(OnCloseClick);
+
+        EffectDict = facade.GetEffectDict();
     }
 
     void Start()
@@ -82,7 +116,15 @@ public class GamePanel : BasePanel
             gameOverRequest.SendRequest();
             deadCount = 0;
         }
-    }
+	    if (headDict.Count > 0)
+	    {
+	        roleSelectPanel.gameObject.SetActive(true);
+	    }
+	    else
+	    {
+	        roleSelectPanel.gameObject.SetActive(false);
+        }
+	}
 
     internal void ShowTimerSync(int time)
     {
@@ -121,6 +163,7 @@ public class GamePanel : BasePanel
             closeButton.gameObject.SetActive(true);
         }
     }
+
     public void GameOverAsync(ReturnCode returnCode,Result result=null)
     {
         this.returnCode = returnCode;
@@ -137,6 +180,7 @@ public class GamePanel : BasePanel
         SceneManager.LoadScene("Main");
         facade.GameOver();
     }
+
     public void UseSkill(string skillName,string axis=null)
     {
         facade.UseSkill(skillName,axis);
@@ -146,6 +190,7 @@ public class GamePanel : BasePanel
     {
         skillJoystickItem.UseSkillSync(coldTime);
     }
+
     public void UseItem(string itemName, string point = null)
     {
         facade.UseItem(itemName, point);
@@ -156,40 +201,117 @@ public class GamePanel : BasePanel
         knapsack.UseItemSync(isUse);
     }
 
-    public void SetPlayer(GameObject player)
+    private void SetInteractive(bool active)
     {
-        knapsack.Player = player;
-        if(player!=null)
-            knapsack.gameObject.SetActive(true);
+        int alpha = active ? 1 : 0;
+        knapsack.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
+        knapsack.gameObject.GetComponent<CanvasGroup>().interactable = active;
+        skillItem.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
+        skillItem.gameObject.GetComponent<CanvasGroup>().interactable = active;
+        skillJoystickItem.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
+        skillJoystickItem.GetComponent<ETCJoystick>().activated = active;
     }
-
-    public void Die(Player player)
+    public void Die(GameObject go)
     {
-        if (player.IsLocal)
+        PlayerInfo pi = go.GetComponent<PlayerInfo>();
+        if (pi.Player.IsLocal)
         {
-            skillJoystickItem.gameObject.SetActive(false);
-            skillItem.gameObject.SetActive(false);
-            SetPlayer(null);
+            if (pi.RoleType == RoleType.Hero)
+            {
+                knapsack.Clear();
+                SetInteractive(false);
+                foreach (GameObject head in headDict.Values)
+                {
+                    Destroy(head);
+                }
+            }
+            else
+            {
+                Destroy(headDict[pi.InstanceId]);
+            }
         }
-        if (player.CampType == CampType.Fish)
+        if (pi.Player.CampType == CampType.Fish )
         {
             deadCount++;
         }
     }
-
-    public void Revive(Player player,GameObject go)
+    /// <summary>
+    /// 只有英雄能复活
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="go"></param>
+    public void Revive(GameObject go)
     {
-        if (player.IsLocal)
-        {
-            skillJoystickItem.gameObject.SetActive(true);
-            skillItem.gameObject.SetActive(true);
-            SetPlayer(go);
-        }
-        if (player.CampType == CampType.Fish)
+        PlayerInfo pi = go.GetComponent<PlayerInfo>();
+        Player player = pi.Player;
+        SetPlayer(go);
+        if (player.CampType == CampType.Fish&& pi.RoleType == RoleType.Hero)
         {
             deadCount--;
         }
     }
+
+    public void SetCamp(CampType campType)
+    {
+        this.CampType = campType;
+    }
+
+    /// <summary>
+    /// Player不能为空
+    /// </summary>
+    /// <param name="player"></param>
+    public void SetPlayer(GameObject player)
+    {
+        if (player==null||player.GetComponent<PlayerInfo>().Player.IsLocal == false) return;
+        PlayerInfo pi = player.GetComponent<PlayerInfo>();
+        if (headDict.TryGet(pi.InstanceId) == null)
+        {
+            AddHeadImage(player);
+        }
+        if (pi.RoleType != RoleType.Hero)
+        {
+            SetInteractive(false);
+            return;
+        }
+        SetInteractive(true);
+
+        switch (CampType)
+        {
+            case CampType.Monkey:
+                switch (pi.Name)
+                {
+                    case "Monkey0":
+                        skillItem.SkillName = "SpeedUp";
+                        skillJoystickItem.SkillName = "Summon";
+                        break;
+                    case "Monkey1":
+                        break;
+                    case "Monkey2":
+                        break;
+                }
+                break;
+            case CampType.Fish:
+                skillItem.SkillName = "SpeedUp";
+                skillJoystickItem.SkillName = "Blink";
+                break;
+            case CampType.Middle:
+                break;
+        }
+    }
+
+    private void AddHeadImage(GameObject player)
+    {
+        if (headDict.ContainsKey(player.GetComponent<PlayerInfo>().InstanceId)) return;
+        GameObject go = Instantiate(player.GetComponent<PlayerInfo>().RoleData.HeadPrefab, roleSelectPanel);
+        headDict.Add(player.GetComponent<PlayerInfo>().InstanceId, go);
+        go.AddComponent<HeadItem>().SetGamePanel(this,player);
+    }
+
+    public void RemoveHeadItem(int instanceId)
+    {
+        headDict.Remove(instanceId);
+    }
+
     public override void OnExit()
     {
         base.OnExit();

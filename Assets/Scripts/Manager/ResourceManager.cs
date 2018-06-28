@@ -71,6 +71,7 @@ public class ResourceManager : BaseManager {
             int moveSpeed = (int)itemData["moveSpeed"];
             int turnSpeed = (int)itemData["turnSpeed"];
             bool isSkyVision = itemData["isSkyVision"].ToString() == "true";
+            string imagePath = itemData["imagePath"].ToString();
             switch (campType)
             {
                 case CampType.Fish:
@@ -84,10 +85,10 @@ public class ResourceManager : BaseManager {
                                 seatIndexList.Add((int)seatIndex);
                             }
                             int attackDamage = (int)itemData["attackDamage"];
-                            roleData=new HeroData(id,campType,name, roleType,description,path,hp,mp,moveSpeed,turnSpeed,isSkyVision,seatIndexList,attackDamage);
+                            roleData=new HeroData(id,campType,name, roleType,description,path,hp,mp,moveSpeed,turnSpeed,isSkyVision,seatIndexList,attackDamage,imagePath);
                             break;
                         case RoleType.Pet:
-                            roleData = new PetData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision);
+                            roleData = new PetData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision,imagePath);
                             break;
                     }
                     break;
@@ -102,10 +103,10 @@ public class ResourceManager : BaseManager {
                                 seatIndexList.Add((int)seatIndex);
                             }
                             int attackDamage = (int)itemData["attackDamage"];
-                            roleData = new HeroData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision, seatIndexList, attackDamage);
+                            roleData = new HeroData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision, seatIndexList, attackDamage,imagePath);
                             break;
                         case RoleType.Pet:
-                            roleData = new PetData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision);
+                            roleData = new PetData(id, campType, name, roleType, description, path, hp, mp, moveSpeed, turnSpeed, isSkyVision,imagePath);
                             break;
                     }
                     break;

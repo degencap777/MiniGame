@@ -34,8 +34,8 @@
 			float4 _GrabTexture_ST;
 			sampler2D _CameraDepthTexture;
 
-			matrix _MainCamera_PVM;
-			matrix _OcclusionCamera_MVP;
+			float4x4 _MainCamera_PVM;
+			float4x4 _OcclusionCamera_MVP;
 
 			struct v2f {
 				float4 pos : POSITION;

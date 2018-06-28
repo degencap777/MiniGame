@@ -18,8 +18,9 @@ public class RoleData
     public int MoveSpeed { get; set; }
     public int TurnSpeed { get; set; }
     public bool IsSkyVision { get; set; }
+    public GameObject HeadPrefab { get; set; }
 
-    public RoleData(int id, CampType campType, string name, RoleType roleType, string description, string path, int hp, int mp, int moveSpeed, int turnSpeed, bool isSkyVision)
+    public RoleData(int id, CampType campType, string name, RoleType roleType, string description, string path, int hp, int mp, int moveSpeed, int turnSpeed, bool isSkyVision,string imagePath)
     {
         Id = id;
         CampType = campType;
@@ -33,6 +34,7 @@ public class RoleData
         MoveSpeed = moveSpeed;
         TurnSpeed = turnSpeed;
         IsSkyVision = isSkyVision;
+        HeadPrefab = Resources.Load<GameObject>(imagePath + Name);
     }
 
     public override string ToString()

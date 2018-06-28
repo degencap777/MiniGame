@@ -55,6 +55,7 @@ public class SkillJoystickItem : MonoBehaviour {
     }
     private void OnMoveEnd()
     {
+        Debug.Log("本地按下"+SkillName+"技能按钮");
         if (SkillName == "")
         {
             Debug.Log("没为按钮定义技能");

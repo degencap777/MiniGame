@@ -90,13 +90,14 @@ public class VisualManager : MonoBehaviour {
                 VisualProvider vp = keyValuePair.Value;
                 if (!vp.active) continue;
                 ViewProvider pos = vp.transform.position;
+                pos.w = 1;
                 pos = mvp_mt * pos;
                 pos.w = vp.visualRange;
                 if (pos.w != 0)
                 {
                     if (pos.x > 1.2 || pos.y > 1.2 || pos.x < -1.2 || pos.y < -1.2)
                         continue;
-                    pos.z = vp.noOcclusion ? 0 : 1;
+                    if (vp.noOcclusion) pos.z = 0;
                     vPList.Add(pos);
                 }
             }

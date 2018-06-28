@@ -9,7 +9,7 @@ public class VisualProvider : MonoBehaviour
     public ushort id = 0;
 
     [Range(0, 500)]
-    public float visualRange = 3;
+    public float visualRange = 4;
 
     public bool showRangeInEidtor = true;
 

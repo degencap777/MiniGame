@@ -41,6 +41,7 @@ public class FollowTarget : MonoBehaviour
 
     private void FollowPlayer()
     {
+        if (target == null) return;
         Vector3 targetPosition = target.position + offset;
         //transform.position = Vector3.Lerp(transform.position, targetPosition, smoothing * Time.deltaTime);
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, smoothingTime);

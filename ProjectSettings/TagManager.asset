@@ -13,6 +13,7 @@ TagManager:
   - SkillManager
   - ItemManager
   - RemovableCube
+  - Fx
   layers:
   - Default
   - TransparentFX
@@ -32,7 +33,7 @@ TagManager:
   - 
   - 
   - 
-  - Grid
+  - Ground
   - 
   - 
   - 
