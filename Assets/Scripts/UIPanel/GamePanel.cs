@@ -62,7 +62,9 @@ public class GamePanel : BasePanel
             return _role;
         }
     }
-    
+    public List<GameObject> LocalRoles { get { return facade.GetLocalGameObjects(); } }
+    public bool IsRolesChange { get { return facade.IsRolesChange(); } }
+
     private int deadCount = 0;
     private GameObject[,] map=new GameObject[120,120];
 
@@ -150,7 +152,15 @@ public class GamePanel : BasePanel
 	    {
 	        roleSelectPanel.gameObject.SetActive(false);
         }
-	}
+	    if (IsRolesChange)
+	    {
+	        foreach (GameObject role in LocalRoles)
+	        {
+	            SetPlayer(role);
+	        }
+	    }
+
+    }
 
     internal void ShowTimerSync(int time)
     {
@@ -393,10 +403,13 @@ public class GamePanel : BasePanel
         EasyTouch.On_TouchDown -= On_TouchDown;
     }
 
-    public GameObject OnSkillJoyMoveStart()
+    public List<GameObject> OnSkillJoyMoveStart()
     {
         GameObject effect = Instantiate(EffectDict["Ring"], Role.transform);
         effect.transform.localPosition=Vector3.zero;
-        return effect;
+        List<GameObject> effectList = new List<GameObject>();
+        effectList.Add(effect);
+        effectList.Add(Instantiate(EffectDict["Target"], Role.transform));
+        return effectList;
     }
 }

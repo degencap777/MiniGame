@@ -34,6 +34,7 @@ public class DestroyRequest : BaseRequest
     public override void OnResponse(string data)
     {
         base.OnResponse(data);
+        Debug.Log("摧毁方块  "+data);
         Vector2 pos = UnityTools.ParseVector2(data);
         posQueue.Enqueue(pos);
     }

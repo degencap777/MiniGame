@@ -538,12 +538,12 @@ Prefab:
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
       propertyPath: parameterName.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
       propertyPath: parameterValue.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4420101936051070, guid: 19af213f959f55e47bc1f684d6c7f43a, type: 2}
       propertyPath: m_LocalPosition.x
@@ -580,7 +580,7 @@ Prefab:
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
       propertyPath: newSkillName
-      value: "\u9677\u9631"
+      value: "\u95EA\u70C1"
       objectReference: {fileID: 0}
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
@@ -591,7 +591,7 @@ Prefab:
         type: 2}
       propertyPath: resources
       value: 
-      objectReference: {fileID: 1410349962421396, guid: f47f7ebc1aa6aff4d8b7a070fbf79463,
+      objectReference: {fileID: 1202726030148720, guid: fe0cca6985323bf4c89a6a6baff58484,
         type: 2}
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
@@ -601,7 +601,7 @@ Prefab:
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
       propertyPath: parameterValue.Array.data[0]
-      value: 120
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
@@ -611,7 +611,7 @@ Prefab:
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
       propertyPath: parameterValue.Array.data[1]
-      value: 40
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
         type: 2}
@@ -622,6 +622,11 @@ Prefab:
         type: 2}
       propertyPath: parameterValue.Array.data[2]
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114107314491093938, guid: 19af213f959f55e47bc1f684d6c7f43a,
+        type: 2}
+      propertyPath: parameterName.Array.data[3]
+      value: Trigger
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 19af213f959f55e47bc1f684d6c7f43a, type: 2}

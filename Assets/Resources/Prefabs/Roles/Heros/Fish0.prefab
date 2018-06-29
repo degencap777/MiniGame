@@ -190,7 +190,7 @@ Animator:
   m_GameObject: {fileID: 1057721903175890}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c7b8bbbfed243d548ab2dd25ceafaefe, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -225,6 +225,9 @@ MonoBehaviour:
   IsSkyVision: 0
   AttackDamage: 0
   InstanceId: 0
+  Forward: 0
+  UseSkill: 0
+  UseItem: 0
 --- !u!114 &114239451282775802
 MonoBehaviour:
   m_ObjectHideFlags: 1

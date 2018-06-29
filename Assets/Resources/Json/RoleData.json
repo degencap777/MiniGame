@@ -74,6 +74,40 @@
     "moveSpeed": 4,
     "turnSpeed": 6,
     "isSkyVision": "false"
+  },
+  {
+    "id": 5,
+    "campType": "Monkey",
+    "name": "Monkey1",
+    "roleType": "Hero",
+    "description": "熊",
+    "path": "Prefabs/Roles/Heros/",
+    "imagePath": "Images/RoleHead/",
+    "hp": 200,
+    "mp": 6,
+    "moveSpeed": 3,
+    "turnSpeed": 5,
+    "isSkyVision": "false",
+
+    "attackDamage": 50,
+    "seatIndex": [ 9 ]
+  },
+  {
+    "id": 6,
+    "campType": "Monkey",
+    "name": "Monkey2",
+    "roleType": "Hero",
+    "description": "熊",
+    "path": "Prefabs/Roles/Heros/",
+    "imagePath": "Images/RoleHead/",
+    "hp": 200,
+    "mp": 0,
+    "moveSpeed": 3,
+    "turnSpeed": 5,
+    "isSkyVision": "false",
+
+    "attackDamage": 50,
+    "seatIndex": [ 10 ]
   }
 
 ]

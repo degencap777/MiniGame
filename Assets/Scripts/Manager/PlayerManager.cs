@@ -55,6 +55,8 @@ public class PlayerManager : BaseManager
     private SkillManager skillManager;
     private ItemManager itemManager;
 
+    public bool IsRolesChange = false;
+
     //private ShootRequest shootRequest;
     //private AttackRequest attackRequest;
 
@@ -185,6 +187,24 @@ public class PlayerManager : BaseManager
         if (LocalPlayer == null) return null;
         return roleGameObjects.TryGet(LocalPlayer.CurrentRoleInstanceId);
     }
+
+    public List<GameObject> GetLocalGameObjects()
+    {
+        List<GameObject> gos=new List<GameObject>();
+        for (int i = 0; i < LocalPlayer.RoleInstanceIdList.Count; i++)
+        {
+            int id = LocalPlayer.RoleInstanceIdList[i];
+            if (roleGameObjects.TryGet(id) == null)
+            {
+                LocalPlayer.RoleInstanceIdList.Remove(id);
+            }
+            else
+            {
+                gos.Add(roleGameObjects[id]);
+            }
+        }
+        return gos;
+    }
     #endregion
 
     #region Set_Function
@@ -239,7 +259,7 @@ public class PlayerManager : BaseManager
         foreach (var id in LocalPlayer.RoleInstanceIdList)
         {
             GameObject go = roleGameObjects.TryGet(id);
-            if (go==null||go.GetComponent<PlayerInfo>().CurrentState != PlayerInfo.State.Move)continue;
+            if (go==null||!go.GetComponent<PlayerInfo>().anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))continue;
             count++;
             sb.Append(id + "|" + UnityTools.PackVector3(go.transform.position) + "|" +
                       UnityTools.PackVector3(go.transform.eulerAngles)+":");
@@ -255,7 +275,10 @@ public class PlayerManager : BaseManager
         if (go == null) return;
         PlayerInfo playerInfo = go.GetComponent<PlayerInfo>();
         if (playerInfo != null)
-            playerInfo.CurrentState= PlayerInfo.State.Move;
+        {
+            playerInfo.ToUseSkill = false;
+            playerInfo.ToUseItem = false;
+        }
         roleGameObjects[goId].transform.position = pos;
         roleGameObjects[goId].transform.eulerAngles = rot;
     }
@@ -325,7 +348,10 @@ public class PlayerManager : BaseManager
     //            throw new ArgumentOutOfRangeException("damageType", damageType, null);
     //    }
     //}
-
+    /// <summary>
+    /// 只处理英雄死亡
+    /// </summary>
+    /// <param name="instanceId"></param>
     public void Die(int instanceId)
     {
         GameObject go = roleGameObjects.TryGet(instanceId);
@@ -335,85 +361,52 @@ public class PlayerManager : BaseManager
             switch (pi.CampType)
             {
                 case CampType.Monkey:
-                    switch (pi.RoleType)
-                    {
-                        case RoleType.Hero:
-                            Revive(instanceId);
-                            break;
-                        case RoleType.Pet:
-                            go.AddComponent<DestroyForTime>();
-                            pi.TimeToDie();
-                            if (facade.GetCurrentPanel().GetType().Name == "GamePanel")
-                            {
-                                ((GamePanel)facade.GetCurrentPanel()).Die(go);
-                            }
-
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                    Revive(instanceId);
                     break;
                 case CampType.Fish:
-                    switch (pi.RoleType)
+                    GameObject refGo = pi.Player.Reference.gameObject;
+                    refGo.name = pi.Player.UserData.Username + "Destroy";
+                    pi.Player.Reference = new GameObject("Player" + pi.Player.UserData.Id);
+                    foreach (Transform child in refGo.transform)
                     {
-                        case RoleType.Hero:
-                            go.SetActive(false);
-                            GameObject refGo = pi.Player.Reference.gameObject;
-                            refGo.name = pi.Player.UserData.Username + "Destroy";
-                            pi.Player.Reference = new GameObject("Player" + pi.Player.UserData.Id);
-                            foreach (Transform child in refGo.transform)
+                        if (child != null)
+                        {
+                            Object.Instantiate(EffectPrefabs["Bomb"], child);
+                            child.gameObject.AddComponent<DestroyForTime>();
+                        }
+                    }
+                    refGo.gameObject.AddComponent<DestroyForTime>();
+                    foreach (var rd in RoleDataList)
+                    {
+                        if (rd.Id == 3)
+                        {
+                            GameObject dead = Object.Instantiate(rd.RolePrefab, pi.Player.DeadPostion, Quaternion.identity);
+                            pi.Player.Dead = dead;
+
+                            int newInstanceId = IdCount;
+                            SetRoleList(newInstanceId, dead);
+                            InitPlayerInfo(rd, dead, pi.Player, newInstanceId);
+                            SetCurrentRole(dead);
+
+                            if (pi.Player.IsLocal)
                             {
-                                if (child != null)
-                                {
-                                    Object.Instantiate(EffectPrefabs["Bomb"], child);
-                                    child.gameObject.AddComponent<DestroyForTime>();
-                                }
+                                dead.AddComponent<PlayerMove>().AddLimit(pi.Player.DeadPostion, 3).SetPlayerMng(this);
                             }
-                            refGo.gameObject.AddComponent<DestroyForTime>();
-                            foreach (var rd in RoleDataList)
-                            {
-                                if (rd.Id == 3)
-                                {
-                                    GameObject dead = Object.Instantiate(rd.RolePrefab, pi.Player.DeadPostion, Quaternion.identity);
-                                    pi.Player.Dead = dead;
-
-                                    int newInstanceId = IdCount;
-                                    SetRoleList(newInstanceId, dead);
-                                    InitPlayerInfo(rd, dead, pi.Player, newInstanceId);
-                                    SetCurrentRole(dead);
-
-                                    if (pi.Player.IsLocal)
-                                    {
-                                        dead.AddComponent<PlayerMove>().AddLimit(pi.Player.DeadPostion, 3).SetPlayerMng(this);
-                                    }
-                                    if (facade.GetCurrentPanel().GetType().Name == "GamePanel")
-                                    {
-                                        ((GamePanel)facade.GetCurrentPanel()).Die(go);
-                                    }
-
-                                    if (pi.Player.CampType == LocalPlayer.CampType)
-                                    {
-                                        dead.AddComponent<VisualProvider>();
-                                    }
-                                    else
-                                    {
-                                        dead.AddComponent<VisualTest>();
-                                    }
-                                }
-                            }
-                            break;
-                        case RoleType.Pet:
-                            go.AddComponent<DestroyForTime>();
                             if (facade.GetCurrentPanel().GetType().Name == "GamePanel")
                             {
                                 ((GamePanel)facade.GetCurrentPanel()).Die(go);
                             }
 
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                            if (pi.Player.CampType == LocalPlayer.CampType)
+                            {
+                                dead.AddComponent<VisualProvider>();
+                            }
+                            else
+                            {
+                                dead.AddComponent<VisualTest>();
+                            }
+                        }
                     }
-                    
                     break;
                 case CampType.Middle:
                     break;
@@ -430,6 +423,7 @@ public class PlayerManager : BaseManager
         Debug.Log(go==null);
         if (go == null) return;
         PlayerInfo pi = go.GetComponent<PlayerInfo>();
+        pi.anim.SetTrigger("Revive");
         switch (pi.CampType)
         {
             case CampType.Monkey:
@@ -447,6 +441,7 @@ public class PlayerManager : BaseManager
                         ((GamePanel)facade.GetCurrentPanel()).Revive(go);
                     }
                 }
+                
                 break;
             case CampType.Middle:
                 break;

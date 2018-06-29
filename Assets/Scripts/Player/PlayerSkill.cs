@@ -25,12 +25,14 @@ public class PlayerSkill : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-	    if (playerInfo.CurrentState==PlayerInfo.State.UsingSkill)
+	    //if (playerInfo.CurrentState==PlayerInfo.State.UseSkill)
+        if(playerInfo.ToUseSkill&&playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
 	    {
 	        if (IsTurnDone())
 	        {
 	            UseSkill();
-	            playerInfo.CurrentState = PlayerInfo.State.Idle;
+	            playerInfo.ToUseSkill = false;
+	            playerInfo.anim.SetTrigger("UseSkill");
 	        }
             if(direction!=Vector3.zero)
                 TurnToUseSkill();
@@ -57,9 +59,21 @@ public class PlayerSkill : MonoBehaviour
         if (axis != null)
         {
             joystickColdTime = skill.parameters.TryGet("CD");
-            playerInfo.CurrentState = PlayerInfo.State.UsingSkill;
+            //playerInfo.CurrentState = PlayerInfo.State.UseSkill;
+            playerInfo.ToUseSkill = true;
             Vector2 v2 = UnityTools.ParseVector2(axis);
             direction=new Vector3(v2.x,0,v2.y);
+
+            if (playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded")&& IsTurnDone())
+            {
+                UseSkill(skill);
+                if (skill.parameters.TryGet("Trigger") == 0)
+                {
+                    playerInfo.anim.SetTrigger("UseSkill");
+                }
+                playerInfo.ToUseSkill = false;
+                return;
+            }
         }
         else
         {

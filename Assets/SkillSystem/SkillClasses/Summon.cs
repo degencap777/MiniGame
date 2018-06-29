@@ -43,7 +43,7 @@ public class Summon : Skill
         PlayerInfo pi = pets.Dequeue().GetComponent<PlayerInfo>();
         Player player = pi.Player;
         player.RoleInstanceIdList.Remove(pi.InstanceId);
-        pi.TimeToDie();
+        pi.Die();
     }
     //您可以通过该方法提供一个技能的详细描述，您可以通过在文字中嵌入属性字典中的值来避免反复修改代码。
     public override string GetDescription()

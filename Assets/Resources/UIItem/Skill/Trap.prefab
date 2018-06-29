@@ -76,7 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b759b7652f13824587d484ad80f377a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coldTime: 2
   SkillName: SpeedUp
 --- !u!114 &114130875682296184
 MonoBehaviour:
@@ -211,7 +210,7 @@ MonoBehaviour:
     enable: 1
     invertedAxis: 0
     speed: 200
-    deadValue: 0.1
+    deadValue: 0
     valueMethod: 0
     curveValue:
       serializedVersion: 2
@@ -276,7 +275,7 @@ MonoBehaviour:
     enable: 1
     invertedAxis: 0
     speed: 12
-    deadValue: 0.1
+    deadValue: 0
     valueMethod: 0
     curveValue:
       serializedVersion: 2
@@ -481,7 +480,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -58.9, y: -58.9}
+  m_SizeDelta: {x: -58.9, y: -58.572136}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224756589527729420
 RectTransform:
@@ -519,7 +518,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -392, y: 154.8}
-  m_SizeDelta: {x: 160, y: 160}
+  m_SizeDelta: {x: 160, y: 159.67213}
   m_Pivot: {x: 1, y: 0}
 --- !u!225 &225400364635440840
 CanvasGroup:

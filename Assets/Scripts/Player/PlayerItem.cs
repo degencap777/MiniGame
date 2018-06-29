@@ -27,12 +27,13 @@ public class PlayerItem : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (playerInfo.CurrentState == PlayerInfo.State.UsingItem)
+        if (playerInfo.ToUseItem)
         {
             if (IsMoveDone())
             {
                 UseItem();
-                playerInfo.CurrentState = PlayerInfo.State.Idle;
+                playerInfo.anim.SetTrigger("UseItem");
+                playerInfo.ToUseItem = false;
             }
             if (position != Vector3.positiveInfinity)
                 MoveToUseItem();
@@ -67,7 +68,7 @@ public class PlayerItem : MonoBehaviour {
             position = (UnityTools.ParseVector3(point));
             moveDirection = (position - transform.position).normalized;
             moveDirection.y = 0;
-            playerInfo.CurrentState = PlayerInfo.State.UsingItem;
+            playerInfo.ToUseItem = true;
         }
         else
         {

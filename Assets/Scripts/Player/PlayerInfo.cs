@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
-    
-    
-    public State CurrentState = State.Idle;
     public Player Player;
     public int RoleId;
     public CampType CampType;
@@ -26,15 +23,38 @@ public class PlayerInfo : MonoBehaviour
     public int InstanceId;
     public PlayerManager PlayerManager { get; private set; }
     public RoleData RoleData { get; private set; }
+    public Animator anim { get; private set; }
+
+    private bool _toUseSkill = false;
+
+    public bool ToUseSkill
+    {
+        get
+        {
+            return _toUseSkill;
+        }
+        set
+        {
+            if (value) _toUseItem = false;
+            _toUseSkill = value;
+        }
+    }
+
+    private bool _toUseItem = false;
+    public bool ToUseItem
+    {
+        get
+        {
+            return _toUseItem;
+        }
+        set
+        {
+            if (value) ToUseSkill = false;
+            _toUseItem = value;
+        } 
+    }
 
     private float Timer = 0;
-    public enum State
-    {
-        Idle,
-        Move,
-        UsingSkill,
-        UsingItem
-    }
 
     //public void Init(PlayerManager playerManager,int id, CampType campType, string name, RoleType roleType, string description, int hp, int mp, int moveSpeed,
     //    int turnSpeed, bool isSkyVision, Player player,int instanceId, int attackDamage=0)
@@ -95,13 +115,14 @@ public class PlayerInfo : MonoBehaviour
     void Start()
     {
         VisualProvider = GetComponent<VisualProvider>();
+        anim = GetComponent<Animator>();
     }
     void Update()
     {
         Timer += Time.deltaTime;
         if(VisualProvider!=null)
             VisualProvider.noOcclusion = IsSkyVision;
-        if (CurrentHp <= 0)
+        if (CurrentHp <= 0&&!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
         {
             CurrentHp = Hp;
             CurrentMp = Mp;
@@ -114,6 +135,23 @@ public class PlayerInfo : MonoBehaviour
                 Die();
             }
         }
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Die") &&
+            anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+        {
+            if (RoleType != RoleType.Hero)
+            {
+                Destroy(gameObject);
+            }
+            else if (CampType == CampType.Monkey)
+            {
+                PlayerManager.Revive(InstanceId);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
         //if (Timer>1)
         //{
         //    Timer = 0;
@@ -128,14 +166,17 @@ public class PlayerInfo : MonoBehaviour
         DebugConsole.Log("Hp=" + CurrentHp);
     }
 
-    private void Die()
+    public void Die()
     {
-        if(RoleType==RoleType.Hero)
+        if(anim!=null)
+            anim.SetTrigger("Die");
+        if (RoleType == RoleType.Hero && CampType == CampType.Fish)
+        {
             PlayerManager.Die(InstanceId);
+        }
         else
         {
             Player.RoleInstanceIdList.Remove(InstanceId);
-            Destroy(gameObject);
         }
         DebugConsole.Log("die");
     }
@@ -146,9 +187,5 @@ public class PlayerInfo : MonoBehaviour
         Destroy(gameObject);
         PlayerManager.Revive(Player.RoleInstanceIdList[0]);
     }
-
-    public void TimeToDie()
-    {
-        Destroy(gameObject);
-    }
+    
 }

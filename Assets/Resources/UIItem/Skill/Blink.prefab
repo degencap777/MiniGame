@@ -76,7 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b759b7652f13824587d484ad80f377a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coldTime: 2
   SkillName: SpeedUp
 --- !u!114 &114130875682296184
 MonoBehaviour:

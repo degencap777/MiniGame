@@ -189,9 +189,16 @@ public class GameFacade : MonoBehaviour
     {
         audioMng.PlayNormalSound(soundName);
     }
-    
-    
 
+    public List<GameObject> GetLocalGameObjects()
+    {
+        return playerMng.GetLocalGameObjects();
+    }
+
+    public bool IsRolesChange()
+    {
+        return playerMng.IsRolesChange;
+    }
     public GameObject GetCurrentOpTarget()
     {
         return playerMng.GetCurrentOpTarget();
