@@ -24,15 +24,17 @@ public class ResourceManager : BaseManager {
     }
 
     private Dictionary<string ,GameObject> _effectDict;
+    private Dictionary<string ,GameObject> _skillItemDict=new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> SkillItemDict { get { return _skillItemDict; } }
 
     public bool IsRoleDataLoaded = false;
     private bool isHeroDataLoaded = false;
-    public bool IsEffectDataLoaded = false;
     public override void OnInit()
     {
         base.OnInit();
         ParseRoleDataJson();
-        ParseEffectJson();
+        LoadEffect();
+        LoadSkillItem();
     }
     
     public override void Update()
@@ -52,6 +54,14 @@ public class ResourceManager : BaseManager {
         }
     }
 
+    void LoadSkillItem()
+    {
+        GameObject[] skillItems = Resources.LoadAll<GameObject>("UIItem/Skill");
+        foreach (GameObject skillItem in skillItems)
+        {
+            _skillItemDict.Add(skillItem.name,skillItem);
+        }
+    }
     void ParseRoleDataJson()
     {
         _roleDataList = new List<RoleData>();
@@ -119,19 +129,13 @@ public class ResourceManager : BaseManager {
         IsRoleDataLoaded = true;
     }
 
-    void ParseEffectJson()
+    void LoadEffect()
     {
-        _effectDict = new Dictionary<string, GameObject>();
-        TextAsset itemText = Resources.Load<TextAsset>("Json/EffectData");
-        JsonData itemsData = JsonMapper.ToObject(itemText.text);
-        RoleData roleData = null;
-        foreach (JsonData itemData in itemsData)
+        GameObject[] effects = Resources.LoadAll<GameObject>("Prefabs/Effect");
+        _effectDict=new Dictionary<string, GameObject>();
+        foreach (GameObject effcet in effects)
         {
-            string name = itemData["name"].ToString();
-            string path = itemData["path"].ToString();
-            GameObject prefab = Resources.Load<GameObject>(path + name);
-            _effectDict.Add(name,prefab);
+            _effectDict.Add(effcet.name, effcet);
         }
-        IsEffectDataLoaded = true;
     }
 }

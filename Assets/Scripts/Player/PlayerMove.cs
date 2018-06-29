@@ -65,8 +65,10 @@ public class PlayerMove : MonoBehaviour
     
     private void Move()
     {
-        transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * RotateSpeed);
-        transform.Translate(moveDirection*Time.fixedDeltaTime * Speed,Space.World);
+        //transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * RotateSpeed);
+        //transform.Translate(moveDirection*Time.fixedDeltaTime * Speed,Space.World);
+        rb.MovePosition(rb.position+ moveDirection * Time.fixedDeltaTime * Speed);
+        rb.MoveRotation(Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * RotateSpeed));
     }
     
     // 通过射线检测主角是否落在地面或者物体上  

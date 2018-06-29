@@ -12,7 +12,7 @@ public class Summon : Skill
 //resources               资源预置体
 
 
-    private GameObject pet;
+    private Queue<GameObject> pets=new Queue<GameObject>();
     //这个方法会在技能发动时调用,返回值为false则发动失败，不会调用后续方法
     protected override bool SkillStart()
     {
@@ -20,7 +20,7 @@ public class Summon : Skill
         {
             if (rd.CampType == CampType.Monkey && rd.RoleType == RoleType.Pet)
             {
-                pet = PlayerManager.AddPet((PetData)rd,owner);
+                pets.Enqueue(PlayerManager.AddPet((PetData)rd, owner));
                 break;
             }
         }
@@ -40,9 +40,8 @@ public class Summon : Skill
     //这个方法会在技能结束时调用
     protected override void SkillEnd()
     {
-        PlayerInfo pi = pet.GetComponent<PlayerInfo>();
+        PlayerInfo pi = pets.Dequeue().GetComponent<PlayerInfo>();
         Player player = pi.Player;
-        player.CurrentRoleInstanceId = player.RoleInstanceIdList[0];
         player.RoleInstanceIdList.Remove(pi.InstanceId);
         pi.TimeToDie();
     }

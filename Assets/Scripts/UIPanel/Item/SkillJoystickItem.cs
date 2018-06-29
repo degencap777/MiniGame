@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SkillJoystickItem : MonoBehaviour {
 
-    public float coldTime = 2f;
+    private float coldTime = 2f;
     private float timer = 0;
     private Image filledImage;
     private bool isStartTimer = false;
@@ -13,6 +13,8 @@ public class SkillJoystickItem : MonoBehaviour {
     private Vector2 axis;
     private GamePanel gamePanel;
     public string SkillName = "";
+    private Skill skill;
+    private GameObject effect;
 
     // Use this for initialization
     void Start()
@@ -21,7 +23,11 @@ public class SkillJoystickItem : MonoBehaviour {
         JoyStick = GetComponent<ETCJoystick>();
         JoyStick.onMove.AddListener(OnMove);
         JoyStick.onMoveEnd.AddListener(OnMoveEnd);
-        gamePanel = transform.parent.GetComponent<GamePanel>();
+        JoyStick.onMoveStart.AddListener(OnMoveStart);
+        gamePanel = transform.parent.parent.GetComponent<GamePanel>();
+        SkillName = name.Split('(')[0];
+        skill = GameFacade.Instance.GetSkill(SkillName);
+        coldTime = skill.parameters["CD"];
     }
 
     // Update is called once per frame
@@ -49,6 +55,11 @@ public class SkillJoystickItem : MonoBehaviour {
         this.coldTime = coldTime;
         isStartTimer = true;
     }
+    private void OnMoveStart()
+    {
+        effect = gamePanel.OnSkillJoyMoveStart();
+        effect.GetComponent<Projector>().orthographicSize *= skill.parameters["Distance"];
+    }
     private void OnMove(Vector2 move)
     {
         axis = move;
@@ -61,6 +72,8 @@ public class SkillJoystickItem : MonoBehaviour {
             Debug.Log("没为按钮定义技能");
             return;
         }
+        Destroy(effect);
         gamePanel.UseSkill(SkillName,axis.x+","+axis.y);
     }
+    
 }

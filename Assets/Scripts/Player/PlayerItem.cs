@@ -99,10 +99,11 @@ public class PlayerItem : MonoBehaviour {
     private void MoveToUseItem()
     {
         
-        transform.rotation = Quaternion.Lerp(rb.rotation,Quaternion.LookRotation(moveDirection, transform.up),Time.fixedDeltaTime * RotateSpeed);
-        
+        //transform.rotation = Quaternion.Lerp(rb.rotation,Quaternion.LookRotation(moveDirection, transform.up),Time.fixedDeltaTime * RotateSpeed);
+        rb.MoveRotation(Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(moveDirection, transform.up), Time.fixedDeltaTime * RotateSpeed));
+        rb.MovePosition(moveDirection * Time.fixedDeltaTime * MoveSpeed+rb.position);
         //Debug.Log(moveDirection);
-        transform.Translate(moveDirection * Time.fixedDeltaTime * MoveSpeed, Space.World);
+        //transform.Translate(moveDirection * Time.fixedDeltaTime * MoveSpeed, Space.World);
         //transform.position=Vector3.Lerp(transform.position, new Vector3(position.x, transform.position.y,position.z),Time.deltaTime );
     }
 }

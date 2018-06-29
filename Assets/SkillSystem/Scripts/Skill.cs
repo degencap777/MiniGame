@@ -21,6 +21,38 @@ public abstract class Skill
             return Object.Instantiate(resources_);
         }
     }
+    private GameObject _prefab;
+    public GameObject Prefab
+    {
+        get
+        {
+            if (_prefab == null)
+            {
+                _prefab = Resources.Load<GameObject>("SkillPerferbs/" + resourcesName_);
+            }
+            return _prefab;
+        }
+    }
+    private List<Sprite> _sprites = null;
+    public List<Sprite> Sprites
+    {
+        get
+        {
+            if (_sprites == null)
+            {
+                List<Sprite> sprites = new List<Sprite>();
+                GameObject res = Object.Instantiate(Prefab);
+                SpriteRenderer[] sr = res.GetComponentsInChildren<SpriteRenderer>();
+                foreach (SpriteRenderer spriteRenderer in sr)
+                {
+                    sprites.Add(spriteRenderer.sprite);
+                }
+                _sprites = sprites;
+                Object.Destroy(res);
+            }
+            return _sprites;
+        }
+    }
     public string name
     {
         get { return name_; }

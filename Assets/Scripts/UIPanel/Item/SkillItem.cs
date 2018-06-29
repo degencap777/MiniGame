@@ -6,22 +6,26 @@ using UnityEngine.UI;
 public class SkillItem : MonoBehaviour
 {
 
-    public float coldTime = 2f;
+    private float coldTime = 2f;
     private float timer = 0;
     private Image filledImage;
     private bool inColding = false;
     public string SkillName = "";
     private GamePanel gamePanel;
+    private Skill skill;
 
     private Button button;
 	// Use this for initialization
 	void Start ()
 	{
 	    filledImage = transform.Find("FilledImage").GetComponent<Image>();
-	    gamePanel = transform.parent.GetComponent<GamePanel>();
+	    gamePanel = transform.parent.parent.GetComponent<GamePanel>();
 	    button = transform.GetComponent<Button>();
         button.onClick.AddListener(OnClick);
-    }
+	    SkillName = name.Split('(')[0];
+	    skill = GameFacade.Instance.GetSkill(SkillName);
+	    coldTime = skill.parameters["CD"];
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -45,4 +49,5 @@ public class SkillItem : MonoBehaviour
         button.interactable = false;
         gamePanel.UseSkill(SkillName);
     }
+    
 }

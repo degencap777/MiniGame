@@ -44,20 +44,13 @@ public class PlayerSkill : MonoBehaviour
 	    }
 	}
 
-    private void UseSkill(Skill skill=null)
+    private void UseSkill(Skill useSkill=null)
     {
+        Skill skill = useSkill ?? currentSkill;
         if (joystickColdTime != 0&&playerInfo.Player.IsLocal)
-            GameFacade.Instance.UseSkillSync(joystickColdTime);
-        if (skill == null)
-        {
-            charactorSkills.Skills[currentSkill.GetType().Name].Direction = direction;
-            charactorSkills.UseSkill(currentSkill.GetType().Name);
-        }
-        else
-        {
-            charactorSkills.Skills[skill.GetType().Name].Direction = direction;
-            charactorSkills.UseSkill(skill.GetType().Name);
-        }
+            GameFacade.Instance.UseSkillSync(skill.GetType().Name,joystickColdTime);
+        charactorSkills.Skills[skill.GetType().Name].Direction = direction;
+        charactorSkills.UseSkill(skill.GetType().Name);
     }
     public void StartUseSkill(Skill skill,string axis=null)
     {
@@ -93,6 +86,6 @@ public class PlayerSkill : MonoBehaviour
     }
     private void TurnToUseSkill()
     {
-        transform.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(direction, transform.up), Time.fixedDeltaTime * RotateSpeed);
+        rb.MoveRotation(Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(direction, transform.up), Time.fixedDeltaTime * RotateSpeed));
     }
 }

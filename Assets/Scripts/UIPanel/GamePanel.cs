@@ -16,9 +16,14 @@ public class GamePanel : BasePanel
     private GameOverRequest gameOverRequest;
     private StartPlayRequest startPlayRequest;
     private QuitBattleRequest quitBattleRequest;
+    private DestroyRequest destroyRequest;
+    private List<Transform> skillPos=new List<Transform>();
+    private Dictionary<string,SkillJoystickItem> JoystickItemDict=new Dictionary<string, SkillJoystickItem>();
+    private Dictionary<string, SkillItem> buttonItemDict = new Dictionary<string, SkillItem>();
 
+    public Dictionary<string ,GameObject> SkillItemDict { get; private set; }
     public Dictionary<string, GameObject> EffectDict { get; private set; }
-    private Knapsack knapsack;
+    
     private Text timer;
     private bool isShowTimer = false;
     private string time = null;
@@ -26,16 +31,14 @@ public class GamePanel : BasePanel
     private Color gameOver = new Color(43 / 255, 43 / 255, 43 / 255);
     private Color win=new Color(1,216/255,0);
     private Color lose=new Color(43 / 255, 43 / 255, 43 / 255);
-
     private Text gameOverText;
     private ReturnCode returnCode = ReturnCode.NotFind;
     private Result result;
-
     private float gameOverTimer = 0;
     private Button closeButton;
+    
+    private Knapsack knapsack;
 
-    private SkillJoystickItem skillJoystickItem;
-    private SkillItem skillItem;
     private Transform roleSelectPanel;
 
     public CampType CampType { get; private set; }
@@ -61,8 +64,10 @@ public class GamePanel : BasePanel
     }
     
     private int deadCount = 0;
+    private GameObject[,] map=new GameObject[120,120];
 
     private Dictionary<int,GameObject> headDict=new Dictionary<int, GameObject>();
+    private bool skillHasSet = false;
 
     public GamePanel()
     {
@@ -77,10 +82,13 @@ public class GamePanel : BasePanel
         startPlayRequest = GetComponent<StartPlayRequest>();
         gameOverRequest = GetComponent<GameOverRequest>();
         quitBattleRequest = GetComponent<QuitBattleRequest>();
+        destroyRequest = GetComponent<DestroyRequest>();
         knapsack = transform.Find("KnapsackPanel").GetComponent<Knapsack>();
-
-        skillJoystickItem = transform.Find("SkillJoystickItem").GetComponent<SkillJoystickItem>();
-        skillItem = transform.Find("SkillItem").GetComponent<SkillItem>();
+        for (int i = 0; i < 3; i++)
+        {
+            skillPos.Add(transform.Find("Skill"+i));
+        }
+        
         roleSelectPanel = transform.Find("RoleSelectPanel");
 
         timer = transform.Find("TimerPanel/Time").GetComponent<Text>();
@@ -89,14 +97,32 @@ public class GamePanel : BasePanel
         closeButton.onClick.AddListener(OnCloseClick);
 
         EffectDict = facade.GetEffectDict();
+        SkillItemDict = facade.GetSkillItemDict();
     }
-
+    void OnEnable()
+    {
+        EasyTouch.On_TouchDown += On_TouchDown;
+        EasyTouch.SetEnableAutoSelect(true);
+        EasyTouch.SetAutoUpdatePickedObject(false);
+        LayerMask mask = EasyTouch.Get3DPickableLayer();
+        mask = mask | (1 << 9);
+        EasyTouch.Set3DPickableLayer(mask);
+    }
     void Start()
     {
         showTimerRequest.SendRequest();
         timer.text = "15:00";
         gameOverText.text = null;
         closeButton.gameObject.SetActive(false);
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                map[i, j] = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                map[i,j].transform.SetPositionAndRotation(new Vector3(i,0.5f,j),Quaternion.identity );
+                map[i, j].layer = LayerMask.NameToLayer("Cube");
+            }
+        }
     }
 	// Update is called once per frame
 	void Update ()
@@ -186,9 +212,9 @@ public class GamePanel : BasePanel
         facade.UseSkill(skillName,axis);
     }
 
-    public void UseSkillSync(float coldTime)
+    public void UseSkillSync(string skillName,float coldTime)
     {
-        skillJoystickItem.UseSkillSync(coldTime);
+        JoystickItemDict[skillName].UseSkillSync(coldTime);
     }
 
     public void UseItem(string itemName, string point = null)
@@ -206,10 +232,16 @@ public class GamePanel : BasePanel
         int alpha = active ? 1 : 0;
         knapsack.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
         knapsack.gameObject.GetComponent<CanvasGroup>().interactable = active;
-        skillItem.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
-        skillItem.gameObject.GetComponent<CanvasGroup>().interactable = active;
-        skillJoystickItem.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
-        skillJoystickItem.GetComponent<ETCJoystick>().activated = active;
+        foreach (SkillItem skillItem in buttonItemDict.Values)
+        {
+            skillItem.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
+            skillItem.gameObject.GetComponent<CanvasGroup>().interactable = active;
+        }
+        foreach (SkillJoystickItem skillJoystickItem in JoystickItemDict.Values)
+        {
+            skillJoystickItem.gameObject.GetComponent<CanvasGroup>().alpha = alpha;
+            skillJoystickItem.GetComponent<ETCJoystick>().activated = active;
+        }
     }
     public void Die(GameObject go)
     {
@@ -274,15 +306,19 @@ public class GamePanel : BasePanel
             return;
         }
         SetInteractive(true);
-
+        if(skillHasSet)return;
         switch (CampType)
         {
             case CampType.Monkey:
                 switch (pi.Name)
                 {
                     case "Monkey0":
-                        skillItem.SkillName = "SpeedUp";
-                        skillJoystickItem.SkillName = "Summon";
+                        GameObject summon = Instantiate(SkillItemDict["Summon"], skillPos[0]);
+                        GameObject trap = Instantiate(SkillItemDict["Trap"], skillPos[1]);
+                        ((RectTransform)summon.transform).localPosition = Vector3.zero;
+                        ((RectTransform)trap.transform).localPosition = Vector3.zero;
+                        JoystickItemDict.Add("Trap", trap.GetComponent<SkillJoystickItem>());
+                        buttonItemDict.Add("Summon",summon.GetComponent<SkillItem>());
                         break;
                     case "Monkey1":
                         break;
@@ -291,12 +327,17 @@ public class GamePanel : BasePanel
                 }
                 break;
             case CampType.Fish:
-                skillItem.SkillName = "SpeedUp";
-                skillJoystickItem.SkillName = "Blink";
+                GameObject speedUp = Instantiate(SkillItemDict["SpeedUp"],skillPos[0]);
+                GameObject blink = Instantiate(SkillItemDict["Blink"],skillPos[1]);
+                ((RectTransform)blink.transform).localPosition=Vector3.zero;
+                ((RectTransform)speedUp.transform).localPosition = Vector3.zero;
+                JoystickItemDict.Add("Blink",blink.GetComponent<SkillJoystickItem>());
+                buttonItemDict.Add("SpeedUp",speedUp.GetComponent<SkillItem>());
                 break;
             case CampType.Middle:
                 break;
         }
+        skillHasSet = true;
     }
 
     private void AddHeadImage(GameObject player)
@@ -311,9 +352,51 @@ public class GamePanel : BasePanel
     {
         headDict.Remove(instanceId);
     }
+    
 
-    public override void OnExit()
+    public void DestroyCube(Vector2 pos)
     {
-        base.OnExit();
+        GameObject cube = map[(int) pos.x, (int) pos.y];
+        if (cube == null) return;
+        GameObject bomb = Instantiate(EffectDict.TryGet("Bomb"), cube.transform.position, Quaternion.identity);
+        bomb.transform.position-=new Vector3(0,0.5f,0);
+        float duration = bomb.GetComponent<ParticleSystem>().main.duration;
+        Destroy(bomb,duration);
+        Destroy(cube);
+    }
+    void On_TouchDown(Gesture gesture)
+    {
+        Debug.Log(gesture.type);
+        if (gesture.pickedObject != null&&Role!=null)
+        {
+            PlayerInfo pi = Role.GetComponent<PlayerInfo>();
+            if (pi.RoleType == RoleType.Hero)
+            {
+                switch (CampType)
+                {
+                    case CampType.Monkey:
+                        break;
+                    case CampType.Fish:
+                        if(Vector3.Distance(Role.transform.position,gesture.pickedObject.transform.position)<2)
+                            destroyRequest.SendRequest(gesture.pickedObject.transform.position);
+                        break;
+                    case CampType.Middle:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+    }
+    void OnDestroy()
+    {
+        EasyTouch.On_TouchDown -= On_TouchDown;
+    }
+
+    public GameObject OnSkillJoyMoveStart()
+    {
+        GameObject effect = Instantiate(EffectDict["Ring"], Role.transform);
+        effect.transform.localPosition=Vector3.zero;
+        return effect;
     }
 }

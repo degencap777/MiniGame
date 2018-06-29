@@ -30,10 +30,13 @@ public class Blink : Skill
 
     protected override bool SkillStart()
     {
+        Vector3 dir = Direction * parameters.TryGet("Distance");
         go = resources;
         go.transform.position = owner.transform.position;
-        Vector3 dir= Direction * parameters.TryGet("Distance");
-        owner.transform.Translate(dir,Space.World);
+        go.transform.eulerAngles = Quaternion.LookRotation(dir).eulerAngles;
+        Rigidbody rb= owner.GetComponent<Rigidbody>();
+        Debug.Log(rb.position+" "+dir);
+        rb.MovePosition(rb.position+ dir);
         go.AddComponent<DestroyForTime>().time = parameters.TryGet("During");
         return false;
     }

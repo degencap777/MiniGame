@@ -135,7 +135,7 @@ public class PlayerInfo : MonoBehaviour
         else
         {
             Player.RoleInstanceIdList.Remove(InstanceId);
-            DestroyImmediate(gameObject);
+            Destroy(gameObject);
         }
         DebugConsole.Log("die");
     }

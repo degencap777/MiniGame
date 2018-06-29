@@ -39,6 +39,9 @@ public class GameFacade : MonoBehaviour
 
     private ResourceManager resourceManager;
 
+    private SkillManager skillManager;
+    private ItemManager itemManager;
+
     public const int FISH_NUM = 8;
     public const int MONKEY_NUM = 3;
     public const int PLAYER_NUM = 11;
@@ -65,6 +68,8 @@ public class GameFacade : MonoBehaviour
     void Start()
     {
         Init();
+        skillManager = transform.Find("SkillManager").GetComponent<SkillManager>();
+        itemManager = transform.Find("ItemManager").GetComponent<ItemManager>();
         //gameObject.AddComponent<Test>();
     }
 
@@ -248,12 +253,22 @@ public class GameFacade : MonoBehaviour
             ((GamePanel)uiMng.GetCurrentPanel()).UseItemSync(isUse);
         }
     }
-    public void UseSkillSync(float coldTime)
+    public void UseSkillSync(string skillName,float coldTime)
     {
         if (uiMng.GetCurrentPanel().GetType().Name == "GamePanel")
         {
-            ((GamePanel)uiMng.GetCurrentPanel()).UseSkillSync(coldTime);
+            ((GamePanel)uiMng.GetCurrentPanel()).UseSkillSync(skillName,coldTime);
         }
+    }
+
+    public Skill GetSkill(string name)
+    {
+        return skillManager.GetInstanceOfSkillWithString(name, null);
+    }
+
+    public Dictionary<string , GameObject> GetSkillItemDict()
+    {
+        return resourceManager.SkillItemDict;
     }
 
     public Player GetLocalPlayer()

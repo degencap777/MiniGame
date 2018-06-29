@@ -6,11 +6,11 @@
     "roleType": "Hero",
     "description": "初级鲲",
     "path": "Prefabs/Roles/Heros/",
-    "imagePath": "Images/RoleHead/", 
+    "imagePath": "Images/RoleHead/",
     "hp": 10,
     "mp": 0,
     "moveSpeed": 2,
-    "turnSpeed": 3,
+    "turnSpeed": 5,
     "isSkyVision": "false",
 
     "attackDamage": 200,
@@ -27,11 +27,11 @@
     "hp": 200,
     "mp": 0,
     "moveSpeed": 3,
-    "turnSpeed": 4,
+    "turnSpeed": 5,
     "isSkyVision": "false",
 
     "attackDamage": 50,
-    "seatIndex": [ 8, 9, 10 ]
+    "seatIndex": [ 8 ]
   },
   {
     "id": 2,
@@ -72,7 +72,7 @@
     "hp": 50,
     "mp": 0,
     "moveSpeed": 4,
-    "turnSpeed": 2,
+    "turnSpeed": 6,
     "isSkyVision": "false"
   }
 
