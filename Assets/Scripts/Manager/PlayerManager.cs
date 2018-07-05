@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Assets.Scripts.Tools;
 using Common;
+using HedgehogTeam.EasyTouch;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -51,6 +52,7 @@ public class PlayerManager : BaseManager
     private MoveRequest moveRequest;
     private UseSkillRequest useSkillRequest;
     private UseItemRequest useItemRequest;
+    private AttackRequest attackRequest;
 
     private SkillManager skillManager;
     private ItemManager itemManager;
@@ -58,7 +60,6 @@ public class PlayerManager : BaseManager
     public bool IsRolesChange = false;
 
     //private ShootRequest shootRequest;
-    //private AttackRequest attackRequest;
 
     public override void OnInit()
     {
@@ -67,7 +68,6 @@ public class PlayerManager : BaseManager
         itemManager = GameObject.FindGameObjectWithTag("ItemManager").GetComponent<ItemManager>();
         skillManager.PlayerManager = this;
     }
-
     public override void Update()
     {
         base.Update();
@@ -248,6 +248,8 @@ public class PlayerManager : BaseManager
         useSkillRequest.PlayerManager = this;
         useItemRequest = playerSyncRequest.AddComponent<UseItemRequest>();
         useItemRequest.PlayerManager = this;
+        attackRequest = playerSyncRequest.AddComponent<AttackRequest>();
+        attackRequest.PlayerManager = this;
     }
 
     public void Move()
@@ -260,16 +262,17 @@ public class PlayerManager : BaseManager
         {
             GameObject go = roleGameObjects.TryGet(id);
             if (go==null||!go.GetComponent<PlayerInfo>().anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))continue;
+            
             count++;
             sb.Append(id + "|" + UnityTools.PackVector3(go.transform.position) + "|" +
-                      UnityTools.PackVector3(go.transform.eulerAngles)+":");
+                      UnityTools.PackVector3(go.transform.eulerAngles)+ "|"+go.GetComponent<PlayerInfo>().anim.GetFloat("Forward") + ":");
         }
         if (count == 0) return;
         sb.Remove(sb.Length - 1, 1);
         moveRequest.SendRequest(sb.ToString());
     }
 
-    public void MoveSync(int goId, Vector3 pos, Vector3 rot)
+    public void MoveSync(int goId, Vector3 pos, Vector3 rot,float forward)
     {
         GameObject go = roleGameObjects.TryGet(goId);
         if (go == null) return;
@@ -281,8 +284,38 @@ public class PlayerManager : BaseManager
         }
         roleGameObjects[goId].transform.position = pos;
         roleGameObjects[goId].transform.eulerAngles = rot;
+        roleGameObjects[goId].GetComponent<PlayerInfo>().anim.SetFloat("Forward",forward);
     }
-    
+
+    public void Attack(int instanceId,GameObject target)
+    {
+        int layer = target.layer;
+        if (layer == 9)
+        {
+            attackRequest.SendRequest(layer + "|" + instanceId + "|" + UnityTools.PackVector2(target.GetComponent<MapInfo>().IndexV2));
+        }
+        else if (layer == 10)
+        {
+            attackRequest.SendRequest(layer + "|" + instanceId + "|" + target.GetComponent<PlayerInfo>().InstanceId);
+        }
+    }
+
+    public void AttackSync(int InstanceId,Vector2 pos)
+    {
+        if (facade.GetCurrentPanel().GetType().Name == "GamePanel")
+        {
+            ((GamePanel)facade.GetCurrentPanel()).DestroyCube(pos);
+        }
+    }
+    public void AttackSync(int InstanceId, int targetId)
+    {
+        GameObject role = roleGameObjects.TryGet(InstanceId);
+        GameObject target = roleGameObjects.TryGet(targetId);
+        if (role != null&&target!=null)
+        {
+            role.GetComponent<PlayerAttack>().Attack(target);
+        }
+    }
     public void UseSkill(string skillName,string axis=null)
     {
         useSkillRequest.SendRequest(GetCurrentGoId(),skillName,axis);
@@ -424,6 +457,7 @@ public class PlayerManager : BaseManager
         if (go == null) return;
         PlayerInfo pi = go.GetComponent<PlayerInfo>();
         pi.anim.SetTrigger("Revive");
+        pi.IsDead = false;
         switch (pi.CampType)
         {
             case CampType.Monkey:

@@ -12,12 +12,30 @@ using UnityEngine.UI;
 public class GamePanel : BasePanel
 {
     public ETCJoystick Joystick { get; private set; }
+
+    #region Chat
+
+    private Transform sendButton;
+    public Transform content;
+    private Transform chatDialog;
+    private Button chatButton;
+    private InputField inputField;
+
+    private GameObject OtherPlayerChatMsgItem;
+    private GameObject LocalPlayerChatMsgItem;
+    private GameObject ChangeSeatItem;
+
+    private GameChatRequest gameChatRequest;
+    #endregion
+
     private ShowTimerRequest showTimerRequest;
     private GameOverRequest gameOverRequest;
     private StartPlayRequest startPlayRequest;
     private QuitBattleRequest quitBattleRequest;
     private DestroyRequest destroyRequest;
+
     private List<Transform> skillPos=new List<Transform>();
+
     private Dictionary<string,SkillJoystickItem> JoystickItemDict=new Dictionary<string, SkillJoystickItem>();
     private Dictionary<string, SkillItem> buttonItemDict = new Dictionary<string, SkillItem>();
 
@@ -28,20 +46,25 @@ public class GamePanel : BasePanel
     private bool isShowTimer = false;
     private string time = null;
 
+    #region GameOver
+
     private Color gameOver = new Color(43 / 255, 43 / 255, 43 / 255);
-    private Color win=new Color(1,216/255,0);
-    private Color lose=new Color(43 / 255, 43 / 255, 43 / 255);
+    private Color win = new Color(1, 216 / 255, 0);
+    private Color lose = new Color(43 / 255, 43 / 255, 43 / 255);
     private Text gameOverText;
     private ReturnCode returnCode = ReturnCode.NotFind;
     private Result result;
     private float gameOverTimer = 0;
     private Button closeButton;
-    
+
+    #endregion
+
     private Knapsack knapsack;
 
     private Transform roleSelectPanel;
 
     public CampType CampType { get; private set; }
+    private Player player;
     private GameObject _role;
     public GameObject Role
     {
@@ -66,7 +89,7 @@ public class GamePanel : BasePanel
     public bool IsRolesChange { get { return facade.IsRolesChange(); } }
 
     private int deadCount = 0;
-    private GameObject[,] map=new GameObject[120,120];
+    public MapInfo[,] MapInfos=new MapInfo[120,120];
 
     private Dictionary<int,GameObject> headDict=new Dictionary<int, GameObject>();
     private bool skillHasSet = false;
@@ -85,6 +108,7 @@ public class GamePanel : BasePanel
         gameOverRequest = GetComponent<GameOverRequest>();
         quitBattleRequest = GetComponent<QuitBattleRequest>();
         destroyRequest = GetComponent<DestroyRequest>();
+        gameChatRequest = GetComponent<GameChatRequest>();
         knapsack = transform.Find("KnapsackPanel").GetComponent<Knapsack>();
         for (int i = 0; i < 3; i++)
         {
@@ -100,14 +124,29 @@ public class GamePanel : BasePanel
 
         EffectDict = facade.GetEffectDict();
         SkillItemDict = facade.GetSkillItemDict();
+
+        chatDialog = transform.Find("ChatDialog");
+        sendButton = transform.Find("ChatDialog/InputPanel/SendButton");
+        chatButton = transform.Find("ChatDialog/ChatButton").GetComponent<Button>();
+        inputField = transform.Find("ChatDialog/InputPanel/InputField").GetComponent<InputField>();
+        sendButton.GetComponent<Button>().onClick.AddListener(OnSendClick);
+        chatButton.onClick.AddListener(OnChatClick);
+        inputField.onEndEdit.AddListener(x => OnSendClick());
+
+        OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/OtherPlayerChatMsgItem");
+        LocalPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/LocalPlayerChatMsgItem");
+        ChangeSeatItem = Resources.Load<GameObject>("UIItem/ChangeSeatItem");
+        
     }
+
+
     void OnEnable()
     {
         EasyTouch.On_TouchDown += On_TouchDown;
         EasyTouch.SetEnableAutoSelect(true);
         EasyTouch.SetAutoUpdatePickedObject(false);
         LayerMask mask = EasyTouch.Get3DPickableLayer();
-        mask = mask | (1 << 9);
+        mask = mask | (1 << 9) | (1 << 10);
         EasyTouch.Set3DPickableLayer(mask);
     }
     void Start()
@@ -116,15 +155,6 @@ public class GamePanel : BasePanel
         timer.text = "15:00";
         gameOverText.text = null;
         closeButton.gameObject.SetActive(false);
-        for (int i = 0; i < 10; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                map[i, j] = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                map[i,j].transform.SetPositionAndRotation(new Vector3(i,0.5f,j),Quaternion.identity );
-                map[i, j].layer = LayerMask.NameToLayer("Cube");
-            }
-        }
     }
 	// Update is called once per frame
 	void Update ()
@@ -162,6 +192,38 @@ public class GamePanel : BasePanel
 
     }
 
+    private void OnChatClick()
+    {
+        float width = chatDialog.rectTransform().sizeDelta.x;
+        if (chatDialog.rectTransform().rect.height == 0)
+        {
+#if UNITY_ANDROID
+            chatDialog.rectTransform().sizeDelta = new Vector2(width, (float)500 / 1080 * Screen.currentResolution.height);
+#elif UNITY_EDITOR
+            chatDialog.rectTransform().sizeDelta = new Vector2(width, 500);
+#endif
+        }
+        else
+        {
+            chatDialog.rectTransform().sizeDelta = new Vector2(width, 0);
+        }
+    }
+    private void OnSendClick()
+    {
+        string msgName = player.UserData.Username;
+        string msg = inputField.text;
+        if (string.IsNullOrEmpty(msg)) return;
+        gameChatRequest.SendRequest(msgName + "," + msg);
+        inputField.text = "";
+    }
+    
+    public void AddMsgItem(string username,string msg)
+    {
+        GameObject MsgItem = Instantiate(player.UserData.Username.Equals(username) ? LocalPlayerChatMsgItem : OtherPlayerChatMsgItem);
+        MsgItem.transform.SetParent(content);
+        MsgItem.transform.Find("PlayerNameText").GetComponent<Text>().text = username;
+        MsgItem.transform.Find("ChatMsgBg/ChatMsgText").GetComponent<Text>().text = msg;
+    }
     internal void ShowTimerSync(int time)
     {
         int min = time==0? 0:time / 60;
@@ -302,13 +364,13 @@ public class GamePanel : BasePanel
     /// Player不能为空
     /// </summary>
     /// <param name="player"></param>
-    public void SetPlayer(GameObject player)
+    public void SetPlayer(GameObject role)
     {
-        if (player==null||player.GetComponent<PlayerInfo>().Player.IsLocal == false) return;
-        PlayerInfo pi = player.GetComponent<PlayerInfo>();
+        if (role == null|| role.GetComponent<PlayerInfo>().Player.IsLocal == false) return;
+        PlayerInfo pi = role.GetComponent<PlayerInfo>();
         if (headDict.TryGet(pi.InstanceId) == null)
         {
-            AddHeadImage(player);
+            AddHeadImage(role);
         }
         if (pi.RoleType != RoleType.Hero)
         {
@@ -317,18 +379,19 @@ public class GamePanel : BasePanel
         }
         SetInteractive(true);
         if(skillHasSet)return;
+        if (this.player == null)
+        {
+            this.player = pi.Player;
+        }
         switch (CampType)
         {
             case CampType.Monkey:
                 switch (pi.Name)
                 {
                     case "Monkey0":
-                        GameObject summon = Instantiate(SkillItemDict["Summon"], skillPos[0]);
-                        GameObject trap = Instantiate(SkillItemDict["Trap"], skillPos[1]);
-                        ((RectTransform)summon.transform).localPosition = Vector3.zero;
-                        ((RectTransform)trap.transform).localPosition = Vector3.zero;
-                        JoystickItemDict.Add("Trap", trap.GetComponent<SkillJoystickItem>());
-                        buttonItemDict.Add("Summon",summon.GetComponent<SkillItem>());
+                        AddSkillItem("Summon",0);
+                        AddSkillItem("Trap",1);
+                        AddSkillItem("Transfer",2);
                         break;
                     case "Monkey1":
                         break;
@@ -337,12 +400,8 @@ public class GamePanel : BasePanel
                 }
                 break;
             case CampType.Fish:
-                GameObject speedUp = Instantiate(SkillItemDict["SpeedUp"],skillPos[0]);
-                GameObject blink = Instantiate(SkillItemDict["Blink"],skillPos[1]);
-                ((RectTransform)blink.transform).localPosition=Vector3.zero;
-                ((RectTransform)speedUp.transform).localPosition = Vector3.zero;
-                JoystickItemDict.Add("Blink",blink.GetComponent<SkillJoystickItem>());
-                buttonItemDict.Add("SpeedUp",speedUp.GetComponent<SkillItem>());
+                AddSkillItem("SpeedUp",0);
+                AddSkillItem("Blink",1);
                 break;
             case CampType.Middle:
                 break;
@@ -350,6 +409,20 @@ public class GamePanel : BasePanel
         skillHasSet = true;
     }
 
+    private void AddSkillItem(string skill,int skillIndex)
+    {
+        GameObject skillItem = Instantiate(SkillItemDict[skill], skillPos[skillIndex]);
+        ((RectTransform)skillItem.transform).localPosition = Vector3.zero;
+        bool isStick = facade.GetSkill(skill).parameters.ContainsKey("Stick");
+        if (!isStick)
+        {
+            buttonItemDict.Add(skill, skillItem.GetComponent<SkillItem>());
+        }
+        else
+        {
+            JoystickItemDict.Add(skill, skillItem.GetComponent<SkillJoystickItem>());
+        }
+    }
     private void AddHeadImage(GameObject player)
     {
         if (headDict.ContainsKey(player.GetComponent<PlayerInfo>().InstanceId)) return;
@@ -362,33 +435,32 @@ public class GamePanel : BasePanel
     {
         headDict.Remove(instanceId);
     }
-    
+
 
     public void DestroyCube(Vector2 pos)
     {
-        GameObject cube = map[(int) pos.x, (int) pos.y];
+        MapInfo cube = MapInfos[(int)pos.x, (int)pos.y];
         if (cube == null) return;
-        GameObject bomb = Instantiate(EffectDict.TryGet("Bomb"), cube.transform.position, Quaternion.identity);
-        bomb.transform.position-=new Vector3(0,0.5f,0);
-        float duration = bomb.GetComponent<ParticleSystem>().main.duration;
-        Destroy(bomb,duration);
-        Destroy(cube);
+        cube.Destroy(EffectDict["Bomb"]);
     }
     void On_TouchDown(Gesture gesture)
     {
         Debug.Log(gesture.type);
+        if (Role == null) return;
+        //TODO 先寻路，到达后开始攻击
         if (gesture.pickedObject != null&&Role!=null)
         {
+            if (gesture.pickedObject.tag == CampType.ToString()) return;
             PlayerInfo pi = Role.GetComponent<PlayerInfo>();
             if (pi.RoleType == RoleType.Hero)
             {
                 switch (CampType)
                 {
                     case CampType.Monkey:
+                        facade.Attack(Role.GetComponent<PlayerInfo>().InstanceId, gesture.pickedObject);
                         break;
                     case CampType.Fish:
-                        if(Vector3.Distance(Role.transform.position,gesture.pickedObject.transform.position)<2)
-                            destroyRequest.SendRequest(gesture.pickedObject.transform.position);
+                        facade.Attack(Role.GetComponent<PlayerInfo>().InstanceId,gesture.pickedObject);
                         break;
                     case CampType.Middle:
                         break;

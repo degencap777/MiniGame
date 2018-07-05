@@ -59,7 +59,7 @@ public class Trap : Skill
         Collider[] colliders = Physics.OverlapSphere(go.transform.position, 3);
         foreach (var collider in colliders)
         {
-            if (collider.tag == "Player")
+            if (collider.tag == "Fish")
             {
                 PlayerInfo pi = collider.GetComponent<PlayerInfo>();
                 if (owner != null && pi.CampType != owner.GetComponent<PlayerInfo>().CampType)

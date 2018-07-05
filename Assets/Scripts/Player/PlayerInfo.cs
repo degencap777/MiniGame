@@ -35,7 +35,11 @@ public class PlayerInfo : MonoBehaviour
         }
         set
         {
-            if (value) _toUseItem = false;
+            if (value)
+            {
+                ToUseItem = false;
+                IsAttack = false;
+            }
             _toUseSkill = value;
         }
     }
@@ -49,11 +53,34 @@ public class PlayerInfo : MonoBehaviour
         }
         set
         {
-            if (value) ToUseSkill = false;
+            if (value)
+            {
+                ToUseSkill = false;
+                IsAttack = false;
+            }
             _toUseItem = value;
         } 
     }
 
+    private bool _isAttack = false;
+
+    public bool IsAttack
+    {
+        get
+        {
+            return _isAttack;
+        }
+        set
+        {
+            if (value == false)
+            {
+                anim.SetBool("Attack", false);
+            }
+            _isAttack = value;
+        }
+    }
+
+    public bool IsDead;
     private float Timer = 0;
 
     //public void Init(PlayerManager playerManager,int id, CampType campType, string name, RoleType roleType, string description, int hp, int mp, int moveSpeed,
@@ -124,8 +151,6 @@ public class PlayerInfo : MonoBehaviour
             VisualProvider.noOcclusion = IsSkyVision;
         if (CurrentHp <= 0&&!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
         {
-            CurrentHp = Hp;
-            CurrentMp = Mp;
             if (gameObject==Player.Dead)
             {
                 Revive();
@@ -134,6 +159,8 @@ public class PlayerInfo : MonoBehaviour
             {
                 Die();
             }
+            CurrentHp = Hp;
+            CurrentMp = Mp;
         }
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Die") &&
             anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
@@ -168,6 +195,7 @@ public class PlayerInfo : MonoBehaviour
 
     public void Die()
     {
+        IsDead = true;
         if(anim!=null)
             anim.SetTrigger("Die");
         if (RoleType == RoleType.Hero && CampType == CampType.Fish)

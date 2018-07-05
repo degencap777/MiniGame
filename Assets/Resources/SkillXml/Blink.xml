@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Root Resources="Blink" Name="闪烁" parameterCount="4">
-  <parameters During="2" CD="2" Distance="5" Trigger="1" />
+<Root Resources="Blink" Name="闪烁" parameterCount="5">
+  <parameters During="2" CD="2" Distance="5" Trigger="1" Stick="1" />
 </Root>

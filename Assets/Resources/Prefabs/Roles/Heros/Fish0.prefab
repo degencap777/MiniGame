@@ -30,9 +30,10 @@ GameObject:
   - component: {fileID: 114901350371122616}
   - component: {fileID: 114360864031980358}
   - component: {fileID: 114308571423877866}
-  m_Layer: 0
+  - component: {fileID: 114166951422669462}
+  m_Layer: 10
   m_Name: Fish0
-  m_TagString: Player
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -173,7 +174,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1057721903175890}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 20
   m_Drag: Infinity
   m_AngularDrag: Infinity
   m_UseGravity: 1
@@ -210,7 +211,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 895a61b17ca859a4dacdab9e3c57a54c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentState: 0
   RoleId: 0
   CampType: 0
   Name: 
@@ -225,9 +225,18 @@ MonoBehaviour:
   IsSkyVision: 0
   AttackDamage: 0
   InstanceId: 0
-  Forward: 0
-  UseSkill: 0
-  UseItem: 0
+  IsDead: 0
+--- !u!114 &114166951422669462
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1057721903175890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa99cd923cff297418df7c1b394ced6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114239451282775802
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -299,7 +308,7 @@ SphereCollider:
   m_GameObject: {fileID: 1878424941884778}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -310,7 +319,7 @@ CapsuleCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1057721903175890}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2

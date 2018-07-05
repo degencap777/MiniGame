@@ -22,12 +22,14 @@ public class MoveRequest : BaseRequest
         public int goId;
         public Vector3 pos;
         public Vector3 rot;
+        public float Forward;
 
-        public syncData(int goId, Vector3 pos, Vector3 rot)
+        public syncData(int goId, Vector3 pos, Vector3 rot,float forward)
         {
             this.goId = goId;
             this.pos = pos;
             this.rot = rot;
+            Forward = forward;
         }
     }
 
@@ -54,14 +56,14 @@ public class MoveRequest : BaseRequest
             {
                 if(syncDatas[i]==null)continue;
                 syncData sd = syncDatas[i];
-                PlayerManager.MoveSync(sd.goId, sd.pos, sd.rot);
+                PlayerManager.MoveSync(sd.goId, sd.pos, sd.rot,sd.Forward);
                 syncDatas[i] = null;
             }
         }
     }
     private void SyncLocalPlayer()
     {
-        PlayerManager.Move();//ID+ROLEID+位置
+        PlayerManager.Move();//ID+ROLEID+位置+Forward参数
     }
 
     public void SendRequest(float x, float y, float z, float rotationX, float rotationY, float rotationZ)
@@ -75,7 +77,7 @@ public class MoveRequest : BaseRequest
         for (int i = 0; i < str.Length; i++)
         {
             string[] strs = str[i].Split('|');
-            syncDatas[int.Parse(strs[0])] = (new syncData(int.Parse(strs[0]), UnityTools.ParseVector3(strs[1]), UnityTools.ParseVector3(strs[2])));
+            syncDatas[int.Parse(strs[0])] = (new syncData(int.Parse(strs[0]), UnityTools.ParseVector3(strs[1]), UnityTools.ParseVector3(strs[2]),float.Parse(strs[3])));
         }
     }
 }

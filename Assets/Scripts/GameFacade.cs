@@ -148,6 +148,52 @@ public class GameFacade : MonoBehaviour
     }
 
     #endregion
+
+    #region Audio
+
+    public void SetAudioSetting(bool music,bool sound,float musicValue,float soundValue)
+    {
+        audioMng.musicOn = music;
+        audioMng.soundOn = sound;
+        audioMng.musicVolume = musicValue;
+        audioMng.soundVolume = soundValue;
+    }
+    public void OnMusicChanged(bool isOn)
+    {
+        audioMng.musicOn = isOn;
+        if (isOn)
+        {
+            audioMng.ResumeMusic();
+        }
+        else
+        {
+            audioMng.PauseMusic();
+        }
+    }
+    public void OnSoundChanged(bool isOn)
+    {
+        audioMng.soundOn = isOn;
+        if (isOn)
+        {
+            audioMng.ResumeAllSounds();
+        }
+        else
+        {
+            audioMng.PauseAllSounds();
+        }
+    }
+
+    public void OnMusicSliderValueChange(float value)
+    {
+        audioMng.musicVolume = value;
+    }
+
+    public void OnSoundSliderValueChange(float value)
+    {
+        audioMng.soundVolume = value;
+    }
+
+    #endregion
     public void AddRequest(ActionCode actionCode, BaseRequest Request)
     {
         requestMng.AddRequest(actionCode, Request);
@@ -181,13 +227,13 @@ public class GameFacade : MonoBehaviour
         clientMng.SendRequest(requestCode, actionCode, data);
     }
 
-    public void PlayBgSound(string soundName)
+    public void PlayMusic(string soundName,bool loop=false)
     {
-        audioMng.PlayBgSound(soundName);
+        audioMng.PlayMusic(audioMng.Clips[soundName],loop);
     }
-    public void PlayNormalSound(string soundName)
+    public void PlaySound(string soundName, bool loop = false)
     {
-        audioMng.PlayNormalSound(soundName);
+        audioMng.PlaySound(audioMng.Clips[soundName],loop);
     }
 
     public List<GameObject> GetLocalGameObjects()
@@ -268,6 +314,10 @@ public class GameFacade : MonoBehaviour
         }
     }
 
+    public void Attack(int instanceId,GameObject target)
+    {
+        playerMng.Attack(instanceId,target);
+    }
     public Skill GetSkill(string name)
     {
         return skillManager.GetInstanceOfSkillWithString(name, null);
@@ -286,6 +336,5 @@ public class GameFacade : MonoBehaviour
     {
         playerMng.GameOver();
         cameraMng.GameOver();
-        
     }
 }

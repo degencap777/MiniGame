@@ -25,9 +25,9 @@ GameObject:
   - component: {fileID: 54701476472114144}
   - component: {fileID: 114016223454475806}
   - component: {fileID: 95929257377614780}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bird0
-  m_TagString: Player
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -168,7 +168,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1057721903175890}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 20
   m_Drag: Infinity
   m_AngularDrag: Infinity
   m_UseGravity: 1
@@ -219,6 +219,7 @@ MonoBehaviour:
   IsSkyVision: 0
   AttackDamage: 0
   InstanceId: 0
+  IsDead: 0
 --- !u!135 &135819613145094640
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -238,7 +239,7 @@ CapsuleCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1057721903175890}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2

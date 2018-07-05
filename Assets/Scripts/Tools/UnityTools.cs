@@ -29,5 +29,17 @@ namespace Assets.Scripts.Tools
             float y = float.Parse(strs[1]);
             return new Vector2(x, y);
         }
+        public static string PackVector2(Vector2 vector2)
+        {
+            return vector2.x + "," + vector2.y;
+        }
+        public static Vector3 RoundV3(Vector3 v3)
+        {
+            return new Vector3(Mathf.Round(v3.x), Mathf.Round(v3.y), Mathf.Round(v3.z));
+        }
+        public static Vector2 V3ToV2(Vector3 v3)
+        {
+            return new Vector2(Mathf.Round(v3.x), Mathf.Round(v3.z));
+        }
     }
 }

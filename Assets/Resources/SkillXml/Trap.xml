@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Root Resources="Trap" Name="陷阱" parameterCount="3">
-  <parameters During="120" CD="40" Distance="5" />
+<Root Resources="Trap" Name="陷阱" parameterCount="4">
+  <parameters During="120" CD="40" Distance="5" Stick="1" />
 </Root>

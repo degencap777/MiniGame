@@ -79,6 +79,7 @@ public class RoomPanel : BasePanel
         startButton.GetComponent<Button>().onClick.AddListener(OnStartClick);
         exitButton.GetComponent<Button>().onClick.AddListener(OnExitClick);
         sendButton.GetComponent<Button>().onClick.AddListener(OnSendClick);
+        inputField.onEndEdit.AddListener(x => OnSendClick());
 
 
         OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/OtherPlayerChatMsgItem");
@@ -247,6 +248,7 @@ public class RoomPanel : BasePanel
     {
         string msgName = localPlayer.Username;
         string msg = inputField.text;
+        if(string.IsNullOrEmpty(msg))return;
         roomChatRequest.SendRequest(msgName+","+msg);
         inputField.text = "";
     }
