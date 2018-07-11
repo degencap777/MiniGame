@@ -72,7 +72,6 @@ public class PlayerManager : BaseManager
     {
         base.Update();
         if(LocalPlayer!=null)
-        DebugConsole.Log(LocalPlayer.CurrentRoleInstanceId.ToString());
         if (LocalPlayer!=null&&LocalPlayer.RoleInstanceIdList.Count!=0)
         {
             if(roleGameObjects.TryGet(LocalPlayer.CurrentRoleInstanceId) == null)
@@ -261,7 +260,7 @@ public class PlayerManager : BaseManager
         foreach (var id in LocalPlayer.RoleInstanceIdList)
         {
             GameObject go = roleGameObjects.TryGet(id);
-            if (go==null||!go.GetComponent<PlayerInfo>().anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))continue;
+            if (go==null||!go.GetComponent<PlayerInfo>().anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded")||go.GetComponent<PlayerInfo>().IsMove==false)continue;
             
             count++;
             sb.Append(id + "|" + UnityTools.PackVector3(go.transform.position) + "|" +
@@ -279,8 +278,7 @@ public class PlayerManager : BaseManager
         PlayerInfo playerInfo = go.GetComponent<PlayerInfo>();
         if (playerInfo != null)
         {
-            playerInfo.ToUseSkill = false;
-            playerInfo.ToUseItem = false;
+            playerInfo.IsMove = true;
         }
         roleGameObjects[goId].transform.position = pos;
         roleGameObjects[goId].transform.eulerAngles = rot;
@@ -318,6 +316,7 @@ public class PlayerManager : BaseManager
     }
     public void UseSkill(string skillName,string axis=null)
     {
+        roleGameObjects[GetCurrentGoId()].GetComponent<PlayerInfo>().ToUseSkill = true;
         useSkillRequest.SendRequest(GetCurrentGoId(),skillName,axis);
     }
 
@@ -456,8 +455,7 @@ public class PlayerManager : BaseManager
         Debug.Log(go==null);
         if (go == null) return;
         PlayerInfo pi = go.GetComponent<PlayerInfo>();
-        pi.anim.SetTrigger("Revive");
-        pi.IsDead = false;
+        pi.Revive();
         switch (pi.CampType)
         {
             case CampType.Monkey:

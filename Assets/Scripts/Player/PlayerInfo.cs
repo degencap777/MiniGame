@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Common;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInfo : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class PlayerInfo : MonoBehaviour
     public RoleData RoleData { get; private set; }
     public Animator anim { get; private set; }
 
+    private HealthBar healthBar;
     private bool _toUseSkill = false;
 
     public bool ToUseSkill
@@ -80,7 +82,37 @@ public class PlayerInfo : MonoBehaviour
         }
     }
 
-    public bool IsDead;
+    private bool _isDead = false;
+    public bool IsDead
+    {
+        get { return _isDead; }
+        set
+        {
+            if (value)
+            {
+                IsMove = false;
+                ToUseSkill = false;
+                ToUseItem = false;
+                IsAttack = false;
+            }
+            _isDead = value;
+        }
+    }
+    private bool _isMove = false;
+
+    public bool IsMove
+    {
+        get { return _isMove; }
+        set {
+            if (value)
+            {
+                ToUseSkill = false;
+                ToUseItem = false;
+                IsAttack = false;
+            }
+            _isMove = value;
+        }
+    }
     private float Timer = 0;
 
     //public void Init(PlayerManager playerManager,int id, CampType campType, string name, RoleType roleType, string description, int hp, int mp, int moveSpeed,
@@ -143,24 +175,34 @@ public class PlayerInfo : MonoBehaviour
     {
         VisualProvider = GetComponent<VisualProvider>();
         anim = GetComponent<Animator>();
+        healthBar = GetComponent<HealthBar>();
+        healthBar.healthLink.targetScript = this;
+        healthBar.healthLink.fieldName = "CurrentHp";
     }
     void Update()
     {
         Timer += Time.deltaTime;
+        
         if(VisualProvider!=null)
             VisualProvider.noOcclusion = IsSkyVision;
-        if (CurrentHp <= 0&&!anim.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+        if (!IsDead)
         {
-            if (gameObject==Player.Dead)
+            Debug.Log(IsDead);
+            if (CurrentHp <= 0)
             {
-                Revive();
+                Debug.Log("这不是已经死了吗");
+                IsDead = true;
+                if (gameObject == Player.Dead)
+                {
+                    Player.RoleInstanceIdList.Remove(InstanceId);
+                    Destroy(gameObject);
+                    PlayerManager.Revive(Player.RoleInstanceIdList[0]);
+                }
+                else
+                {
+                    Die();
+                }
             }
-            else
-            {
-                Die();
-            }
-            CurrentHp = Hp;
-            CurrentMp = Mp;
         }
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Die") &&
             anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
@@ -189,13 +231,13 @@ public class PlayerInfo : MonoBehaviour
 
     public void Damage(int damage)
     {
+        if (IsDead) return;
         CurrentHp = CurrentHp - damage < 0 ? 0 : CurrentHp - damage;
         DebugConsole.Log("Hp=" + CurrentHp);
     }
 
     public void Die()
     {
-        IsDead = true;
         if(anim!=null)
             anim.SetTrigger("Die");
         if (RoleType == RoleType.Hero && CampType == CampType.Fish)
@@ -206,14 +248,34 @@ public class PlayerInfo : MonoBehaviour
         {
             Player.RoleInstanceIdList.Remove(InstanceId);
         }
-        DebugConsole.Log("die");
+        Debug.Log("die");
     }
 
-    private void Revive()
+    public void Revive()
     {
-        Player.RoleInstanceIdList.Remove(InstanceId);
-        Destroy(gameObject);
-        PlayerManager.Revive(Player.RoleInstanceIdList[0]);
+        anim.SetTrigger("Revive");
+        IsDead = false;
+        CurrentHp = Hp;
+        CurrentMp = Mp;
     }
-    
+
+    void OnEnable()
+    {
+        if (healthBar != null && healthBar.HealthbarPrefab != null)
+            healthBar.HealthbarPrefab.gameObject.SetActive(true);
+    }
+
+    void OnDisable()
+    {
+        if (healthBar != null&& healthBar.HealthbarPrefab!=null)
+            healthBar.HealthbarPrefab.gameObject.SetActive(false);
+    }
+    void OnDestroy()
+    {
+        if (healthBar != null && healthBar.HealthbarPrefab != null)
+        {
+            healthBar.HealthbarPrefab.parent.GetComponent<HealthbarRoot>().healthBars.Remove(healthBar.HealthbarPrefab);
+            Destroy(healthBar.HealthbarPrefab.gameObject);
+        }
+    }
 }

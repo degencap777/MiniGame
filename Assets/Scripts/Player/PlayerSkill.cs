@@ -30,7 +30,7 @@ public class PlayerSkill : MonoBehaviour
 	    {
 	        if (IsTurnDone())
 	        {
-	            UseSkill();
+                UseSkill();
 	            playerInfo.ToUseSkill = false;
 	            playerInfo.anim.SetTrigger("UseSkill");
 	        }

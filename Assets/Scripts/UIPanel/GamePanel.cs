@@ -133,8 +133,8 @@ public class GamePanel : BasePanel
         chatButton.onClick.AddListener(OnChatClick);
         inputField.onEndEdit.AddListener(x => OnSendClick());
 
-        OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/OtherPlayerChatMsgItem");
-        LocalPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/LocalPlayerChatMsgItem");
+        OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/Chat/OtherPlayerChatMsgItem");
+        LocalPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/Chat/LocalPlayerChatMsgItem");
         ChangeSeatItem = Resources.Load<GameObject>("UIItem/ChangeSeatItem");
         
     }
@@ -169,7 +169,7 @@ public class GamePanel : BasePanel
 	    {
 	        GameOver();
 	    }
-        if (deadCount == 2)
+        if (deadCount == 1)
         {
             gameOverRequest.SendRequest();
             deadCount = 0;

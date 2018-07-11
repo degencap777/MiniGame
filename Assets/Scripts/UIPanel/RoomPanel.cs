@@ -82,8 +82,8 @@ public class RoomPanel : BasePanel
         inputField.onEndEdit.AddListener(x => OnSendClick());
 
 
-        OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/OtherPlayerChatMsgItem");
-        LocalPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/LocalPlayerChatMsgItem");
+        OtherPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/Chat/OtherPlayerChatMsgItem");
+        LocalPlayerChatMsgItem = Resources.Load<GameObject>("UIItem/Chat/LocalPlayerChatMsgItem");
         ChangeSeatItem = Resources.Load<GameObject>("UIItem/ChangeSeatItem");
         
 

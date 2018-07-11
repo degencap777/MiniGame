@@ -24,7 +24,7 @@ public class RoomListPanel : BasePanel
         //battleRes = transform.Find("BattleRes").GetComponent<Transform>();
         roomListTrans = transform.Find("RoomList").GetComponent<Transform>();
         roomLayout = roomListTrans.Find("ScrollPanel/Layout").GetComponent<VerticalLayoutGroup>();
-        roomItemPrefab = Resources.Load<GameObject>("UIItem/RoomItem");
+        roomItemPrefab = Resources.Load<GameObject>("UIItem/Room/RoomItem");
         transform.Find("RoomList/CloseButton").GetComponent<Button>().onClick.AddListener(OnCloseClick);
         transform.Find("RoomList/CreateRoomButton").GetComponent<Button>().onClick.AddListener(OnCreateRoomClick);
         transform.Find("RoomList/RefreshRoomButton").GetComponent<Button>().onClick.AddListener(OnRefreshRoomClick);

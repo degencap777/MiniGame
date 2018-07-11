@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 54701476472114144}
   - component: {fileID: 114016223454475806}
   - component: {fileID: 95929257377614780}
+  - component: {fileID: 114860902159324550}
   m_Layer: 10
   m_Name: Bird0
   m_TagString: Fish
@@ -220,6 +221,44 @@ MonoBehaviour:
   AttackDamage: 0
   InstanceId: 0
   IsDead: 0
+--- !u!114 &114860902159324550
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1057721903175890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37b67d8750d564547b048e7c973b12c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthLink:
+    targetScript: {fileID: 114016223454475806, guid: 05dad09af33cc9944b021e0b1df83abc,
+      type: 2}
+    fieldName: CurrentHp
+  HealthbarPrefab: {fileID: 22400004, guid: e1937e1c6f9ba6c4ba4d36e07d553b6d, type: 2}
+  yOffset: 150
+  keepSize: 1
+  scale: 3
+  sizeOffsets: {x: 0, y: 50}
+  DrawOFFDistance: 1
+  drawDistance: 25
+  showHealthInfo: 1
+  healthInfoAlignment: 1
+  healthInfoSize: 13
+  alphaSettings:
+    defaultAlpha: 1
+    defaultFadeSpeed: 0.1
+    fullAplpha: 1
+    fullFadeSpeed: 0
+    nullAlpha: 0
+    nullFadeSpeed: 0.05
+    onHit:
+      fadeSpeed: 0.05
+      onHitAlpha: 1
+      duration: 0.5
+  canvas: {fileID: 0}
+  camCanvas: {fileID: 0}
 --- !u!135 &135819613145094640
 SphereCollider:
   m_ObjectHideFlags: 1

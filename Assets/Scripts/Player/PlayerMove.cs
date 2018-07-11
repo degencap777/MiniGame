@@ -43,13 +43,14 @@ public class PlayerMove : MonoBehaviour
             float v = JoyStick.axisX.axisValue;
             if (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f)
             {
-                playerInfo.ToUseSkill = false;
+                playerInfo.IsMove = true;
                 moveDirection = new Vector3(v, 0, h);
                 Anim.SetFloat("Forward", Vector3.Distance(Vector3.zero, moveDirection)); 
                 Move();
             }
             else
             {
+                playerInfo.IsMove = false;
                 Anim.SetFloat("Forward", 0);
             }
         }
