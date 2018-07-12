@@ -26,9 +26,9 @@ public class PlayerSkill : MonoBehaviour
 	// Update is called once per frame
 	void Update () {
 	    //if (playerInfo.CurrentState==PlayerInfo.State.UseSkill)
-        if(playerInfo.ToUseSkill&&playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+        if(playerInfo.ToUseSkill&&playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded") && !playerInfo.IsLock)
 	    {
-	        if (IsTurnDone())
+	        if (IsTurnDone()&&currentSkill!=null)
 	        {
                 UseSkill();
 	            playerInfo.ToUseSkill = false;
@@ -49,6 +49,10 @@ public class PlayerSkill : MonoBehaviour
     private void UseSkill(Skill useSkill=null)
     {
         Skill skill = useSkill ?? currentSkill;
+        if (skill.parameters.TryGet("Trigger") == 0)
+        {
+            playerInfo.anim.SetTrigger("UseSkill");
+        }
         if (joystickColdTime != 0&&playerInfo.Player.IsLocal)
             GameFacade.Instance.UseSkillSync(skill.GetType().Name,joystickColdTime);
         charactorSkills.Skills[skill.GetType().Name].Direction = direction;
@@ -67,10 +71,6 @@ public class PlayerSkill : MonoBehaviour
             if (playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded")&& IsTurnDone())
             {
                 UseSkill(skill);
-                if (skill.parameters.TryGet("Trigger") == 0)
-                {
-                    playerInfo.anim.SetTrigger("UseSkill");
-                }
                 playerInfo.ToUseSkill = false;
                 return;
             }
@@ -79,6 +79,7 @@ public class PlayerSkill : MonoBehaviour
         {
             UseSkill(skill);
             direction=Vector3.zero;
+            return;
         }
         currentSkill = skill;
     }

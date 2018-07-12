@@ -15,14 +15,21 @@ public class Transfer : Skill
     private GameObject go;
     private Vector3 transPos=new Vector3(0,1,0);
     private Animator anim;
+
+    private PlayerInfo pi;
     //这个方法会在技能发动时调用,返回值为false则发动失败，不会调用后续方法
     protected override bool SkillStart()
     {
         go = resources;
         go.transform.position = owner.transform.position;
-        anim= owner.GetComponent<PlayerInfo>().anim;
+        go.AddComponent<DestroyForTime>().time = parameters.TryGet("During");
+        go.transform.rotation = owner.transform.rotation;
+        pi = owner.GetComponent<PlayerInfo>();
+        anim = pi.anim;
+        pi.IsLock = true;
         anim.SetTrigger("UseSkill");
-         return true;    }
+         return true;    
+    }
 
     //这个方法会在技能进行过程中不断调用，当返回true表示技能已经完成所有动作
     protected override bool SkillAction()
@@ -39,7 +46,7 @@ public class Transfer : Skill
     protected override void SkillEnd()
     {
         owner.GetComponent<Rigidbody>().position = transPos;
-        Object.Destroy(go);
+        pi.IsLock = false;
     }
     //您可以通过该方法提供一个技能的详细描述，您可以通过在文字中嵌入属性字典中的值来避免反复修改代码。
     public override string GetDescription()

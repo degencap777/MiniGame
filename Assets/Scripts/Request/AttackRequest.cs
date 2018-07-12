@@ -52,6 +52,10 @@ public class AttackRequest : BaseRequest
                 {
                     PlayerManager.AttackSync(damage.InstanceId, damage.TargetId);
                 }
+                else
+                {
+                    PlayerManager.AttackSync(damage.InstanceId,damage.TargetId,false);
+                }
             }
         }
     }
@@ -71,6 +75,10 @@ public class AttackRequest : BaseRequest
             damageQueue.Enqueue(new Damage(layer,instanceId,UnityTools.ParseVector2(strs[2])));
         }
         else if (layer == 10)
+        {
+            damageQueue.Enqueue(new Damage(layer, instanceId, int.Parse(strs[2])));
+        }
+        else
         {
             damageQueue.Enqueue(new Damage(layer, instanceId, int.Parse(strs[2])));
         }

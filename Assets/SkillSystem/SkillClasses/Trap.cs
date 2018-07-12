@@ -22,6 +22,7 @@ public class Trap : Skill
         go.transform.parent = owner.GetComponent<PlayerInfo>().Player.Reference.transform;
         go.transform.position = dir*parameters["Distance"] + new Vector3(owner.transform.position.x, 0, owner.transform.position.z);
         go.AddComponent<DestroyForTime>().time = parameters.TryGet("During");
+        go.AddComponent<VisualProvider>().noOcclusion = true;
         Damage();
         return true;
     }
@@ -45,7 +46,6 @@ public class Trap : Skill
     //这个方法会在技能结束时调用
     protected override void SkillEnd()
     {
-        Object.Destroy(go);
     }
     //您可以通过该方法提供一个技能的详细描述，您可以通过在文字中嵌入属性字典中的值来避免反复修改代码。
     public override string GetDescription()

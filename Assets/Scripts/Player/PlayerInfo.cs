@@ -26,9 +26,9 @@ public class PlayerInfo : MonoBehaviour
     public RoleData RoleData { get; private set; }
     public Animator anim { get; private set; }
 
+
     private HealthBar healthBar;
     private bool _toUseSkill = false;
-
     public bool ToUseSkill
     {
         get
@@ -45,7 +45,6 @@ public class PlayerInfo : MonoBehaviour
             _toUseSkill = value;
         }
     }
-
     private bool _toUseItem = false;
     public bool ToUseItem
     {
@@ -63,9 +62,7 @@ public class PlayerInfo : MonoBehaviour
             _toUseItem = value;
         } 
     }
-
     private bool _isAttack = false;
-
     public bool IsAttack
     {
         get
@@ -81,7 +78,6 @@ public class PlayerInfo : MonoBehaviour
             _isAttack = value;
         }
     }
-
     private bool _isDead = false;
     public bool IsDead
     {
@@ -99,7 +95,6 @@ public class PlayerInfo : MonoBehaviour
         }
     }
     private bool _isMove = false;
-
     public bool IsMove
     {
         get { return _isMove; }
@@ -113,6 +108,8 @@ public class PlayerInfo : MonoBehaviour
             _isMove = value;
         }
     }
+
+    public bool IsLock = false;
     private float Timer = 0;
 
     //public void Init(PlayerManager playerManager,int id, CampType campType, string name, RoleType roleType, string description, int hp, int mp, int moveSpeed,
@@ -187,10 +184,8 @@ public class PlayerInfo : MonoBehaviour
             VisualProvider.noOcclusion = IsSkyVision;
         if (!IsDead)
         {
-            Debug.Log(IsDead);
             if (CurrentHp <= 0)
             {
-                Debug.Log("这不是已经死了吗");
                 IsDead = true;
                 if (gameObject == Player.Dead)
                 {
@@ -240,7 +235,7 @@ public class PlayerInfo : MonoBehaviour
     {
         if(anim!=null)
             anim.SetTrigger("Die");
-        if (RoleType == RoleType.Hero && CampType == CampType.Fish)
+        if (RoleType == RoleType.Hero)
         {
             PlayerManager.Die(InstanceId);
         }

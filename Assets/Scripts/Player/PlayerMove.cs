@@ -37,7 +37,7 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (IsGrounded&&playerInfo.Player.CurrentRoleInstanceId==playerInfo.InstanceId)
+        if (IsGrounded&&playerInfo.Player.CurrentRoleInstanceId==playerInfo.InstanceId&&!playerInfo.IsLock)
         {
             float h = JoyStick.axisY.axisValue;
             float v = JoyStick.axisX.axisValue;

@@ -58,11 +58,22 @@ public class SkillJoystickItem : MonoBehaviour {
     }
     private void OnMoveStart()
     {
-        List<GameObject> effectList = gamePanel.OnSkillJoyMoveStart();
-        range = effectList[0];
-        range.GetComponent<Projector>().orthographicSize *= skill.parameters["Distance"];
-        target = effectList[1];
-        target.GetComponent<Projector>().orthographicSize *=
+        if (range == null && target == null)
+        {
+            List<GameObject> effectList = gamePanel.OnSkillJoyMoveStart();
+            range = Instantiate(effectList[0], gamePanel.Role.transform);
+            target = Instantiate(effectList[1], gamePanel.Role.transform);
+        }
+        else
+        {
+            range.gameObject.SetActive(true);
+            target.gameObject.SetActive(true);
+        }
+        range.transform.parent = gamePanel.Role.transform;
+        target.transform.parent = gamePanel.Role.transform;
+        range.transform.localPosition = Vector3.zero;
+        range.GetComponent<Projector>().orthographicSize = skill.parameters["Distance"];
+        target.GetComponent<Projector>().orthographicSize =
             skill.parameters.TryGet("Range") == 0 ? 1 : skill.parameters.TryGet("Range");
     }
     private void OnMove(Vector2 move)
@@ -79,8 +90,8 @@ public class SkillJoystickItem : MonoBehaviour {
             Debug.Log("没为按钮定义技能");
             return;
         }
-        Destroy(range);
-        Destroy(target);
+        range.gameObject.SetActive(false);
+        target.gameObject.SetActive(false);
         gamePanel.UseSkill(SkillName,axis.x+","+axis.y);
     }
     

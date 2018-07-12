@@ -9,22 +9,25 @@ public class MapInfo : MonoBehaviour
     public int Hp;
     public int HeightLayer;
     public int CurrentHp { get; private set; } 
-    public GameObject Effect;
-    public float EffectTime;
-    public Vector2 IndexV2 { get { return UnityTools.V3ToV2(UnityTools.RoundV3(transform.position)); } }
+    public Vector2 IndexV2 { get; private set; }
     private GamePanel gamePanel;
 
-    void Awake()
+    IEnumerator Start()
     {
         transform.position= UnityTools.RoundV3(transform.position);
-        if (GameFacade.Instance.GetCurrentPanelType().GetType().Name == "GamePanel")
-            gamePanel = (GamePanel)GameFacade.Instance.GetCurrentPanel();
-        if(gamePanel!=null)
-            gamePanel.MapInfos[(int)IndexV2.x, (int)IndexV2.y] = this;
+        CurrentHp = Hp;
+        IndexV2= UnityTools.V3ToV2(transform.position);
+        while (GameFacade.Instance.GetCurrentPanelType() != UIPanelType.Game)
+        {
+            yield return null;
+        }
+        gamePanel = (GamePanel)GameFacade.Instance.GetCurrentPanel();
+        gamePanel.MapInfos[(int)IndexV2.x, (int)IndexV2.y] = this;
     }
 
     public void Damage(int damage)
     {
+        Debug.Log("受到伤害:"+damage);
         CurrentHp = Hp - damage < 0 ? 0 : Hp - damage;
         if (CurrentHp <= 0)
         {
@@ -33,7 +36,7 @@ public class MapInfo : MonoBehaviour
         }
     }
 
-    public void Destroy(GameObject effect)
+    public void DestroyCube(GameObject effect)
     {
         if (gamePanel!=null)
             gamePanel.MapInfos[(int)IndexV2.x, (int)IndexV2.y] = null;

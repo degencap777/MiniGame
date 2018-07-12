@@ -337,4 +337,9 @@ public class GameFacade : MonoBehaviour
         playerMng.GameOver();
         cameraMng.GameOver();
     }
+
+    public CampType QuitPlayer(int id)
+    {
+        return playerMng.QuitPlayer(id);
+    }
 }

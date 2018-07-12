@@ -47,6 +47,7 @@ public class PlayerManager : BaseManager
     //游戏结束后需要清空
     //场景中每一个英雄对象都对应一个独一无二Id
     private Dictionary<int, GameObject> roleGameObjects =new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> itemGameObjects=new Dictionary<int, GameObject>();
     private readonly List<Player> playerList = new List<Player>();
     
     private MoveRequest moveRequest;
@@ -213,6 +214,10 @@ public class PlayerManager : BaseManager
         roleGameObjects.Add(instanceId, go);
     }
 
+    public void SetItemList(int id, GameObject go)
+    {
+        itemGameObjects.Add(id,go);
+    }
     /// <summary>
     /// 本地和远程的都可以
     /// </summary>
@@ -296,19 +301,37 @@ public class PlayerManager : BaseManager
         {
             attackRequest.SendRequest(layer + "|" + instanceId + "|" + target.GetComponent<PlayerInfo>().InstanceId);
         }
+        else
+        {
+            attackRequest.SendRequest(layer+"|"+instanceId+"|"+target.GetInstanceID());
+        }
     }
 
     public void AttackSync(int InstanceId,Vector2 pos)
     {
-        if (facade.GetCurrentPanel().GetType().Name == "GamePanel")
+        GameObject role = roleGameObjects.TryGet(InstanceId);
+        GameObject target = null;
+        if (GameFacade.Instance.GetCurrentPanelType() == UIPanelType.Game)
         {
-            ((GamePanel)facade.GetCurrentPanel()).DestroyCube(pos);
+            Debug.Log(pos);
+            GamePanel gamePanel = (GamePanel) facade.GetCurrentPanel();
+            target = gamePanel.MapInfos[(int) pos.x, (int) pos.y].gameObject;
+        }
+        if (role != null && target != null)
+        {
+            role.GetComponent<PlayerAttack>().Attack(target);
         }
     }
-    public void AttackSync(int InstanceId, int targetId)
+    public void AttackSync(int InstanceId, int targetId,bool isHero=true)
     {
         GameObject role = roleGameObjects.TryGet(InstanceId);
-        GameObject target = roleGameObjects.TryGet(targetId);
+        GameObject target;
+        if (isHero)
+            target = roleGameObjects.TryGet(targetId);
+        else
+        {
+            target = itemGameObjects.TryGet(targetId);
+        }
         if (role != null&&target!=null)
         {
             role.GetComponent<PlayerAttack>().Attack(target);
@@ -513,6 +536,29 @@ public class PlayerManager : BaseManager
         _idCount = 0;
         playerList.Clear();
         roleGameObjects.Clear();
+        itemGameObjects.Clear();
     }
-    
+
+    public CampType QuitPlayer(int id)
+    {
+        Player player = null;
+        foreach (Player p in playerList)
+        {
+            if (p.UserData.Id == id)
+            {
+                player = p;
+                break;
+            }
+        }
+        Object.Destroy(player.Reference);
+        foreach (int instanceId in player.RoleInstanceIdList)
+        {
+            GameObject go = roleGameObjects.TryGet(instanceId);
+            if(go==null)continue;
+            roleGameObjects.Remove(instanceId);
+            Object.Destroy(go);
+        }
+        playerList.Remove(player);
+        return player.CampType;
+    }
 }

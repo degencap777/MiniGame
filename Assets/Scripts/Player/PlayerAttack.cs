@@ -9,6 +9,10 @@ public class PlayerAttack : MonoBehaviour
     private Vector3 shootDir;
     private PlayerManager playerManager;
     private GameObject target;
+    private float CD = 2;
+    private float timer = 0;
+    private bool isReady = true;
+    
     // Use this for initialization
     void Start()
     {
@@ -18,25 +22,42 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") &&
-            playerInfo.anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f && target != null)
+        if (!isReady)
         {
+            timer += Time.deltaTime;
+            if (timer >= CD)
+            {
+                isReady = true;
+                timer = 0;
+            }
+
+        }
+        if (playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") &&
+            playerInfo.anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && target != null && !playerInfo.IsLock&& isReady)
+        {
+            playerInfo.IsAttack = false;
+            isReady = false;
+            Debug.Log("Attacking正在攻击");
             if (LayerMask.LayerToName(target.layer) == "Cube")
             {
                 if (target.GetComponent<MapInfo>().CurrentHp <= 0)
                 {
-                    playerInfo.IsAttack = false;
                     return;
                 }
+                playerInfo.IsAttack = true;
                 target.GetComponent<MapInfo>().Damage(playerInfo.AttackDamage);
+            }
+            else if (target.tag == "Vulnerable")
+            {
+                Destroy(target);
             }
             else
             {
                 if (target.GetComponent<PlayerInfo>().IsDead)
                 {
-                    playerInfo.IsAttack = false;
                     return;
                 }
+                playerInfo.IsAttack = true;
                 target.GetComponent<PlayerInfo>().Damage(playerInfo.AttackDamage);
             }
         }

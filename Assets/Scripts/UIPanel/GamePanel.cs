@@ -32,6 +32,7 @@ public class GamePanel : BasePanel
     private GameOverRequest gameOverRequest;
     private StartPlayRequest startPlayRequest;
     private QuitBattleRequest quitBattleRequest;
+    private QuitGameRequest quitGameRequest;
     private DestroyRequest destroyRequest;
 
     private List<Transform> skillPos=new List<Transform>();
@@ -107,6 +108,7 @@ public class GamePanel : BasePanel
         startPlayRequest = GetComponent<StartPlayRequest>();
         gameOverRequest = GetComponent<GameOverRequest>();
         quitBattleRequest = GetComponent<QuitBattleRequest>();
+        quitGameRequest = GetComponent<QuitGameRequest>();
         destroyRequest = GetComponent<DestroyRequest>();
         gameChatRequest = GetComponent<GameChatRequest>();
         knapsack = transform.Find("KnapsackPanel").GetComponent<Knapsack>();
@@ -124,6 +126,8 @@ public class GamePanel : BasePanel
 
         EffectDict = facade.GetEffectDict();
         SkillItemDict = facade.GetSkillItemDict();
+
+        transform.Find("SettingPanel/QuitGameButton").GetComponent<Button>().onClick.AddListener(OnQuitGameClick);
 
         chatDialog = transform.Find("ChatDialog");
         sendButton = transform.Find("ChatDialog/InputPanel/SendButton");
@@ -262,12 +266,43 @@ public class GamePanel : BasePanel
         }
     }
 
+    public void QuitGame(int id=-1)
+    {
+        if (id == -1)
+        {
+            facade.GameOver();
+            gameOverTimer += Time.deltaTime;
+            gameOverText.transform.parent.GetComponent<Image>().raycastTarget = true;
+            if (gameOverTimer < 2)
+            {
+                gameOverText.text = "主机退出游戏\n游戏结束";
+                gameOverText.color = gameOver;
+            }
+            else
+            {
+                closeButton.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            if (facade.QuitPlayer(id)==CampType.Fish)
+            {
+                deadCount++;
+            }
+        }
+    }
     public void GameOverAsync(ReturnCode returnCode,Result result=null)
     {
         this.returnCode = returnCode;
         this.result = result;
     }
 
+    private void OnQuitGameClick()
+    {
+        facade.GameOver();
+        quitGameRequest.SendRequest();
+        OnCloseClick();
+    }
     private void OnCloseClick()
     {
         quitBattleRequest.SendRequest();
@@ -390,12 +425,15 @@ public class GamePanel : BasePanel
                 {
                     case "Monkey0":
                         AddSkillItem("Summon",0);
-                        AddSkillItem("Trap",1);
-                        AddSkillItem("Transfer",2);
+                        AddSkillItem("Transfer",1);
                         break;
                     case "Monkey1":
+                        AddSkillItem("Eye", 0);
+                        AddSkillItem("Trap", 1);
                         break;
                     case "Monkey2":
+                        AddSkillItem("Ruin", 0);
+                        AddSkillItem("Earthquake", 1);
                         break;
                 }
                 break;
@@ -441,7 +479,7 @@ public class GamePanel : BasePanel
     {
         MapInfo cube = MapInfos[(int)pos.x, (int)pos.y];
         if (cube == null) return;
-        cube.Destroy(EffectDict["Bomb"]);
+        cube.DestroyCube(EffectDict["Bomb"]);
     }
     void On_TouchDown(Gesture gesture)
     {
@@ -462,8 +500,6 @@ public class GamePanel : BasePanel
                     case CampType.Fish:
                         facade.Attack(Role.GetComponent<PlayerInfo>().InstanceId,gesture.pickedObject);
                         break;
-                    case CampType.Middle:
-                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -477,11 +513,7 @@ public class GamePanel : BasePanel
 
     public List<GameObject> OnSkillJoyMoveStart()
     {
-        GameObject effect = Instantiate(EffectDict["Ring"], Role.transform);
-        effect.transform.localPosition=Vector3.zero;
-        List<GameObject> effectList = new List<GameObject>();
-        effectList.Add(effect);
-        effectList.Add(Instantiate(EffectDict["Target"], Role.transform));
+        List<GameObject> effectList = new List<GameObject> {EffectDict["Ring"], EffectDict["Target"]};
         return effectList;
     }
 }

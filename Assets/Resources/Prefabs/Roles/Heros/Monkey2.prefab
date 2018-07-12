@@ -226,7 +226,7 @@ MonoBehaviour:
   IsSkyVision: 0
   AttackDamage: 0
   InstanceId: 0
-  IsDead: 0
+  IsLock: 0
 --- !u!114 &114221235975371606
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -250,8 +250,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initSkills:
-  - Trap
-  - Summon
+  - Earthquake
+  - Ruin
 --- !u!114 &114334041777524350
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -313,7 +313,6 @@ MonoBehaviour:
       onHitAlpha: 1
       duration: 0.5
   canvas: {fileID: 0}
-  camCanvas: {fileID: 0}
 --- !u!114 &114509374533320444
 MonoBehaviour:
   m_ObjectHideFlags: 1

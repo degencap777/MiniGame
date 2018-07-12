@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Root Resources="SpeedUp" Name="传送" parameterCount="3">
-  <parameters CD="3" Trigger="1" During="2" />
+<Root Resources="Transfer" Name="传送" parameterCount="3">
+  <parameters CD="3" Trigger="1" During="3.5" />
 </Root>

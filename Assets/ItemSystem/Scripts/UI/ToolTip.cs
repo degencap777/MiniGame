@@ -17,7 +17,7 @@ public class ToolTip : MonoBehaviour
     void Start()
     {
         toolTipText = GetComponent<Text>();
-        contenText = GameObject.Find("Content").GetComponent<Text>();
+        contenText = transform.Find("Content").GetComponent<Text>();
         canvasGroup = GetComponent<CanvasGroup>();
         canvasGroup.alpha = 0;
     }

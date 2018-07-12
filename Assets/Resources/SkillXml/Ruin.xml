@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="Trap" Name="毁天灭地" parameterCount="5">
+  <parameters CD="2" Distance="7" Stick="1" Range="5" During="3" />
+</Root>

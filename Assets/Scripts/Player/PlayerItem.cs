@@ -27,7 +27,7 @@ public class PlayerItem : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (playerInfo.ToUseItem)
+        if (playerInfo.ToUseItem && !playerInfo.IsLock)
         {
             if (IsMoveDone())
             {
