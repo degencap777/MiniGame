@@ -53,6 +53,7 @@ public class PlayerSkill : MonoBehaviour
         {
             playerInfo.anim.SetTrigger("UseSkill");
         }
+        playerInfo.IsTransparent = false;
         if (joystickColdTime != 0&&playerInfo.Player.IsLocal)
             GameFacade.Instance.UseSkillSync(skill.GetType().Name,joystickColdTime);
         charactorSkills.Skills[skill.GetType().Name].Direction = direction;

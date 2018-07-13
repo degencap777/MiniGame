@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Root Resources="SpeedUp" Name="插眼" parameterCount="6">
+<Root Resources="Eye" Name="插眼" parameterCount="6">
   <parameters CD="3" Stick="1" During="120" Trigger="1" Distance="5" Range="10" />
 </Root>

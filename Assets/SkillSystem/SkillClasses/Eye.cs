@@ -21,6 +21,8 @@ public class Eye : Skill
         go.transform.parent = owner.GetComponent<PlayerInfo>().Player.Reference.transform;
         go.transform.position = dir * parameters["Distance"] + new Vector3(owner.transform.position.x, 0, owner.transform.position.z);
         go.AddComponent<DestroyForTime>().time = parameters.TryGet("During");
+        go.layer = 11;
+        go.tag = "Monkey";
         if (owner.GetComponent<PlayerInfo>().CampType == GameFacade.Instance.GetLocalPlayer().CampType)
         {
             go.AddComponent<VisualProvider>().noOcclusion = false;

@@ -64,7 +64,7 @@ public class Trap : Skill
                 PlayerInfo pi = collider.GetComponent<PlayerInfo>();
                 if (owner != null && pi.CampType != owner.GetComponent<PlayerInfo>().CampType)
                 {
-                    pi.Damage(3);
+                    pi.Damage(5);
                 }
             }
         }

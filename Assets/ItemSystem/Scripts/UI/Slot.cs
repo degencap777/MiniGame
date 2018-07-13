@@ -79,6 +79,10 @@ public class Slot : MonoBehaviour
         
     }
 
+    public void OnNotSelect()
+    {
+        pickedImage.SetActive(false);
+    }
     public void OnTipClick()
     {
         pickedImage.SetActive(false);
@@ -99,7 +103,14 @@ public class Slot : MonoBehaviour
             this.Amount = amount;
             //update UI
             itemImage.sprite = item.Sprites[0];
-            amountText.text = amount.ToString();
+            if (amount <= 1)
+            {
+                amountText.text = "";
+            }
+            else
+            {
+                amountText.text = amount.ToString();
+            }
         }
         else
         {

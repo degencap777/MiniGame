@@ -301,7 +301,7 @@ public class PlayerManager : BaseManager
         {
             attackRequest.SendRequest(layer + "|" + instanceId + "|" + target.GetComponent<PlayerInfo>().InstanceId);
         }
-        else
+        else if(layer==11)
         {
             attackRequest.SendRequest(layer+"|"+instanceId+"|"+target.GetInstanceID());
         }

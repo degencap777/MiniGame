@@ -16,6 +16,6 @@ public class test : MonoBehaviour {
 	    if (Input.GetKeyDown(KeyCode.Space))
         {
             cs.UseSkill<SpeedUp>();
-        }	
-	}
+        }
+    }
 }

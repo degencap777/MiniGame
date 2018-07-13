@@ -29,7 +29,14 @@ public class test2 : MonoBehaviour {
         }
 	    if (Input.GetKeyDown(KeyCode.Q))
 	    {
-	        Item item = cs.Items["SpeedUp2"];
+	        Item item = cs.Items["Transparent"];
+	        //cs.UseItem<SpeedUp>();
+
+	        Slot2.AddItem(item);
+	    }
+	    if (Input.GetKeyDown(KeyCode.W))
+	    {
+	        Item item = cs.Items["Tower"];
 	        //cs.UseItem<SpeedUp>();
 
 	        Slot2.AddItem(item);

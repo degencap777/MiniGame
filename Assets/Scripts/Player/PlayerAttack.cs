@@ -47,7 +47,7 @@ public class PlayerAttack : MonoBehaviour
                 playerInfo.IsAttack = true;
                 target.GetComponent<MapInfo>().Damage(playerInfo.AttackDamage);
             }
-            else if (target.tag == "Vulnerable")
+            else if (target.layer == 11)
             {
                 Destroy(target);
             }

@@ -25,7 +25,7 @@ public class PlayerInfo : MonoBehaviour
     public PlayerManager PlayerManager { get; private set; }
     public RoleData RoleData { get; private set; }
     public Animator anim { get; private set; }
-
+    
 
     private HealthBar healthBar;
     private bool _toUseSkill = false;
@@ -108,6 +108,8 @@ public class PlayerInfo : MonoBehaviour
             _isMove = value;
         }
     }
+
+    public bool IsTransparent = false;
 
     public bool IsLock = false;
     private float Timer = 0;
@@ -256,14 +258,12 @@ public class PlayerInfo : MonoBehaviour
 
     void OnEnable()
     {
-        if (healthBar != null && healthBar.HealthbarPrefab != null)
-            healthBar.HealthbarPrefab.gameObject.SetActive(true);
+        ShowHealthBar();
     }
 
     void OnDisable()
     {
-        if (healthBar != null&& healthBar.HealthbarPrefab!=null)
-            healthBar.HealthbarPrefab.gameObject.SetActive(false);
+        HideHealthBar();
     }
     void OnDestroy()
     {
@@ -272,5 +272,17 @@ public class PlayerInfo : MonoBehaviour
             healthBar.HealthbarPrefab.parent.GetComponent<HealthbarRoot>().healthBars.Remove(healthBar.HealthbarPrefab);
             Destroy(healthBar.HealthbarPrefab.gameObject);
         }
+    }
+
+    public void HideHealthBar()
+    {
+        if (healthBar != null && healthBar.HealthbarPrefab != null)
+            healthBar.HealthbarPrefab.gameObject.SetActive(false);
+    }
+
+    public void ShowHealthBar()
+    {
+        if (healthBar != null && healthBar.HealthbarPrefab != null)
+            healthBar.HealthbarPrefab.gameObject.SetActive(true);
     }
 }

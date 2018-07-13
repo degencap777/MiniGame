@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="Tower" Name="瞭望塔" parameterCount="3">
+  <parameters During="120" Capacity="10" Range="7" />
+</Root>

@@ -32,7 +32,7 @@ public class PlayerItem : MonoBehaviour {
             if (IsMoveDone())
             {
                 UseItem();
-                playerInfo.anim.SetTrigger("UseItem");
+                //playerInfo.anim.SetTrigger("UseItem");
                 playerInfo.ToUseItem = false;
             }
             if (position != Vector3.positiveInfinity)
@@ -45,20 +45,14 @@ public class PlayerItem : MonoBehaviour {
         }
     }
 
-    private void UseItem(Item item=null)
+    private void UseItem(Item useItem=null)
     {
-        if (item == null)
-        {
-            charactorItems.Items[currentItem.GetType().Name].Position = position;
-            charactorItems.UseItem(currentItem.GetType().Name);
-            if(isLocal)
-                GameFacade.Instance.UseItemSync(true);
-        }
-        else
-        {
-            charactorItems.Items[item.GetType().Name].Position = position;
-            charactorItems.UseItem(item.GetType().Name);
-        }
+        playerInfo.IsTransparent = false;
+        Item item = useItem ?? currentItem;
+        charactorItems.Items[item.GetType().Name].Position = position;
+        charactorItems.UseItem(item.GetType().Name);
+        if (isLocal)
+            GameFacade.Instance.UseItemSync(true);
     }
     public void StartUseItem(bool islocal,Item item, string point = null)
     {

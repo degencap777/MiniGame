@@ -226,6 +226,7 @@ MonoBehaviour:
   IsSkyVision: 0
   AttackDamage: 0
   InstanceId: 0
+  IsTransparent: 0
   IsLock: 0
 --- !u!114 &114221235975371606
 MonoBehaviour:
@@ -265,6 +266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initItems:
   - SpeedUp2
+  - Transparent
 --- !u!114 &114475614424620780
 MonoBehaviour:
   m_ObjectHideFlags: 1

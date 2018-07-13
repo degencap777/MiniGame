@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Root Resources="SpeedUp" Name="震撼大地" parameterCount="4">
-  <parameters CD="30" Distance="10" During="3" Stick="1" />
+<Root Resources="Earthquake" Name="震撼大地" parameterCount="4">
+  <parameters CD="30" Distance="10" During="5" Stick="1" />
 </Root>

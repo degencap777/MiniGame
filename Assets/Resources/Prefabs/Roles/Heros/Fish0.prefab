@@ -226,7 +226,8 @@ MonoBehaviour:
   IsSkyVision: 0
   AttackDamage: 0
   InstanceId: 0
-  IsDead: 0
+  IsTransparent: 0
+  IsLock: 0
 --- !u!114 &114144181320814764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -263,7 +264,6 @@ MonoBehaviour:
       onHitAlpha: 1
       duration: 0.5
   canvas: {fileID: 0}
-  camCanvas: {fileID: 0}
 --- !u!114 &114166951422669462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -313,6 +313,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initItems:
   - SpeedUp2
+  - Transparent
+  - Tower
 --- !u!114 &114360864031980358
 MonoBehaviour:
   m_ObjectHideFlags: 1

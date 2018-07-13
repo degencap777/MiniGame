@@ -150,7 +150,7 @@ public class GamePanel : BasePanel
         EasyTouch.SetEnableAutoSelect(true);
         EasyTouch.SetAutoUpdatePickedObject(false);
         LayerMask mask = EasyTouch.Get3DPickableLayer();
-        mask = mask | (1 << 9) | (1 << 10);
+        mask = mask | (1 << 9) | (1 << 10)|(1<<11);
         EasyTouch.Set3DPickableLayer(mask);
     }
     void Start()
@@ -488,7 +488,7 @@ public class GamePanel : BasePanel
         //TODO 先寻路，到达后开始攻击
         if (gesture.pickedObject != null&&Role!=null)
         {
-            if (gesture.pickedObject.tag == CampType.ToString()) return;
+            //if (gesture.pickedObject.tag == CampType.ToString()) return;
             PlayerInfo pi = Role.GetComponent<PlayerInfo>();
             if (pi.RoleType == RoleType.Hero)
             {

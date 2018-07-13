@@ -21,7 +21,6 @@ public class Earthquake : Skill
         go.transform.position = new Vector3(owner.transform.position.x, 0, owner.transform.position.z);
         go.transform.rotation=Quaternion.LookRotation(dir);
         go.AddComponent<DestroyForTime>().time = parameters.TryGet("During");
-        Damage();
         return true;    
     }
 
@@ -41,9 +40,5 @@ public class Earthquake : Skill
     {
         return "skill " + name + " has no specific description.";
     }
-
-    private void Damage()
-    {
-        
-    }
+    
 }

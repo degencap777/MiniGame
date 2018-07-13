@@ -37,7 +37,6 @@ public class SpeedUp2 : Item
     //这个方法会在道具结束时调用
     protected override void ItemEnd()
     {
-        Object.Destroy(go);
     }
 
     //您可以通过该方法提供一个道具的详细描述，您可以通过在文字中嵌入属性字典中的值来避免反复修改代码。

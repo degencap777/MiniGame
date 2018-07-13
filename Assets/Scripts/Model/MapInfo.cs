@@ -14,6 +14,7 @@ public class MapInfo : MonoBehaviour
 
     IEnumerator Start()
     {
+        gameObject.layer = 9;
         transform.position= UnityTools.RoundV3(transform.position);
         CurrentHp = Hp;
         IndexV2= UnityTools.V3ToV2(transform.position);

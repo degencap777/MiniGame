@@ -70,6 +70,10 @@ public class Knapsack : Inventory
     //Slot来调用
     public void OnSlotClick(Slot slot)
     {
+        if (pickedSlot != null)
+        {
+            pickedSlot.OnNotSelect();
+        }
         pickedSlot = slot;
         ShowMenu();
     }
@@ -85,11 +89,10 @@ public class Knapsack : Inventory
         HideMenu();
         float trigger;
         pickedItem.parameters.TryGetValue("Trigger", out trigger);
-        if (trigger == 0)
+        if (trigger != 0)
         {
             Debug.Log("use Skill");
             SendUseItem(pickedItem.GetType().Name);
-            UseItem();
         }
         else
         {

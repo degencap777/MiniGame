@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="Transparent" Name="隐身" parameterCount="3">
+  <parameters CD="60" During="40" Trigger="1" />
+</Root>
