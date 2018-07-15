@@ -89,6 +89,7 @@ public class LoadGamePanel : BasePanel
     {
         uiMng.PushPanelSync(UIPanelType.Game);
         facade.UpdateSceneAsync();
+        facade.PlaySound("StartGame");
     }
     public override void OnEnter()
     {

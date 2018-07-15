@@ -118,6 +118,7 @@ public class Knapsack : Inventory
     }
     private void UseItem()
     {
+        Debug.Log(pickedSlot==null);
         if(copy!=null)
             Destroy(copy.gameObject);
         OpenOtherSlots();

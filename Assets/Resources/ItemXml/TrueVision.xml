@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="Tower" Name="真视宝石" parameterCount="3">
+  <parameters CD="120" During="60" Trigger="1" />
+</Root>

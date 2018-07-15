@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="SpeedUp2" Name="强化" parameterCount="3">
+  <parameters CD="10" During="5" Trigger="1" />
+</Root>

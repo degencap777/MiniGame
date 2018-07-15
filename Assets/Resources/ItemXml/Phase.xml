@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="Tower" Name="相位移动" parameterCount="3">
+  <parameters During="5" CD="60" Trigger="1" />
+</Root>

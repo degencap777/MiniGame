@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,20 +79,36 @@ public class SkillJoystickItem : MonoBehaviour {
     }
     private void OnMove(Vector2 move)
     {
+        if (gamePanel.Role != null && gamePanel.Role.GetComponent<PlayerInfo>().RoleType != RoleType.Hero)
+        {
+            range.gameObject.SetActive(false);
+            target.gameObject.SetActive(false);
+            return;
+        }
         axis = move;
         target.transform.position =
             new Vector3(move.x, 0, move.y) * skill.parameters["Distance"] + range.transform.position;
     }
     private void OnMoveEnd()
     {
-        Debug.Log("本地按下"+SkillName+"技能按钮");
-        if (SkillName == "")
-        {
-            Debug.Log("没为按钮定义技能");
-            return;
-        }
         range.gameObject.SetActive(false);
         target.gameObject.SetActive(false);
+        Debug.Log("本地按下"+SkillName+"技能按钮");
+        if (SkillName == "Create")
+        {
+            Vector3 targetPos = new Vector3(axis.x,0,axis.y)* skill.parameters["Distance"] +
+                                new Vector3(GameFacade.Instance.GetCurrentOpTarget().transform.position.x, 0, GameFacade.Instance.GetCurrentOpTarget().transform.position.z);
+
+            Collider[] colliders = Physics.OverlapSphere(targetPos + new Vector3(0, 0.5f, 0), 0.4f);
+            foreach (var collider in colliders)
+            {
+                GameObject g = collider.gameObject;
+                if (LayerMask.LayerToName(g.layer) == "Cube")
+                {
+                    return;
+                }
+            }
+        }
         gamePanel.UseSkill(SkillName,axis.x+","+axis.y);
     }
     

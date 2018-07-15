@@ -11,12 +11,13 @@ public class Tower : Item
     //resources               资源预置体
 
     GameObject go;
-
+    private PlayerInfo pi;
     private VisualTest test;
     //这个方法会在道具发动时调用
     protected override bool ItemStart()
     {
         go = resources;
+        pi = owner.GetComponent<PlayerInfo>();
         //go.AddComponent<DestroyForTime>().time = parameters.TryGet("CD");
         go.transform.parent = owner.GetComponent<PlayerInfo>().Player.Reference.transform;
         go.SetActive(true);
@@ -32,6 +33,15 @@ public class Tower : Item
             VisualProvider vp = go.AddComponent<VisualProvider>();
             vp.noOcclusion = true;
             vp.visualRange = parameters.TryGet("Range");
+        }
+        if (pi.VisualTest != null)
+        {
+            if (pi.VisualTest.InVisual())
+                GameFacade.Instance.PlaySound("Tower");
+        }
+        else
+        {
+            GameFacade.Instance.PlaySound("Tower");
         }
         return true;
     }

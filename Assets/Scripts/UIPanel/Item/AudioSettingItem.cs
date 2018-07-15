@@ -35,4 +35,9 @@ public class AudioSettingItem : MonoBehaviour {
     {
         gameObject.SetActive(false);
     }
+
+    void OnEnable()
+    {
+        GameFacade.Instance.PlaySound("Setting");
+    }
 }

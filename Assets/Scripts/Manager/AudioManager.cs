@@ -9,11 +9,12 @@ public class AudioManager : BaseManager
     public AudioManager(GameFacade facade) : base(facade) { }
     public bool musicOn = true;
     public bool soundOn = true;
-    private float _musicVolume = 1;
+    private float _musicVolume = 0.2f;
     private float _soundVolume = 1;
     private const string Sound_Prefix = "Sounds";
     private GameObject audioManager;
     private AudioSource mainMusic;
+    private List<AudioSource> loopSounds=new List<AudioSource>();
     private List<AudioSource> sounds=new List<AudioSource>();
     public Dictionary<string,AudioClip> Clips { get; private set; }
 
@@ -107,8 +108,23 @@ public class AudioManager : BaseManager
         {
             audioManager.AddComponent<DoDestroy>().Set(() => sounds.Remove(source), source, sound.length);
         }
+        else
+        {
+            loopSounds.Add(source);
+        }
     }
-    
+
+    public void StopSound(AudioClip sound)
+    {
+        foreach (AudioSource audioSource in loopSounds)
+        {
+            if (audioSource.clip == sound)
+            {
+                audioSource.Stop();
+                return;
+            }
+        }
+    }
 
     public void PauseAllSounds()
     {

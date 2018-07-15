@@ -69,6 +69,7 @@ public class RoomListPanel : BasePanel
 
     private void OnRefreshRoomClick()
     {
+        PlayClickSound();
         listRoomRequest.SendRequest();
     }
 
@@ -135,6 +136,7 @@ public class RoomListPanel : BasePanel
 
     public void OnJoinClick(int id)
     {
+        PlayClickSound();
         joinRoomRequest.SendRequest(id);
     }
 

@@ -100,6 +100,7 @@ public class GamePanel : BasePanel
         CampType = CampType.Middle;
     }
 
+    public bool OpenAltar = false;
 
     void Awake()
     {
@@ -159,6 +160,7 @@ public class GamePanel : BasePanel
         timer.text = "15:00";
         gameOverText.text = null;
         closeButton.gameObject.SetActive(false);
+        facade.PlayMusic("Game");
     }
 	// Update is called once per frame
 	void Update ()
@@ -198,6 +200,7 @@ public class GamePanel : BasePanel
 
     private void OnChatClick()
     {
+        PlayClickSound();
         float width = chatDialog.rectTransform().sizeDelta.x;
         if (chatDialog.rectTransform().rect.height == 0)
         {
@@ -214,6 +217,7 @@ public class GamePanel : BasePanel
     }
     private void OnSendClick()
     {
+        PlayClickSound();
         string msgName = player.UserData.Username;
         string msg = inputField.text;
         if (string.IsNullOrEmpty(msg)) return;
@@ -251,9 +255,11 @@ public class GamePanel : BasePanel
             switch (returnCode)
             {
                 case ReturnCode.Win:
+                    facade.PlaySound("Win");
                     gameOverText.color = win;
                     break;
                 case ReturnCode.Lose:
+                    facade.PlaySound("Lose");
                     gameOverText.color = lose;
                     break;
             }
@@ -299,12 +305,14 @@ public class GamePanel : BasePanel
 
     private void OnQuitGameClick()
     {
+        PlayClickSound();
         facade.GameOver();
         quitGameRequest.SendRequest();
         OnCloseClick();
     }
     private void OnCloseClick()
     {
+        PlayClickSound();
         quitBattleRequest.SendRequest();
         uiMng.PopPanel();
         uiMng.PopPanel();
@@ -413,6 +421,14 @@ public class GamePanel : BasePanel
             return;
         }
         SetInteractive(true);
+        if (OpenAltar)
+        {
+            if (CampType == CampType.Fish && pi.RoleType == RoleType.Hero)
+            {
+                AddSkillItem("Create", 2);
+            }
+            OpenAltar = false;
+        }
         if(skillHasSet)return;
         if (this.player == null)
         {

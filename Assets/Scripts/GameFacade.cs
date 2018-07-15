@@ -48,6 +48,7 @@ public class GameFacade : MonoBehaviour
     public const int ROLE_NUM = 4;
     public const int MAX_ROLE_NUM_IN_SCENE = 100;
     public const int MAX_ROLE_NUM_OF_PLAYER = 10;
+    public int AltarCount = 0;
 
     private bool isSceneUpdate = false;
 
@@ -227,15 +228,19 @@ public class GameFacade : MonoBehaviour
         clientMng.SendRequest(requestCode, actionCode, data);
     }
 
-    public void PlayMusic(string soundName,bool loop=false)
+    public void PlayMusic(string musicName,bool loop=true)
     {
-        audioMng.PlayMusic(audioMng.Clips[soundName],loop);
+        audioMng.PlayMusic(audioMng.Clips[musicName],loop);
     }
     public void PlaySound(string soundName, bool loop = false)
     {
         audioMng.PlaySound(audioMng.Clips[soundName],loop);
     }
 
+    public void StopSound(string soundName)
+    {
+        audioMng.StopSound(audioMng.Clips[soundName]);
+    }
     public List<GameObject> GetLocalGameObjects()
     {
         return playerMng.GetLocalGameObjects();
@@ -341,5 +346,31 @@ public class GameFacade : MonoBehaviour
     public CampType QuitPlayer(int id)
     {
         return playerMng.QuitPlayer(id);
+    }
+
+    public void OpenAltar(Vector3 position)
+    {
+        PlaySound("AltarOpen");
+        AltarCount++;
+        playerMng.OpenAltar(position,AltarCount);
+        string msg = "开启第" + AltarCount + "座祭坛\n";
+        if (AltarCount == 1)
+        {
+            msg += "小鲲获得侦查海鸥";
+        }
+        else if (AltarCount==2)
+        {
+            msg += "小鲲可以自己种方块啦";
+            if (GetCurrentPanelType() == UIPanelType.Game)
+            {
+                ((GamePanel) GetCurrentPanel()).OpenAltar = true;
+            }
+        }
+        else if (AltarCount == 3)
+        {
+            msg += "海鸥获得真实视野";
+        }
+        ShowMessage(msg);
+        
     }
 }

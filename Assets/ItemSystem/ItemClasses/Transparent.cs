@@ -11,27 +11,36 @@ public class Transparent : Item
     //resources               资源预置体
 
     private Material m;
-
+    private Material material;
     private Renderer renderer;
     private PlayerInfo pi;
     private VisualTest test;
+    private bool isLocal = true;
     //这个方法会在道具发动时调用
     protected override bool ItemStart()
     {
-        Material material = Resources.Load<Material>("Materials/Transparent");
+        material = Resources.Load<Material>("Materials/Transparent");
         renderer = owner.GetComponent<Renderer>();
         pi = owner.GetComponent<PlayerInfo>();
-        test=owner.GetComponent<VisualTest>();
         pi.IsTransparent = true;
-        if (test != null)
+        m = renderer.material;
+        if (pi.CampType != GameFacade.Instance.GetLocalPlayer().CampType)
         {
             pi.HideHealthBar();
             renderer.enabled = false;
         }
         else
         {
-            m = renderer.material;
             renderer.material = material;
+        }
+        if (pi.VisualTest != null)
+        {
+            if (pi.VisualTest.InVisual())
+                GameFacade.Instance.PlaySound("Transparent");
+        }
+        else
+        {
+            GameFacade.Instance.PlaySound("Transparent");
         }
         return true;
     }
@@ -46,6 +55,20 @@ public class Transparent : Item
                 if (!pi.anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded")||pi.IsTransparent==false)
                 {
                     return true;
+                }
+                if (pi.CampType != GameFacade.Instance.GetLocalPlayer().CampType)
+                {
+                    if (pi.IsInTrueVision)
+                    {
+                        pi.ShowHealthBar();
+                        renderer.enabled = true;
+                        renderer.material = material;
+                    }
+                    else
+                    {
+                        pi.HideHealthBar();
+                        renderer.enabled = false;
+                    }
                 }
             }
             return false;

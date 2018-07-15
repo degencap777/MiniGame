@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 114977345599219614}
   m_Layer: 10
   m_Name: MonkeyPet0
-  m_TagString: Monkey
+  m_TagString: Pet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -220,7 +220,10 @@ MonoBehaviour:
   IsSkyVision: 0
   AttackDamage: 0
   InstanceId: 0
-  IsDead: 0
+  IsTransparent: 0
+  IsTrueVision: 0
+  IsInTrueVision: 0
+  IsLock: 0
 --- !u!114 &114977345599219614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -258,7 +261,6 @@ MonoBehaviour:
       onHitAlpha: 1
       duration: 0.5
   canvas: {fileID: 0}
-  camCanvas: {fileID: 0}
 --- !u!135 &135819613145094640
 SphereCollider:
   m_ObjectHideFlags: 1

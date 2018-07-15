@@ -108,6 +108,56 @@
 
     "attackDamage": 50,
     "seatIndex": [ 10 ]
-  }
+  },
+  {
+    "id": 7,
+    "campType": "Fish",
+    "name": "Fish1",
+    "roleType": "Hero",
+    "description": "中级鲲",
+    "path": "Prefabs/Roles/Heros/",
+    "imagePath": "Images/RoleHead/",
+    "hp": 10,
+    "mp": 0,
+    "moveSpeed": 2,
+    "turnSpeed": 5,
+    "isSkyVision": "false",
 
+    "attackDamage": 200,
+    "seatIndex": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+  },
+  {
+    "id": 8,
+    "campType": "Fish",
+    "name": "Fish2",
+    "roleType": "Hero",
+    "description": "高级鲲",
+    "path": "Prefabs/Roles/Heros/",
+    "imagePath": "Images/RoleHead/",
+    "hp": 10,
+    "mp": 0,
+    "moveSpeed": 2,
+    "turnSpeed": 5,
+    "isSkyVision": "false",
+
+    "attackDamage": 200,
+    "seatIndex": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+  },
+  {
+    "id": 9,
+    "campType": "Fish",
+    "name": "Fish3",
+    "roleType": "Hero",
+    "description": "超级鲲",
+    "path": "Prefabs/Roles/Heros/",
+    "imagePath": "Images/RoleHead/",
+    "hp": 10,
+    "mp": 0,
+    "moveSpeed": 2,
+    "turnSpeed": 5,
+    "isSkyVision": "false",
+
+    "attackDamage": 200,
+    "seatIndex": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+  }
 ]

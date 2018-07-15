@@ -16,7 +16,7 @@ public class VisualProvider : MonoBehaviour
     public bool active = true;
 
     public bool noOcclusion = false;
-
+    public bool IsTrueVision = false;
     private VisualManager visualManager;
     void Start()
     {

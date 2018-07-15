@@ -9,7 +9,7 @@ public class PlayerAttack : MonoBehaviour
     private Vector3 shootDir;
     private PlayerManager playerManager;
     private GameObject target;
-    private float CD = 2;
+    private float CD = 0.5f;
     private float timer = 0;
     private bool isReady = true;
     
@@ -33,11 +33,12 @@ public class PlayerAttack : MonoBehaviour
 
         }
         if (playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") &&
-            playerInfo.anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && target != null && !playerInfo.IsLock&& isReady)
+            playerInfo.anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f && target != null && !playerInfo.IsLock&& isReady)
         {
+            GameFacade.Instance.PlaySound(playerInfo.CampType+"Attack");
             playerInfo.IsAttack = false;
             isReady = false;
-            Debug.Log("Attacking正在攻击");
+            Debug.Log("Attacking完成一次攻击");
             if (LayerMask.LayerToName(target.layer) == "Cube")
             {
                 if (target.GetComponent<MapInfo>().CurrentHp <= 0)
@@ -76,6 +77,5 @@ public class PlayerAttack : MonoBehaviour
         if (playerInfo.IsAttack) return;
         this.target = target;
         playerInfo.IsAttack = true;
-        playerInfo.anim.SetBool("Attack", true);
     }
 }

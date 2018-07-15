@@ -23,6 +23,16 @@ public class SpeedUp : Skill
         pi.MoveSpeed += 3;
         pi.TurnSpeed += 3;
         pi.anim.speed = 1.5f;
+
+        if (pi.VisualTest != null)
+        {
+            if (pi.VisualTest.InVisual())
+                GameFacade.Instance.PlaySound("SpeedUp");
+        }
+        else
+        {
+            GameFacade.Instance.PlaySound("SpeedUp");
+        }
         return true;
     }
 

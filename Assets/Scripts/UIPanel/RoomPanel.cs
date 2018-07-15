@@ -107,7 +107,7 @@ public class RoomPanel : BasePanel
 
     void Start()
     {
-        
+        facade.PlayMusic("Room");
     }
     void Update()
     {
@@ -236,16 +236,19 @@ public class RoomPanel : BasePanel
     //}
     private void OnStartClick()
     {
+        PlayClickSound();
         startGameRequest.SendRequest();
     }
 
     private void OnExitClick()
     {
+        PlayClickSound();
         quitRoomRequest.SendRequest();
     }
 
     private void OnSendClick()
     {
+        PlayClickSound();
         string msgName = localPlayer.Username;
         string msg = inputField.text;
         if(string.IsNullOrEmpty(msg))return;
@@ -288,10 +291,12 @@ public class RoomPanel : BasePanel
 
     public void OnChangeSeatConfirmClick(string data)
     {
+        PlayClickSound();
         changeSeatRequest.SendRequest(data);
     }
     public void OnChangeSeatButtonClick(int id,int index)
     {
+        PlayClickSound();
         changeSeatRequest.SendRequest(id+","+index);
     }
     public void OnChangeSeatResponse(int id1,int id2)

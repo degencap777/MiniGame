@@ -227,6 +227,8 @@ MonoBehaviour:
   AttackDamage: 0
   InstanceId: 0
   IsTransparent: 0
+  IsTrueVision: 0
+  IsInTrueVision: 0
   IsLock: 0
 --- !u!114 &114144181320814764
 MonoBehaviour:
@@ -289,6 +291,7 @@ MonoBehaviour:
   initSkills:
   - SpeedUp
   - Blink
+  - Create
 --- !u!114 &114308571423877866
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -315,6 +318,8 @@ MonoBehaviour:
   - SpeedUp2
   - Transparent
   - Tower
+  - TrueVision
+  - Phase
 --- !u!114 &114360864031980358
 MonoBehaviour:
   m_ObjectHideFlags: 1

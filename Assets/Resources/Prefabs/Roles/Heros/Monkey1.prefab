@@ -227,6 +227,8 @@ MonoBehaviour:
   AttackDamage: 0
   InstanceId: 0
   IsTransparent: 0
+  IsTrueVision: 0
+  IsInTrueVision: 0
   IsLock: 0
 --- !u!114 &114221235975371606
 MonoBehaviour:
@@ -253,6 +255,7 @@ MonoBehaviour:
   initSkills:
   - Trap
   - Eye
+  - Attack
 --- !u!114 &114334041777524350
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -267,6 +270,8 @@ MonoBehaviour:
   initItems:
   - SpeedUp2
   - Transparent
+  - TrueVision
+  - Strengthen
 --- !u!114 &114475614424620780
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -15,6 +15,9 @@ TagManager:
   - RemovableCube
   - Fx
   - Vulnerable
+  - Bird
+  - Dead
+  - Pet
   layers:
   - Default
   - TransparentFX

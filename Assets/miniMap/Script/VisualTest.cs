@@ -6,15 +6,15 @@ using UnityEngine;
 public class VisualTest : MonoBehaviour {
     
     public bool isInVisual = false;
-
+    public bool isInTrueVision = false;
     public float testRadius = 20f;
-
-    public bool autoTest = false;
-
-    public bool autoHideWhenOutOfVisual = false;
+    public bool IsTransparent = false;
+    public bool autoTest = true;
+    public bool autoHideWhenOutOfVisual = true;
 
     public bool showTestRadiusInEditor = true;
     public bool showTestRayInEditor = true;
+    public bool TrueVisionCheck = true;
 
     private MeshRenderer mr;
 
@@ -28,10 +28,22 @@ public class VisualTest : MonoBehaviour {
         if (autoHideWhenOutOfVisual) mr.enabled = autoTest? isInVisual : InVisual();
     }
 
+    private bool IsInTrueVision(VisualProvider vp)
+    {
+        if (TrueVisionCheck == false)
+        {
+            isInTrueVision = false;
+            return false;
+        }
+        isInTrueVision = vp.IsTrueVision;
+        return vp.IsTrueVision;
+    }
     public bool InVisual()
     {
+
         Vector3 pos = transform.position;
         var Colliders = Physics.OverlapSphere(transform.position, testRadius);
+        bool inVisual = false;
         for (int i = 0; i < Colliders.Length; ++i)
         {
             var vp = Colliders[i].GetComponent<VisualProvider>();
@@ -43,13 +55,27 @@ public class VisualTest : MonoBehaviour {
                 {
                     Ray ray = new Ray(pos, target - pos);
                     if (showTestRayInEditor) Debug.DrawLine(pos, target);
-                    if (!Physics.Raycast(ray, dis, 1 << 19)){
-                        return true;
+                    if (IsTransparent)
+                    {
+                        if (!Physics.Raycast(ray, dis, 1 << 19))
+                        {
+                            if(IsInTrueVision(vp))
+                                return true;
+                        }
+                    }
+                    else
+                    {
+                        isInTrueVision = false;
+                        if (!Physics.Raycast(ray, dis, 1 << 19))
+                        {
+                            inVisual = true;
+                        }
                     }
                 }
             }
         }
-        return false;
+        isInTrueVision = inVisual;
+        return inVisual;
     }
 
     private void OnDrawGizmos()

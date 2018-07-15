@@ -63,14 +63,17 @@ public class PlayerItem : MonoBehaviour {
             moveDirection = (position - transform.position).normalized;
             moveDirection.y = 0;
             playerInfo.ToUseItem = true;
+            if (playerInfo.anim.GetCurrentAnimatorStateInfo(0).IsName("Grounded") && IsMoveDone())
+            {
+                UseItem(item);
+                playerInfo.ToUseItem = false;
+                return;
+            }
         }
         else
         {
             UseItem(item);
-            if (islocal)
-            {
-                GameFacade.Instance.UseItemSync(true);
-            }
+            return;
         }
         currentItem = item;
     }

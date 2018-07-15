@@ -12,15 +12,26 @@ public class Ruin : Skill
 
 
     private GameObject go;
-
+    private PlayerInfo pi;
     private float timer = 0;
     //这个方法会在技能发动时调用,返回值为false则发动失败，不会调用后续方法
     protected override bool SkillStart()
     {
         Vector3 dir = new Vector3(Direction.x, 0, Direction.z);
+        pi = owner.GetComponent<PlayerInfo>();
         go = resources;
         go.transform.parent = owner.GetComponent<PlayerInfo>().Player.Reference.transform;
         go.transform.position = dir * parameters["Distance"] + new Vector3(owner.transform.position.x, 0, owner.transform.position.z);
+        if (pi.VisualTest != null)
+        {
+            if(pi.VisualTest.InVisual())
+                GameFacade.Instance.PlaySound("Ruin");
+        }
+        else
+        {
+            GameFacade.Instance.PlaySound("Ruin");
+        }
+
         return true;    
     }
 

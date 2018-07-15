@@ -16,7 +16,7 @@ public class BasePanel : MonoBehaviour
 
     protected void PlayClickSound()
     {
-        //facade.PlayNormalSound(AudioManager.Sound_ButtonClick);
+        facade.PlaySound("Click");
     }
     /// <summary>
     /// 界面被显示出来

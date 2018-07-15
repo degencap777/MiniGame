@@ -18,6 +18,7 @@ public class ServerListPanel : BasePanel
             ServerItem server = GridContent.transform.GetChild(i).GetComponent<ServerItem>();
             server.ServerId = i;
         }
+        facade.PlayMusic("Menu");
     }
 
     public void OnServerClick(int serverId)

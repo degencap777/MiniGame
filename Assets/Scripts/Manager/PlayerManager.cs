@@ -121,6 +121,7 @@ public class PlayerManager : BaseManager
 
     public void SpawnRoles(CampType campType)
     {
+        facade.PlaySound("Swapn"+campType);
         foreach (Player player in playerList)
         {
             if (player.CampType != campType) continue;
@@ -134,7 +135,7 @@ public class PlayerManager : BaseManager
             InitPlayerInfo(rd, go, player, instanceId);
             SetCurrentRole(go);
 
-            if (player.CampType == rd.CampType)
+            if (player.CampType == LocalPlayer.CampType)
             {
                 go.AddComponent<VisualProvider>();
             }
@@ -159,9 +160,13 @@ public class PlayerManager : BaseManager
     {
         foreach (var roleData in RoleDataList)
         {
-            if(roleData.RoleType==RoleType.Hero)
+            if (roleData.RoleType == RoleType.Hero)
+            {
+                if(roleData.CampType==CampType.Fish&&roleData.Name!="Fish0")continue;;
                 if (((HeroData)roleData).seatIndex.Contains(seatIndex))
                     return (HeroData)roleData;
+
+            }
         }
         return null;
     }
@@ -505,6 +510,36 @@ public class PlayerManager : BaseManager
         }
     }
 
+    public void OpenAltar(Vector3 position,int altarCount)
+    {
+        foreach (RoleData rd in RoleDataList)
+        {
+            if (rd.Name == "Bird0"&&altarCount==1)
+            {
+                foreach (Player player in playerList)
+                {
+                    if(player.CampType==CampType.Fish)
+                        AddPet((PetData) rd, roleGameObjects.TryGet(player.CurrentRoleInstanceId));
+                }
+            }
+            if (rd.Name == "Fish" + altarCount)
+            {
+                Mesh mesh = rd.RolePrefab.GetComponent<MeshFilter>().sharedMesh;
+                foreach (Player player in playerList)
+                {
+                    if (player.CampType == CampType.Fish)
+                    {
+                        GameObject role = roleGameObjects.TryGet(player.RoleInstanceIdList[0]);
+                        if (role != null)
+                        {
+                            role.GetComponent<MeshFilter>().mesh = mesh;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
     public GameObject AddPet(PetData pd,GameObject go)
     {
         PlayerInfo pi = go.GetComponent<PlayerInfo>();

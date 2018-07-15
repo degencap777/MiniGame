@@ -21,12 +21,13 @@ public class PlayerInfo : MonoBehaviour
     public bool IsSkyVision;
     public int AttackDamage;
     public VisualProvider VisualProvider { get; private set; }
+    public VisualTest VisualTest { get; private set; }
     public int InstanceId;
     public PlayerManager PlayerManager { get; private set; }
     public RoleData RoleData { get; private set; }
     public Animator anim { get; private set; }
-    
 
+    private Rigidbody rb;
     private HealthBar healthBar;
     private bool _toUseSkill = false;
     public bool ToUseSkill
@@ -71,10 +72,8 @@ public class PlayerInfo : MonoBehaviour
         }
         set
         {
-            if (value == false)
-            {
-                anim.SetBool("Attack", false);
-            }
+            if(value)
+                anim.SetTrigger("Attack");
             _isAttack = value;
         }
     }
@@ -110,9 +109,11 @@ public class PlayerInfo : MonoBehaviour
     }
 
     public bool IsTransparent = false;
-
+    public bool IsTrueVision = false;
+    public bool IsInTrueVision = false;
     public bool IsLock = false;
     private float Timer = 0;
+    private bool moveSoundOn = false;
 
     //public void Init(PlayerManager playerManager,int id, CampType campType, string name, RoleType roleType, string description, int hp, int mp, int moveSpeed,
     //    int turnSpeed, bool isSkyVision, Player player,int instanceId, int attackDamage=0)
@@ -168,11 +169,20 @@ public class PlayerInfo : MonoBehaviour
 
         Player = player;
         InstanceId = instanceId;
+        if (Name == "Bird0")
+        {
+            if (VisualProvider != null)
+            {
+                VisualProvider.visualRange = 8;
+            }
+        }
     }
 
     void Start()
     {
         VisualProvider = GetComponent<VisualProvider>();
+        VisualTest = GetComponent<VisualTest>();
+        rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         healthBar = GetComponent<HealthBar>();
         healthBar.healthLink.targetScript = this;
@@ -181,9 +191,35 @@ public class PlayerInfo : MonoBehaviour
     void Update()
     {
         Timer += Time.deltaTime;
-        
-        if(VisualProvider!=null)
+        if (Name == "Bird0")
+        {
+            if (GameFacade.Instance.AltarCount == 3)
+            {
+                IsTrueVision = true;
+            }
+            if (PlayerManager.GetCurrentOpTarget() == this.gameObject)
+            {
+                if (!moveSoundOn)
+                {
+                    moveSoundOn = true;
+                    GameFacade.Instance.PlaySound("BirdFly", true);
+                }
+            }
+            else
+            {
+                GameFacade.Instance.StopSound("BirdFly");
+            }
+        }
+        if (VisualProvider != null)
+        {
+            VisualProvider.IsTrueVision = IsTrueVision;
             VisualProvider.noOcclusion = IsSkyVision;
+        }
+        if (VisualTest != null)
+        {
+            VisualTest.IsTransparent = IsTransparent;
+            IsInTrueVision = VisualTest.isInTrueVision;
+        }
         if (!IsDead)
         {
             if (CurrentHp <= 0)
@@ -235,6 +271,7 @@ public class PlayerInfo : MonoBehaviour
 
     public void Die()
     {
+        GameFacade.Instance.PlaySound("Die");
         if(anim!=null)
             anim.SetTrigger("Die");
         if (RoleType == RoleType.Hero)
@@ -284,5 +321,15 @@ public class PlayerInfo : MonoBehaviour
     {
         if (healthBar != null && healthBar.HealthbarPrefab != null)
             healthBar.HealthbarPrefab.gameObject.SetActive(true);
+    }
+
+
+    void OnCollisionStay(Collision collision)
+    {
+        GameObject go = collision.gameObject;
+        if (go.layer == 18||IsMove|| go.layer == 10) return;
+        Vector3 dir = transform.position - go.transform.position;
+        dir.y = 0;
+        transform.Translate(Time.deltaTime*dir.normalized*10,Space.World);
     }
 }

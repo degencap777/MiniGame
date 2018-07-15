@@ -28,7 +28,16 @@ public class Transfer : Skill
         anim = pi.anim;
         pi.IsLock = true;
         anim.SetTrigger("UseSkill");
-         return true;    
+        if (pi.VisualTest != null)
+        {
+            if (pi.VisualTest.InVisual())
+                GameFacade.Instance.PlaySound("Transfer");
+        }
+        else
+        {
+            GameFacade.Instance.PlaySound("Transfer");
+        }
+        return true;    
     }
 
     //这个方法会在技能进行过程中不断调用，当返回true表示技能已经完成所有动作

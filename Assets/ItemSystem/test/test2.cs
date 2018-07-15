@@ -34,9 +34,16 @@ public class test2 : MonoBehaviour {
 
 	        Slot2.AddItem(item);
 	    }
-	    if (Input.GetKeyDown(KeyCode.W))
+	    if (Input.GetKeyDown(KeyCode.E))
 	    {
-	        Item item = cs.Items["Tower"];
+	        Item item = cs.Items["TrueVision"];
+	        //cs.UseItem<SpeedUp>();
+
+	        Slot2.AddItem(item);
+	    }
+	    if (Input.GetKeyDown(KeyCode.R))
+	    {
+	        Item item = cs.Items["Phase"];
 	        //cs.UseItem<SpeedUp>();
 
 	        Slot2.AddItem(item);

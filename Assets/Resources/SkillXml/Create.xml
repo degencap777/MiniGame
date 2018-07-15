@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Root Resources="Create" Name="种方块" parameterCount="4">
+  <parameters CD="2" Trigger="1" Distance="2" Stick="1" />
+</Root>

@@ -29,7 +29,7 @@ public class MapInfo : MonoBehaviour
     public void Damage(int damage)
     {
         Debug.Log("受到伤害:"+damage);
-        CurrentHp = Hp - damage < 0 ? 0 : Hp - damage;
+        CurrentHp = CurrentHp - damage < 0 ? 0 : CurrentHp - damage;
         if (CurrentHp <= 0)
         {
             if(gamePanel!=null)
